@@ -1,0 +1,49 @@
+<?php $__env->startSection('encabezado'); ?> INICIO <?php $__env->stopSection(); ?>
+<?php $__env->startSection('encabezado_descripcion'); ?> Información <?php $__env->stopSection(); ?> 
+<?php $__env->startSection('nivel'); ?> <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li> <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+		<div class="row">
+          <?php if(Auth::user()->is_admin): ?>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="glyphicon glyphicon-home"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Sucursales</span>
+                  <span class="info-box-number"><?php echo $cuenta['sucursales']; ?></span>
+                </div><!-- /.info-box-content -->
+              </div><!-- /.info-box -->
+            </div><!-- /.col -->
+
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-users"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Usuarios</span>
+                  <span class="info-box-number"><?php echo $cuenta['usuarios']; ?></span>
+                </div><!-- /.info-box-content -->
+              </div><!-- /.info-box -->
+            </div><!-- /.col -->
+          <?php endif; ?>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="ion-person-stalker"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Clientes</span>
+                  <span class="info-box-number"><?php echo $cuenta['clientes']; ?></span>
+                </div><!-- /.info-box-content -->
+              </div><!-- /.info-box -->
+            </div><!-- /.col -->
+            
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="info-box">
+                <span class="info-box-icon bg-orange"><i class="fa fa-cube"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Productos</span>
+                  <span class="info-box-number"><?php echo $cuenta['productos']; ?></span>
+                </div><!-- /.info-box-content -->
+              </div><!-- /.info-box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('header', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

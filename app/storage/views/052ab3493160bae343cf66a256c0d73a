@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><?php echo $__env->yieldContent('title', 'Factura Virtual'); ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Admin lTE -->
+    <?php echo HTML::style('vendor/AdminLTE2/bootstrap/css/bootstrap.min.css', array('media' => 'screen')); ?>
+
+
+    <?php /* <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> */ ?>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> 
+     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> 
+       <?php echo HTML::style('vendor/AdminLTE2/dist/css/AdminLTE.min.css', array('media' => 'screen')); ?>
+
+       <?php echo HTML::style('vendor/AdminLTE2/dist/css/skins/_all-skins.min.css', array('media' => 'screen')); ?>
+
+       <?php echo HTML::style('vendor/AdminLTE2/plugins/iCheck/flat/blue.css', array('media' => 'screen')); ?>
+
+       <?php echo HTML::style('vendor/AdminLTE2/plugins/morris/morris.css', array('media' => 'screen')); ?>
+
+       <?php echo HTML::style('vendor/AdminLTE2/plugins/jvectormap/jquery-jvectormap-1.2.2.css', array('media' => 'screen')); ?>
+
+       <?php echo HTML::style('vendor/AdminLTE2/plugins/datepicker/datepicker3.css', array('media' => 'screen')); ?>
+
+       <?php echo HTML::style('vendor/AdminLTE2/plugins/daterangepicker/daterangepicker-bs3.css', array('media' => 'screen')); ?>
+
+       <?php echo HTML::style('vendor/AdminLTE2/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css', array('media' => 'screen')); ?>
+
+
+
+
+   <?php echo HTML::script('vendor/AdminLTE2/plugins/jQuery/jQuery-2.1.4.min.js'); ?>
+
+   <?php echo HTML::script('vendor/AdminLTE2/bootstrap/js/bootstrap.min.js'); ?>
+
+   <?php echo HTML::script('vendor/AdminLTE2/plugins/fastclick/fastclick.min.js'); ?>
+
+   <?php echo HTML::script('vendor/AdminLTE2/dist/js/app.js'); ?>
+
+   <?php echo HTML::script('vendor/AdminLTE2/dist/js/demo.js'); ?>
+
+
+   
+
+       <?php echo HTML::script('vendor/AdminLTE2/plugins/datepicker/bootstrap-datepicker.js'); ?>
+
+
+    <link href="<?php echo asset('favicon.ico'); ?>" rel="icon" type="image/x-icon">
+
+    <?php echo $__env->yieldContent('head'); ?>
+  </head>
+  <body class="hold-transition skin-blue sidebar-mini" >
+    <!--<script async="" src="//www.google-analytics.com/analytics.js"></script>-->
+
+    
+   
+        <?php echo $__env->yieldContent('body'); ?>
+   
+
+   <!--script src="bower_components/AdminLTE-2.3.0/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="bower_components/AdminLTE-2.3.0/plugins/datatables/dataTables.bootstrap.min.js"></script-->
+  <!--script src="../../plugins/jQuery/jQuery-2.1.4.min.js"></script>
+  <script src="../../bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../plugins/fastclick/fastclick.min.js"></script>
+  <script src="../../dist/js/app.min.js"></script>
+  <script src="../../dist/js/demo.js"></script-->
+  
+  </body>
+</html>

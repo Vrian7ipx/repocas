@@ -1,0 +1,63 @@
+<?php $__env->startSection('title'); ?> Asignación de Sucursal <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('head'); ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('body'); ?>
+	     
+		
+		 <?php echo Former::framework('TwitterBootstrap3'); ?>
+
+  <?php echo Former::open('sucursal')->method('post')->rules(array( 
+        'branch_id' => 'required'
+     
+    )); ?>
+
+</br></br><br>
+    <div class="content">
+
+    	<div class="col-md-4">
+    	</div>
+    	<div class="col-md-4">
+
+
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+			    <h2 class="panel-title"><?php echo strtoupper(Auth::user()->account->name); ?> </h2>
+			  </div>
+			  <div class="panel-body">
+			   
+			   	<legend>Asignación de Sucursal</legend>
+			     <?php /* <?php echo Former::legend('Asignacion de Sucursal'); ?> */ ?>
+			
+			     <p> <?php echo Auth::user()->first_name; ?>, por favor selecciona una sucursal para facturar:</p>
+			     
+			     <?php echo Former::select('branch_id')->addOption('','')->label('')
+	                    ->fromQuery($sucursales, 'name', 'branch_id'); ?>
+
+
+	              <?php echo Former::large_primary_submit('Continuar'); ?>
+
+	              <?php echo Former::close(); ?>            
+	           
+			   
+			  </div>
+			</div>
+		</div>
+		<div class="col-md-4">
+    	</div>
+
+    </div>
+   
+    	
+<!--script type="text/javascript">
+
+	$(".dropdown-menu li a").click(function(){
+	  var selText = $(this).text();
+	  $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
+	});
+</script-->
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

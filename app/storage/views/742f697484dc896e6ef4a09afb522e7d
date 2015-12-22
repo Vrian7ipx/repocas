@@ -1,0 +1,129 @@
+<?php $__env->startSection('title'); ?>Nuevo Producto <?php $__env->stopSection(); ?>
+  <?php $__env->startSection('head'); ?> <?php $__env->stopSection(); ?>
+<?php $__env->startSection('encabezado'); ?> PRODUCTO <?php $__env->stopSection(); ?>
+<?php $__env->startSection('encabezado_descripcion'); ?> Editar Producto <?php echo $product->notes; ?> <?php $__env->stopSection(); ?> 
+<?php $__env->startSection('nivel'); ?> <li><a href="<?php echo URL::to('productos'); ?>"><i class="fa fa-cube"></i> Productos y Servicios</a></li><li><i class="glyphicon glyphicon-compressed"></i> Productos</li>
+            <li class="active"> Nuevo </li> <?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+
+<?php echo Former::framework('TwitterBootstrap3'); ?>
+
+
+<div class="box box-primary" >
+  <div class="box-header with-border">
+    <h3 class="box-title">Datos del Producto</h3>
+    <div class="box-tools pull-right">
+      <!-- Buttons, labels, and many other things can be placed here! -->
+      <!-- Here is a label for example -->
+     
+    </div><!-- /.box-tools -->
+  </div><!-- /.box-header -->
+  <div class="box-body">
+  
+  		<?php echo Former::open($url)->addClass('col-md-12 warn-on-exit')->method($method); ?>
+
+	  	<input name="is_product" type="hidden" value="1">
+		<div class="row">
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-5">
+					<?php /* <?php echo Former::legend('datos de Producto'); ?> */ ?>
+						<p >
+							<label>Código*</label>
+							<input type="text" name="product_key" class="form-control" placeholder="Código del Producto" aria-describedby="sizing-addon2" title="Ingrese Código del Producto" pattern="^[a-zA-Z0-9-].{1,}" required   value="<?php echo $product->product_key; ?>">
+						</p>
+					</div>
+				</div>
+
+		      	<?php /* <?php echo Former::text('product_key')->label('Código')->title('Solo se acepta Letras, Números y guión(-).'); ?> */ ?>
+		      	<p>
+			      	<label>Nombre *</label><br>
+			      	<textarea name="notes" class="form-control" placeholder="Nombre del producto" cols="46" rows="3" ><?php echo $product->notes; ?></textarea>
+		     	 </p>
+		      	<?php /* <?php echo Former::textarea('notes')->label('Nombre'); ?> */ ?>
+		      <?php /* 	<?php echo Former::select('Unidad')->options('', '')->fromQuery(Unidad::all(), 'nombre', 'id')
+															  ->help('Pick some dude')
+															  ->state('warning'); ?> */ ?>
+				<p>
+					<label>Unidad</label>
+				
+				 	<select class="form-control" name="unidad_id" >
+						  	<?php foreach(Unidad::all() as $u): ?>
+						    <option  <?php if($u->id==$product->unidad_id){?>
+						    		SELECTED<?php }?>    value="<?php echo $u->id; ?>"  ><?php echo $u->name; ?></option>
+						    
+							<?php endforeach; ?>
+							
+					 </select>	
+
+
+
+					<?php /* Former::select('unidad_id')->addOption('','')->label('')
+			                    ->fromQuery(Unidad::all(), 'nombre', 'id')
+			                    ->help('Unidad de medida que manejara el producto')
+					                     */ ?>
+
+				</p>
+				<div class="row">
+					<div class="col-md-5">
+						<label>Precio *</label>
+					    <input class="form-control" type="text" name="cost" placeholder="Precio del Producto" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" required value="<?php echo $product->cost; ?>">
+				      	<?php /* <?php echo Former::text('cost')->label('')->title('Solo se acepta números. Ejem: 500.00'); ?> */ ?>
+					</div>
+				</div>
+				
+			    
+
+			</div>
+			<?php /* <div class="col-md-1"></div> */ ?>
+			<div class="col-md-5">
+				<legend>Categoría</legend>
+				<?php /* <?php echo Former::legend('Categoria'); ?> */ ?>
+				<div class="row">
+					
+					<div class="col-md-9">
+						 <select class="form-control" name="category_id" >
+						  	<?php foreach($categories as $categoria): ?>
+						    <option  <?php if($product->category_id==$categoria->id){?>
+						    		SELECTED<?php }?>  value="<?php echo $categoria->id; ?>"  ><?php echo $categoria->name; ?></option>
+						    
+							<?php endforeach; ?>
+							
+						  </select>	
+					</div>
+				</div>	
+				 
+		    	<?php /* <?php echo Former::select('category_id')->label(' ')->fromQuery($categories, 'name', 'id'); ?> */ ?>
+
+			</div>
+		</div>
+		<br><br>
+		<div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-2">
+                 <a href="<?php echo url('productos/'); ?>" class="btn btn-default btn-sm btn-block">Cancelar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-remove">  </span></a>
+            </div>
+            <?php /* <div class="col-md-1"></div> */ ?>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-floppy-disk"></span></button>
+            </div>
+        </div>
+
+
+		<?php echo Former::close(); ?>
+
+		
+  </div><!-- /.box-body -->
+  <div class="box-footer">
+  	 Nota: (*) Campos requeridos
+  </div><!-- box-footer -->
+</div><!-- /.box -->
+
+
+
+<?php $__env->stopSection(); ?>
+
+
+
+<?php echo $__env->make('header', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
