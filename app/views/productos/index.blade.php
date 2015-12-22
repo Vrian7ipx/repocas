@@ -81,7 +81,7 @@
       </div>
       {{ Form::open(array('url' => 'productos/bulk','id' => 'formDelete')) }}
       <div style="display:none">
-        {{ Former::text('public_id') }}
+        {{ Former::text('id') }}
       </div>
       <div class="modal-body" id="frm_body"></div>
       <div class="modal-footer">

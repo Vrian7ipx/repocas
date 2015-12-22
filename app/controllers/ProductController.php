@@ -27,8 +27,7 @@ class ProductController extends \BaseController {
 	 */
 	public function create()
 	{	       
-	   $priceTypes = PriceType::get();
-           return 0;
+	   $priceTypes = PriceType::orderBy('id','ASC')->get();                      
            $data=[
                'precios'=>$priceTypes,
            ];
@@ -62,13 +61,36 @@ class ProductController extends \BaseController {
 	public function store()
 	{
 		// return Response::json(Input::all());
+                //print_r(Input::all());
+                //return 0;
 		$product = Product::createNew();
-
 		$product -> setProductKey(trim(Input::get('product_key')));
 		$product -> setNotes(trim(Input::get('notes')));
-		$product -> setCost(trim(Input::get('cost')));
-		$product -> setQty(trim(Input::get('qty')));  
-		$product -> setCategory(trim(Input::get('category_id')));
+                $product ->setUnits(Input::get('units'));
+                $product->setCc(Input::get('volume'));
+                $product->setPackTypes(Input::get('type'));
+                $product->setIce(Input::get('ice'));
+                $typePrices = PriceType::orderBy('id','ASC')->get();
+                $default_cost=Input::get('price-1');
+                $product->save();
+                foreach ($typePrices as $type){
+                    
+                    $price = Price::createNew();
+                    $prices->account_id = 1;
+                    if(Input::get('price-'.$type->id))                    
+                        $price->cost=Input::get('price-'.$type->id);                    
+                    else                    
+                        $price =$default_cost;       
+                    $price->price_type_id = $type->id;
+                    $price->product_id = $product->id;            
+                    $price->save();
+                }
+                Session::flash('message',"Producto creado con exito");
+		return Redirect::to('productos');
+                
+		//$product -> setCost(trim(Input::get('cost')));
+		//$product -> setQty(trim(Input::get('qty')));  
+		//$product -> setCategory(trim(Input::get('category_id')));
                 $error = $product->guardar();
 		if(Input::get('json')=="1")
 		{                                        
@@ -87,8 +109,8 @@ class ProductController extends \BaseController {
 			$product->save();
 			return json_encode(0);
 		}		
-		$product->is_product =trim(Input::get('is_product'));
-		$product->unidad_id =trim(Input::get('unidad_id')); 
+		//$product->is_product =trim(Input::get('is_product'));
+		//$product->unidad_id =trim(Input::get('unidad_id')); 
 
 
 		//$product -> setPublicId(trim(Input::get('')));
@@ -187,25 +209,28 @@ class ProductController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($publicId)
+	public function edit($id)
 	{
-		$product = Product::scope($publicId)->firstOrFail();
-		$categories = Category::where('account_id',Auth::user()->account_id)->orderBy('public_id')->get();
+		$product = Product::where('id',$id)->first();                
+                $prices = Price::where('product_id',$id)->orderBy('price_type_id','ASC')->get();
+                $new_prices = array();
+                foreach ($prices as $price){
+                    
+                    $types = PriceType::where('id',$price->price_type_id)->first();
+                    $price->name = $types->name;
+                    array_push($new_prices, $price);
+                }
+                
+		//$categories = Category::where('account_id',Auth::user()->account_id)->orderBy('id')->get();
 		$data = [
 		'product' => $product,
 		'method' => 'PUT', 
-		'url' => 'productos/' . $publicId, 
+		'url' => 'productos/' . $id, 
 		'title' => 'Editar Producto',
-		'categories' => $categories
+		//'categories' => $categories
+                'precios'=>$new_prices,
 		];
-		// return Response::json($data);
-		if($product->is_product)
-		{
-
-			return View::make('productos.edit', $data);
- 
-		}
- 		return View::make('productos.editservice',$data);
+		return View::make('productos.edit', $data); 		 		
 		
 	}
 
@@ -219,28 +244,35 @@ class ProductController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($publicId)
+	public function update($id)
 	{
-		$product = Product::scope($publicId)->firstOrFail();
+		$product = Product::where('id',$id)->firstOrFail();
 
 		// return Response::json(Input::all());
 
-		$product->setProductKey(Input::get('product_key'));
-		$product->setNotes(Input::get('notes'));
-		$product->setCost(Input::get('cost'));
-		  
-		$product->setCategory(trim(Input::get('category_id')));
-		$product->is_product =trim(Input::get('is_product'));
-		$product->category_id = trim(Input::get('category_id'));
-		$product->unidad_id =trim(Input::get('unidad_id'));
-
-		
-        
-        // return var_dump($product);
-        // return Response::json($	product);
-        $product->save();
-
-		// return Response::json($product);
+                
+		$product -> setProductKey(trim(Input::get('product_key')));
+		$product -> setNotes(trim(Input::get('notes')));
+                $product ->setUnits(Input::get('units'));
+                $product->setCc(Input::get('volume'));
+                $product->setPackTypes(Input::get('type'));
+                $product->setIce(Input::get('ice'));
+                $typePrices = PriceType::orderBy('id','ASC')->get();
+                $default_cost=Input::get('price-1');
+                $product->save();
+                foreach ($typePrices as $type){
+                    
+                    $price = Price::where('product_id',$product->id)->where('price_type_id',$type->id)->first();
+                    $prices->account_id = 1;
+                    if(Input::get('price-'.$type->id))                    
+                        $price->cost=Input::get('price-'.$type->id);                    
+                    else                    
+                        $price =$default_cost;       
+                    $price->price_type_id = $type->id;
+                    $price->product_id = $product->id;            
+                    $price->save();
+                }
+                Session::flash('message',"Producto actualizado con exito");
 		return Redirect::to('productos');
 	}
 

@@ -67,6 +67,11 @@ class Product extends EntityModel
      * @var Tiny int
      */
     private $fv_isProduct;
+    
+    private $fv_packTypes;
+    private $fv_ice;
+    private $fv_cc;
+    private $fv_units;
 
 
 
@@ -269,6 +274,34 @@ class Product extends EntityModel
     }
 
     /**
+     * Get packTypes
+     *
+     * @return string 
+     */
+    public function getPackTypes()
+    {
+        return $this->pack-types;
+    }
+    
+        /**
+     * Set cost
+     *
+     * @param string $cost
+     * @return Products
+     */
+    public function setPackTypes($packTypes)
+    {
+        if(is_null($packTypes))
+        {			
+            $this->fv_pack_types = "Typo de paquete ".ERROR_NULL."<br>";		
+            return;	
+        }        
+        $this->fv_packTypes=null;
+        $this->pack_types=$packTypes;
+        return $this;
+    }
+
+    /**
      * Get cost
      *
      * @return string 
@@ -277,7 +310,102 @@ class Product extends EntityModel
     {
         return $this->cost;
     }
+    
 
+        /**
+     * Set cost
+     *
+     * @param string $units
+     * @return Products
+     */
+    public function setUnits($units)
+    {
+        if(is_null($units))
+        {			
+            $this->fv_units = "Unidades ".ERROR_NULL."<br>";		
+            return;	
+        }
+        if($units<=0)
+        {
+            $this->fv_units = "La unidad no puede ser menor o igual a cero<br>";		
+            return;
+        }
+        $this->fv_units=null;
+        $this->units=$units;
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return string 
+     */
+    public function getUnits()
+    {
+        return $this->units;
+    }
+    
+    
+        /**
+     * Set cost
+     *
+     * @param string $cc
+     * @return Products
+     */
+    public function setCc($cc)
+    {
+        if(is_null($cc))
+        {			
+            $this->fv_cc = "CC ".ERROR_NULL."<br>";		
+            return;	
+        }
+        if($cc<=0)
+        {
+            $this->fv_cc = "El Volumen CC no puede ser menor o igual a cero<br>";		
+            return;
+        }
+        $this->fv_cc=null;
+        $this->cc=$cc;
+        return $this;
+    }
+
+    /**
+     * Get cc
+     *
+     * @return string 
+     */
+    public function getCc()
+    {
+        return $this->cc;
+    }
+    
+    /**
+     * Set ice
+     *
+     * @param string $ice
+     * @return Products
+     */
+    public function setIce($ice)
+    {
+        if(is_null($ice))
+        {			
+            $this->fv_ice = "Ice ".ERROR_NULL."<br>";		
+            return;	
+        }        
+        $this->fv_ice=null;
+        $this->ice=$ice;
+        return $this;
+    }
+
+    /**
+     * Get ice
+     *
+     * @return string 
+     */
+    public function getIce()
+    {
+        return $this->ice;
+    }
     /**
      * Set qty
      *

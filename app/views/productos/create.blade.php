@@ -46,7 +46,7 @@
 				<div class="row">
 					<div class="col-md-5">
 						<label>Unidades por paquete</label>
-					    <input class="form-control" type="text" name="units" placeholder="Unidades" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
+					    <input class="form-control" type="number" name="units" placeholder="Unidades" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
 				      
 					</div>
 				</div>
@@ -54,7 +54,7 @@
                                 <div class="row">
 					<div class="col-md-5">
                                             <label>Vol&uacute;men</label>
-					    <input class="form-control" type="text" name="volume" placeholder="Volumen CC" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
+					    <input class="form-control" type="number" name="volume" placeholder="Volumen CC" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
 				      
 					</div>
 				</div>
@@ -90,13 +90,15 @@
 			</div>
 		
 			<div class="col-md-5">
+                            <label>PRECIOS</label><br>
+                            <?php foreach ($precios as $precio){?>
                             <div class="row">
                                 <div class="col-md-5">
-                                        <label>Precio General</label>
-                                    <input class="form-control" type="text" name="cost" placeholder="priceid" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
+                                        <label>{{$precio->name}}</label>
+                                    <input class="form-control" type="number" name="price-{{$precio->id}}" placeholder="{{$precio->name}}" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
                                 </div>
-				</div>
-
+                            </div>
+                            <?php }?>
 			</div>
 		</div>
 		<br><br>
@@ -104,11 +106,11 @@
 		<div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-2">
-                 <a href="{{ url('productos/') }}" class="btn btn-default btn-sm btn-block">Cancelar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-remove">  </span></a>
+                 <a href="{{ url('productos/') }}" class="btn btn-default btn-sm btn-block">Cancelar&nbsp;<span class="glyphicon glyphicon-remove">  </span></a>
             </div>
             {{-- <div class="col-md-1"></div> --}}
             <div class="col-md-2">
-                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-floppy-disk"></span></button>
+                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar&nbsp;<span class="glyphicon glyphicon-floppy-disk"></span></button>
             </div>
         </div>
 
