@@ -41,30 +41,48 @@
 					      	<label>Nombre *</label><br>
 					      	<textarea name="notes" placeholder="Nombre del producto" class="form-control" rows="3" title="Ingrese descripcion del Producto" pattern=".{1,}"required></textarea>
 				     	 </p>
-		     	 	
-				
-		    
-				<p>
-					<label>Unidad</label>
-					<select class="form-control" name="unidad_id" >
-						  	@foreach(Unidad::all() as $u)
-						    <option  value="{{$u->id}}"  >{{$u->name}}</option>
-						    
-							@endforeach
-							
-					 </select>	
-
-					
-
-				</p>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-5">
-						<label>Precio *</label>
-					    <input class="form-control" type="text" name="cost" placeholder="Precio" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
+						<label>Unidades por paquete</label>
+					    <input class="form-control" type="text" name="units" placeholder="Unidades" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
 				      
 					</div>
+				</div>
+                                <br>
+                                <div class="row">
+					<div class="col-md-5">
+                                            <label>Vol&uacute;men</label>
+					    <input class="form-control" type="text" name="volume" placeholder="Volumen CC" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
+				      
+					</div>
+				</div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label>Tipo de Envase</label>
+                                        <div class="radio">
+                                            <label><input type="radio" name="type" value="1">Vidrio</label>
+                                       </div>
+                                       <div class="radio">
+                                         <label><input type="radio" name="type" value="0">Plástico</label>
+                                       </div>
+                                    </div>
+                                   
+				</div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label>Impuesto</label>
+                                        <div class="radio">
+                                            <label><input type="radio" name="ice" value="1">Con ICE</label>
+                                       </div>
+                                       <div class="radio">
+                                         <label><input type="radio" name="ice" value="0">Sin ICE</label>
+                                       </div>
+                                    </div>
+                                   
 				</div>
 				
 			    
@@ -72,27 +90,17 @@
 			</div>
 		
 			<div class="col-md-5">
-				<legend>Categoría</legend>
-				
-				<div class="row">
-					
-					<div class="col-md-9">
-						 <select class="form-control" name="category_id" id="category_id">
-						  	@foreach($categories as $categoria)
-						    <option value="{{$categoria->id}}">{{$categoria->name}}</option>
-						    
-							@endforeach
-							
-						  </select>	
-					</div>
-					
-				</div>	
-				 
-		    
+                            <div class="row">
+                                <div class="col-md-5">
+                                        <label>Precio General</label>
+                                    <input class="form-control" type="text" name="cost" placeholder="priceid" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
+                                </div>
+				</div>
 
 			</div>
 		</div>
 		<br><br>
+                <hr>
 		<div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-2">

@@ -27,13 +27,13 @@ class ProductController extends \BaseController {
 	 */
 	public function create()
 	{	       
-	    if(Auth::check() || Session::has('account_id')){	    	
-	    	$categories = Category::where('account_id',Auth::user()->account_id)->orderBy('public_id')->get();
-			return View::make('productos.create')->with('categories',$categories);	    	
-	    }
-	    else{
-	    	return Redirect::to('/');
-	    }
+	   $priceTypes = PriceType::get();
+           return 0;
+           $data=[
+               'precios'=>$priceTypes,
+           ];
+	   return View::make('productos.create',$data);	    	
+	    
 	}
 	
 	/**

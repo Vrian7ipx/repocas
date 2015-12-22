@@ -15,7 +15,7 @@ class InstallController extends BaseController {
 
 		// $usuario = Account::find(Session::get('account_id'))->users->first();
 		// $usuario = User::where('account_id',$cuenta->id)->first();
-		$usuario = User::where('account_id',Session::get('account_id'))->where('username','=','temporal@'.$cuenta->domain)->firstOrfail();
+		$usuario = User::where('account_id',Session::get('account_id'))->where('username','=','temporal@'.$cuenta->nit)->firstOrfail();
 		// return Response::json($usuario);
 		// return $usuario;
 		return View::make('install.paso')->with('usuario',$usuario);

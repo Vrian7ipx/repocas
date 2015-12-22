@@ -42,7 +42,7 @@ class IpxController extends \BaseController {
 
 		$account = new Account;
 
-		$account->setDomain(Input::get('domain'));
+		///$account->setDomain(Input::get('domain'));
 		$account->setNit(Input::get('nit'));
 		$account->setName(Input::get('name'));
 		$account->setEmail(Input::get('email'));
@@ -56,7 +56,7 @@ class IpxController extends \BaseController {
 			Session::flash('mensaje',$account->getErrorMessage());
 
 
-			$direccion = "http://".$account->domain.".demo.emizor.com";
+			$direccion = "http://cascada.ipx";
 
 					//enviando correo de bienvenida
 			
@@ -66,7 +66,7 @@ class IpxController extends \BaseController {
 			Mail::send('emails.bienvenida', array('direccion' => $direccion ,'name'=>$account->getName(),'nit'=>$account->getNit()), function($message)
 			{
 				global $correo; 
-			    $message->to($correo, '')->subject('Factura Virtual');
+			    $message->to($correo, '')->subject('EMIZOR');
 			});
 			//
 		

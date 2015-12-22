@@ -52,11 +52,6 @@ background: #3b8ab8; color: #fff; }
                     <input type="email" name="email" class="form-control" placeholder="Correo Electrónico" aria-describedby="sizing-addon2" title="Ingrese un correo electrónico valido" required/>
                   </div>
                   <br>
-                  <div class="input-group">
-                    <span class="input-group-addon"  id="basic-addon1">http://</span>
-                      <input type="text" name="domain" class="form-control"  aria-describedby="basic-addon1" pattern=".{3,}" required/>
-                    <span class="input-group-addon">.emizor.com</span>
-                  </div> 
      
                  <p><center>
                  <button type="submit" class="btn btn-primary">Registrar  <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span></button>

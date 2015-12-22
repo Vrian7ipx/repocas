@@ -10,21 +10,49 @@
   Route::get('/session', function()
   {
 
+   // $documento = TypeDocument::where('account_id',Auth::user()->account_id)->first();
 
-          // $mensaje = array('resultado'=> Utils::usuarisoText("david@daviasdas"));
-          return Response::json(MasterDocument::all() );
+ //    $invoice_number = Branch::getInvoiceNumber();
+ //    return Response::json($invoice_number);
 
+ //    $branchDocument = TypeDocumentBranch::where('branch_id',Session::get('branch_id'))->firstOrFail();
+ //   $type_document =TypeDocument::where('account_id',Auth::user()->account_id)->firstOrFail();
+ //   return Response::json($type_document);
+ //    return View::make('error');
+ // //    $codigoControl = Utils::getControlCode($numfactura,$nit,$fechaEmision,$total,$numAuth,$llave);
+ //    // return View::make('emails.wellcome');
+ //    // return Response::json(TypeDocument::getDocumento()->logo);
+ //     Session::flush();
+    return Session::get('branch_id');
+
+// facturacion.ipx
+
+      $client = new Client();
+      $client->setNit(trim('888888'));
+      $client->setName(trim(Input::get('Happy')));
+      $client->setBussinesName(trim('hope'));
+      $client->save();
+
+    // $clientPOS = array(
+    //     'id'=>$client->id,
+    //     'public_id'=>$client->public_id,
+    //     'name'=>$client->name,
+    //     'nit'=>$client->nit,
+    //     'business_name'=>$client->business_name
+    //     );
+
+    //     $datos = array(
+    //       'resultado' => 0,
+    //       'cliente' => $clientPOS
+    //     );
+          return Response::json($client);
     // return Response::json(array('codigo de control generado: ' => 'borrado las sessiones'));
   });
 
 // facturacion.ipx
 
-
-
-Route::group(array('domain' => '{account}.facturacion.ipx'), function()
-
-
-{
+//Route::group(array('domain' => 'cascada.ipx'), function()
+//{
 
   /*Llamadas al controlador Auth*/
   Route::get('login', 'AuthController@showLogin'); // Mostrar login
@@ -36,23 +64,11 @@ Route::group(array('domain' => '{account}.facturacion.ipx'), function()
   // {
   //      return Response::json(array('cuenta' => $account, 'id' => $id));
   // });
-  Route::get('/', function($account)
+  //$account="cascada";
+  //return 0;
+  Route::get('/', function()
   {
-    if($account == "bolivia")
-    {
-      Session::put('b_user','facturacion');
-      Session::put('b_pass','virtual');
-    }
-
-    if($account == "app")
-    {
-      return Redirect::to("crear");
-    }
-
-
-
-
-     $cuenta = Account::where('domain','=',$account)->first();
+     $cuenta = Account::where('id',1)->first();
 
      if($cuenta)
      {
@@ -72,7 +88,8 @@ Route::group(array('domain' => '{account}.facturacion.ipx'), function()
            return Redirect::to('sucursal');
        }
      }
-     Session::flash('error',ERROR_CUENTA);
+     //Session::flash('error',"NE");
+
      return Redirect::to('crear');
     // return $account;
 
@@ -90,7 +107,9 @@ Route::group(array('domain' => '{account}.facturacion.ipx'), function()
   Route::post('paso/3','InstallController@postpaso3');
 
 
-});
+//});
+
+
 
 Route::group(array('before' => 'auth.basic'), function()
 {
@@ -172,6 +191,10 @@ Route::group(array('before' => 'auth'), function()
 
   Route::get('editarcuenta','AccountController@editar');
   Route::post('editarcuenta','AccountController@editarpost');
+
+  Route::resource('grupos','GroupController');
+  //Route::get('grupos/create','GroupController@create');
+  //Route::get('grupos/edit','GroupController@edit');
 
   // Route::post('clientes/bulk', 'ClientController@bulk');
 

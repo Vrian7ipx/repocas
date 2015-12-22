@@ -103,27 +103,27 @@ class Account extends Eloquent
 		 	return $this->fv_name = null;
 		 
 	}
-	public function setDomain($subdominio)
-	{
-		
-
-		if(!empty($subdominio))
-		{
-			$dominio = trim($subdominio);
-
-			$dominioExiste= Account::where('domain',$dominio)->first();	
-			if($dominioExiste)
-			{
-				$this->fv_error_message = $this->fv_error_message . '<br> - Dominio '.$dominio.ERROR_DUPLICADO;
-
-				return $this->fv_domain = null;
-			}
-
-			return $this->fv_domain= $dominio;
-		}
-		$this->fv_error_message = $this->fv_error_message.'<br> - Dominio '.ERROR_NULL;
-		return $this->fv_domain=null;
-	}
+//	public function setDomain($subdominio)
+//	{
+//		
+//
+//		if(!empty($subdominio))
+//		{
+//			$dominio = trim($subdominio);
+//
+//			$dominioExiste= Account::where('domain',$dominio)->first();	
+//			if($dominioExiste)
+//			{
+//				$this->fv_error_message = $this->fv_error_message . '<br> - Dominio '.$dominio.ERROR_DUPLICADO;
+//
+//				return $this->fv_domain = null;
+//			}
+//
+//			return $this->fv_domain= $dominio;
+//		}
+//		$this->fv_error_message = $this->fv_error_message.'<br> - Dominio '.ERROR_NULL;
+//		return $this->fv_domain=null;
+//	}
 	public function setNit($nit)
 	{
 
@@ -204,14 +204,14 @@ class Account extends Eloquent
 			return $this->fv_nit;
 		}
 	}
-	public function getDomain()
-	{
-		if($this->fv_domain)
-		{
-			return $this->fv_domain;
-		}
-
-	}
+//	public function getDomain()
+//	{
+//		if($this->fv_domain)
+//		{
+//			return $this->fv_domain;
+//		}
+//
+//	}
 	public function getEmail()
 	{
 		if($this->fv_email)
@@ -235,13 +235,13 @@ class Account extends Eloquent
 			$this->account_key = str_random(RANDOM_KEY_LENGTH);
 			$this->ip = Request::getClientIp(); 
 		
-			$this->domain = $this->getDomain();
+			//$this->domain = $this->getDomain();
 			$this->name = $this->getName();
 			$this->nit =$this->getNit();
 			$this->save();
 
 			$user = new User;
-			$user->username =  "temporal@" . $this->getDomain();
+			$user->username =  "temporal@" . $this->getNit();
 			$user->password = Hash::make('temporal');
 			$user->email= $this->getEmail(); 
 			$user->public_id = 1;

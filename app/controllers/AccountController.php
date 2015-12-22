@@ -54,12 +54,12 @@ class AccountController extends \BaseController {
 		$account = new Account;
 		// $account->ip = Request::getClientIp();
 		// $account->account_key = str_random(RANDOM_KEY_LENGTH);
-		$account->setDomain(Input::get('domain'));
+		//$account->setDomain(Input::get('domain'));
 		$account->setNit(Input::get('nit'));
 		$account->setName(Input::get('name'));
 		if($account->Guardar())
 		{
-			$direccion = "http://".$account->domain.".localhost/devipx/public/";
+			$direccion = "http://cascada.ipx";
 		// $direccion = "/crear/sucursal";
 			return Redirect::to($direccion);
 		}
