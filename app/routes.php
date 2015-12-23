@@ -187,6 +187,7 @@ Route::group(array('before' => 'auth'), function()
 
   Route::resource('categorias', 'CategoryController');
   Route::resource('unidades', 'UnidadController');
+  Route::resource('precios', 'PriceController');
   Route::post('categorias/bulk', 'CategoryController@bulk');
 
   Route::get('editarcuenta','AccountController@editar');

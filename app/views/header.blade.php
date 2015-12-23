@@ -208,7 +208,7 @@
               <ul class="treeview-menu">
                 {{ HTML::nav_link('productos', 'productos') }}<i class="glyphicon glyphicon-compressed"></i> <span>Productos</span></a></li>
                 {{ HTML::nav_link('producto/createservice', 'servicios') }}<i class="glyphicon glyphicon-briefcase"></i> <span>Servicios</span></a></li>
-                {{ HTML::nav_link('categorias', 'categorias') }}<i class="fa fa-server"></i> <span>Categorías</span></a></li>
+                {{ HTML::nav_link('precios', 'precios') }}<i class="fa fa-server"></i> <span>Precios</span></a></li>
                 {{ HTML::nav_link('unidades', 'unidades') }}<i class="fa fa-cube"></i> <span>Unidades</span></a></li>
 
               </ul>
