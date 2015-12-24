@@ -58,27 +58,25 @@
 			    <div class="col-md-2"></div>
 			    <p></p>
 			    <div class="col-md-9">
-			    	<legend>Asignación de Sucursal</legend>
+			    	<legend>Tipo de Usuario</legend>
+                                <input type="checkbox" name="fac"> Facturador<br>
+                                <legend>Tipo de Usuario</legend>
+                                <select id="business" name="business" class="form-control select2">
+                                        <option></option>
+                                         <?php foreach($sucursales as $sucursal){?>
+                                        <option value="{{$sucursal->id}}">{{$sucursal->name}}</option>
+                                         <?php }?>                                                                                        
+                                    </select>
 			        <div class="list-group">
+                                    
 			          @foreach($sucursales as $sucursal)
 					  <li class="list-group-item"><label>{{ Form::checkbox('sucursales[]', $sucursal->id)}}  {{$sucursal->name}}</label></li>
 					  @endforeach	  
 					</div>
 			    </div>
-			    
+                            </div>
 
-			  </div>
-			 {{--  <div class="row">
-			  	<div class="col-md-5">
-			    	
-
-					  <div class="row" >
-
-					  	<center> {{ Former::submit('Guardar');}}</center>
-					   	
-			    </div>
-
-			  </div> --}}
+                            <hr>
 
 			  	<div class="row">
 		            <div class="col-md-4"></div>
