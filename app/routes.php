@@ -328,6 +328,8 @@ define('INVOICE_STATUS_VIEWED', 3);
 define('INVOICE_STATUS_PARTIAL', 4);
 define('INVOICE_STATUS_PAID', 5);
 
+define('DEPARTAMENTOS',"Beni,Cochabamba,El Alto,La Paz,Oruro,Pando,Potosí,Santa Cruz,Sucre,Tarija");
+
 // tal vez se pueda utilizar algo de este codigo pero no confio hay que ver XD
 
 // Validator::extend('positive', function($attribute, $value, $parameters)

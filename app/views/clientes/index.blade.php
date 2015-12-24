@@ -186,7 +186,7 @@ $(document).ready(function() {
             dataSrc: 'data'
         },
         columns: [
-              { data: 'public_id' },
+              { data: 'id' },
               { data: 'name2' },
               { data: 'nit2' },
               { data: 'work_phone' },

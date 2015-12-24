@@ -1,6 +1,10 @@
 @extends('header')
 @section('title')Nuevo Cliente @stop
-  @section('head') @stop
+  @section('head')
+  <script src="{{ asset('vendor/AdminLTE2/plugins/select2/select2.full.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/AdminLTE2/plugins/select2/i18n/es.js')}}" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AdminLTE2/plugins/select2/select2.css')}}">
+  @stop
 @section('encabezado') 	CLIENTES @stop
 @section('encabezado_descripcion') Nuevo Cliente  @stop 
 @section('nivel') <li><a href="{{URL::to('clientes')}}"><i class="ion-person-stalker"></i> Clientes</a></li>
@@ -86,38 +90,45 @@
 				  {{--  </div>
 				</div> --}}
 				</p>
-
-				{{-- {{ Former::text('business_name')->label('razón Social') }} --}}
-				<p>	
-			{{-- 	<div class="form-group">
-				  <div class="col-md-4"> --}}
+				
+				<p>				
 					<label >NIT/CI *</label>
 					<input type="text" name="nit" id="work_phone"class="form-control" placeholder="NIT o CI del Cliente" aria-describedby="sizing-addon2" required>
 				  {{--  </div>
 				</div> --}}
 				</p>
 
-				{{-- {{ Former::text('nit')->label('NIT/CI') }} --}}
+				
 				<legend>Dirección</legend>
 				<p>
  					<label>Zona/Barrio</label>
- 					<input type="text" name="address1" id="address1" class="form-control" placeholder="Dirección de la Zona/Barrio del Cliente" aria-describedby="sizing-addon2" >
+ 					<!--<input type="text" name="address1" id="address1" class="form-control" placeholder="Dirección de la Zona/Barrio del Cliente" aria-describedby="sizing-addon2" >-->
+                                         <select id="zone" name="zone"class="form-control select2">
+                                             <option></option>
+                                             <?php foreach($zonas as $zona){?>
+                                                <option value="{{$zona->id}}">{{$zona->name}}</option>
+                                             <?php }?>                                                                                        
+                                        </select>
+                                        <label>Otro</label>
+                                        <input type="text" name="other" id="other" class="form-control" placeholder="otro" aria-describedby="sizing-addon2" >
  					<label>Dirección</label>
  					<input type="text" name="address2" class="form-control" id="address2" placeholder="Dirección del Cliente" aria-describedby="sizing-addon2" >
+                                        <label>Dirección</label>
+                                        <select id="city" name="city"class="form-control select2">
+                                            <option></option>
+                                             <?php foreach($deptos as $depto){?>
+                                                <option >{{$depto}}</option>
+                                             <?php }?>                                                                                        
+                                        </select>
 
-				</p>	
-			{{-- 	{{ Former::legend('address') }}
-				{{ Former::text('address1')->label('Zona/Barrio') }}
-				{{ Former::text('address2')->label('Dirección') }} --}}
+				</p>				
                                 <br>
                                 
 
 			</div>
 			<div class="col-md-1"></div>
 			<div class="col-md-5">
-				<legend>Contactos</legend>
-				{{-- {{ Former::legend('Contactos') }} --}}
-				
+				<legend>Contactos</legend>								
 				<table class="col-md-9">
 						<tbody  data-bind="foreach: setContactos">
 							
@@ -162,25 +173,50 @@
 				
 				<div class="col-md-10">
 				<label>Antecedentes</label><br>
-
 				<textarea name="private_notes" class="form-control" cols="50" rows="3"placeholder="Ingrese Antecedentes"></textarea>
-				{{-- {{ Former::textarea('private_notes')->label('Antecedentes') }} --}}
+				
 				</div>
-			</div>
-
+                                
+                                <div class="col-md-10">
+                                    <legend>Informaci&oacute;n Adicional</legend>
+                                    <label>Agrupaci&oacute;n</label><br>                                    
+                                    <select id="group" name="group" class="form-control select2">
+                                        <option></option>
+                                         <?php foreach($grupos as $grupo){?>
+                                        <option value="{{$grupo->id}}">{{$grupo->name}}</option>
+                                         <?php }?>                                                                                        
+                                    </select>
+                                    <label>Clasificaci&oacute;n</label><br>
+                                    <select id="business" name="business" class="form-control select2">
+                                        <option></option>
+                                         <?php foreach($negocios as $negocio){?>
+                                        <option value="{{$negocio->id}}">{{$negocio->name}}</option>
+                                         <?php }?>                                                                                        
+                                    </select>
+                                    <label>Frecuencia</label><br>
+                                    <input type="checkbox" name="d1" value="1"> &nbsp;Lunes<br>
+                                    <input type="checkbox" name="d2" value="2"> &nbsp;Martes<br>
+                                    <input type="checkbox" name="d3"value="3"> &nbsp;Mi&eacute;rcoles<br>
+                                    <input type="checkbox" name="d4"value="4"> &nbsp;Jueves<br>
+                                    <input type="checkbox" name="d5"value="5"> &nbsp;Viernes<br>
+                                    <input type="checkbox" name="d6"value="6"> &nbsp;S&aacute;bado<br>
+                                    <input type="checkbox" namne="d7"value="7"> &nbsp;Domingo<br>
+				
+				</div>                                                                                                
+			</div>                        				                              
 		</div>
 
 
 		
-		<p></p>
+		<p></p><hr>
 		<div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-2">
-                 <a href="{{ url('clientes') }}" class="btn btn-default btn-sm btn-block">Cancelar &nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-remove">  </span></a>
+                 <a href="{{ url('clientes') }}" class="btn btn-default btn-sm btn-block">Cancelar &nbsp;<span class="glyphicon glyphicon-remove">  </span></a>
             </div>
             {{-- <div class="col-md-1"></div> --}}
             <div class="col-md-2">
-                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar &nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-floppy-disk"></span></button>
+                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar &nbsp;<span class="glyphicon glyphicon-floppy-disk"></span></button>
             </div>
         </div>
 
@@ -196,6 +232,10 @@
 
 <script type="text/javascript">
 
+    $("#zone").select2();
+    $("#city").select2();
+    $("#group").select2();
+    $("#business").select2();
 	function Contacto(nombres,apellidos,correo,telefono)
 		{
 			var self = this;

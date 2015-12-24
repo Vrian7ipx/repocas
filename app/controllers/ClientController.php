@@ -27,35 +27,21 @@ class ClientController extends \BaseController {
 	 */
 	public function create()
 	{
+                $deptos= explode(',',DEPARTAMENTOS);                            
                 $account = Account::find(Auth::user()->account_id);
-                return View::make('clientes.create',array('cuenta'=>$account));
-		//return View::make('clientes.create',self::getViewModel());
+                $zones = Zone::orderBy('name','ASC')->get();
+                $groups = Group::get();
+                $businesses = BusinessType::get();
+                $data = [
+                    'cuenta'=>$account,
+                    'zonas'=>$zones,
+                    'deptos'=>$deptos,
+                    'grupos'=>$groups,
+                    'negocios'=>$businesses,
+                ];
+                return View::make('clientes.create',$data);	
 	}
-
-//	private static function getViewModel()
-//	{
-//		return [
-//			'customLabel1' => Auth::user()->account->custom_client_label1,
-//			'customLabel2' => Auth::user()->account->custom_client_label2,
-//			'customLabel3' => Auth::user()->account->custom_client_label3,
-//			'customLabel4' => Auth::user()->account->custom_client_label4,
-//			'customLabel5' => Auth::user()->account->custom_client_label5,
-//			'customLabel6' => Auth::user()->account->custom_client_label6,
-//			'customLabel7' => Auth::user()->account->custom_client_label7,
-//			'customLabel8' => Auth::user()->account->custom_client_label8,
-//			'customLabel9' => Auth::user()->account->custom_client_label9,
-//			'customLabel10' => Auth::user()->account->custom_client_label10,
-//			'customLabel11' => Auth::user()->account->custom_client_label11,
-//			'customLabel12' => Auth::user()->account->custom_client_label12
-//		];
-//	}
-
-	// public function buscar($cadena="")
-	// {
-	// 	$cadena = Input::get('name');
-	// 	$clients = Client::where('name','like',$cadena."%")->select('id','name')->get();
- //    	return Response::json($clients);
-	// }
+        
 	public function getContacts(){
 		$id = Input::get('id');
 		//return Response::json($id);
@@ -118,7 +104,7 @@ class ClientController extends \BaseController {
 	public function store()
 	{
 
-		// return Response::json(Input::all());
+		//print_r(Input::all());return 0;
 		$client = Client::createNew();
 		$client->setNit(trim(Input::get('nit')));
 		$client->setName(trim(Input::get('name')));
@@ -130,16 +116,25 @@ class ClientController extends \BaseController {
 		$client->setCustomValue4(trim(Input::get('l4')));
 		$client->setCustomValue5(trim(Input::get('l5')));
 		$client->setCustomValue6(trim(Input::get('l6')));
-//		$client->setCustomValue7(trim(Input::get('custom_value7')));
-//		$client->setCustomValue8(trim(Input::get('custom_value8')));
-//		$client->setCustomValue9(trim(Input::get('custom_value9')));
-//		$client->setCustomValue10(trim(Input::get('custom_value10')));
-//		$client->setCustomValue11(trim(Input::get('custom_value11')));
-//		$client->setCustomValue12(trim(Input::get('custom_value12')));
-
 		$client->setAddress1(trim(Input::get('address1')));
 		$client->setAddress2(trim(Input::get('address2')));
 		$client->setPrivateNotes(trim(Input::get('private_notes')));
+                
+                //improve this put method
+                $client->other=trim(Input::get('other'));
+                $client->zone_id=Input::get('zone');
+                $client->city=Input::get('city');
+                $client->group_id = Input::get('group');
+                $client->business_type_id = Input::get('business');
+                $dias="";
+                for($i=1;$i<8;$i++){
+                    if(Input::get('d'.$i))
+                        $dias.="1";
+                    else
+                        $dias.="0";
+                }
+                //frecuency es handed with 0 and 1 
+                $client->frecuency=$dias;
 
 		$resultado = $client->guardar();
 
@@ -199,30 +194,31 @@ class ClientController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($publicId)
+	public function show($id)
 	{
-		$client = Client::scope($publicId)->withTrashed()->with('contacts')->first();
+		$client = Client::where('id',$id)->withTrashed()->with('contacts')->first();
 
 		if($client)
 		{
 
 
 		//$client = Client::scope($publicId)->with('contacts')->firstOrFail();
-		$getTotalCredit = Credit::scope()->where('client_id', '=', $client->id)->whereNull('deleted_at')->where('balance', '>', 0)->sum('balance');
+		$getTotalCredit = Credit::where('client_id', '=', $client->id)->whereNull('deleted_at')->where('balance', '>', 0)->sum('balance');
 
 		$invoices = Invoice::join('invoice_statuses', 'invoice_statuses.id', '=','invoices.invoice_status_id')
-							->where('invoices.account_id',Auth::user()->account_id)
+							//->where('invoices.account_id',Auth::user()->account_id)
 							->where('invoices.client_id',$client->id)
 							->where('invoices.branch_id',Session::get('branch_id'))
 							->select('invoices.invoice_number','invoices.invoice_date','invoices.importe_total','invoices.balance','invoices.due_date','invoice_statuses.name','invoices.public_id')->get();
 		$pagos = Payment::join('invoices', 'invoices.id', '=','payments.invoice_id')
 							 ->join('invoice_statuses','invoice_statuses.id','=','payments.payment_type_id')
-							  ->where('payments.account_id',Auth::user()->account_id)
+							  //->where('payments.account_id',Auth::user()->account_id)
 							  ->where('payments.client_id',$client->id)
 							  ->select('invoices.invoice_number','payments.transaction_reference','invoice_statuses.name','payments.amount','payments.payment_date')
 							  ->get();
                 $creditos = Credit::where('account_id','=',Auth::user()->account_id)->where('client_id','=',$client->getId())->get();
-
+                $group = Group::where('id',$client->group_id)->first();
+                $business = BusinessType::where('id',$client->business_type_id)->first();
 		$data = array(
 			'title' => 'Ver Cliente',
 			'client' => $client,
@@ -230,6 +226,9 @@ class ClientController extends \BaseController {
 			'pagos' => $pagos,
 			'credit' => $getTotalCredit,
                         'creditos'=>$creditos,
+                        'days'=>$this->getDays($client->frecuency),
+                        'grupo'=>$group->name,
+                        'negocio'=>$business->name,
 		);
 		// return Response::json($data);
 
@@ -240,6 +239,18 @@ class ClientController extends \BaseController {
 		return Redirect::to('clientes');
 
 	}
+        private function getDays($dias){
+            $days = array();
+            //echo $dias;
+            if($dias[0]=='1') array_push ($days,"Lunes");
+            if($dias[1]=='1') array_push ($days,"Martes");
+            if($dias[2]=='1') array_push ($days,"Miércoles");
+            if($dias[3]=='1') array_push ($days,"Jueves");
+            if($dias[4]=='1') array_push ($days,"Viernes");
+            if($dias[5]=='1') array_push ($days,"Sábado");
+            if($dias[6]=='1') array_push ($days,"Domingo");
+            return $days;
+        }
 
 
 	/**
@@ -248,11 +259,20 @@ class ClientController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($publicId)
+	public function edit($id)
 	{
 
-		$client = Client::scope($publicId)->withTrashed()->with('contacts')->first();
-
+		$client = Client::where('id',$id)->withTrashed()->with('contacts')->first();
+                
+                $deptos= explode(',',DEPARTAMENTOS);                                            
+                $zones = Zone::orderBy('name','ASC')->get();
+                $groups = Group::get();
+                $businesses = BusinessType::get();
+                $dias = array();
+                $fec = str_split($client->frecuency);
+                foreach ($fec as $d)
+                    array_push ($dias, $d=="1"?true:false);
+                                
 		if($client)
 		{
 			if($client->deleted_at!=null)
@@ -273,8 +293,13 @@ class ClientController extends \BaseController {
 			$data = [
 				'client' => $client,
 				'contactos' => $contactos,
-				'url' => 'clientes/' . $publicId,
-				'title' => 'Editar Cliente'
+				'url' => 'clientes/' . $id,
+				'title' => 'Editar Cliente',
+                                'zonas'=>$zones,
+                                'deptos'=>$deptos,
+                                'grupos'=>$groups,
+                                'negocios'=>$businesses,
+                                'd'  => $dias,
 			];
 			$account = Account::find(Auth::user()->account_id);
 			//data = array_merge($data, self::getViewModel());
@@ -294,12 +319,12 @@ class ClientController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($publicId)
+	public function update($id)
 	{
 
 
 		// return Response::json($contactos);
-		$client = Client::scope($publicId)->firstOrFail();
+		$client = Client::where('id',$id)->first();
 		$client->setNit(trim(Input::get('nit')));
 		$client->setName(trim(Input::get('name')));
 		$client->setBussinesName(trim(Input::get('business_name')));
@@ -320,6 +345,21 @@ class ClientController extends \BaseController {
 		$client->setAddress1(trim(Input::get('address1')));
 		$client->setAddress2(trim(Input::get('address2')));
 		$client->setPrivateNotes(trim(Input::get('private_notes')));
+                //improve this put method
+                $client->other=trim(Input::get('other'));
+                $client->zone_id=Input::get('zone');
+                $client->city=Input::get('city');
+                $client->group_id = Input::get('group');
+                $client->business_type_id = Input::get('business');
+                $dias="";
+                for($i=1;$i<8;$i++){
+                    if(Input::get('d'.$i))
+                        $dias.="1";
+                    else
+                        $dias.="0";
+                }
+                //frecuency es handed with 0 and 1 
+                $client->frecuency=$dias;
 
 		$resultado = $client->guardar();
 
