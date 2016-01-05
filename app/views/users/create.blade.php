@@ -2,7 +2,13 @@
 
 @section('title') Nuevo Usuario @stop
 
-@section('head') @stop
+@section('head') 
+    <script src="{{ asset('vendor/AdminLTE2/plugins/select2/select2.full.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/AdminLTE2/plugins/select2/i18n/es.js')}}" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AdminLTE2/plugins/select2/select2.css')}}">
+    <script src="{{ asset('customs/bootstrap-switch.js')}}" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('customs/bootstrap-switch.css')}}">
+@stop
 @section('encabezado') USUARIOS @stop
 @section('encabezado_descripcion') Nuevo Usuario @stop 
 @section('nivel') <li><a href="{{URL::to('usuarios')}}"><i class="fa fa-users"></i> Usuarios</a></li>
@@ -34,9 +40,9 @@
 			     	<div class="col-md-9">
 				     	
 				     	<label>Nombre (s) *</label>
-				     	<input type="text" name="first_name" class="form-control" placeholder="Nombre del Usuario" aria-describedby="sizing-addon2" pattern="[a-zA-ZÑñÇç. ].{2,}"  required>
+				     	<input type="text" name="first_name" class="form-control" placeholder="Nombre del Usuario" aria-describedby="sizing-addon2" pattern="[a-zA-Z. ].{2,}"  required>
 				     	<label>Apellido *</label>
-				     	<input type="text" name="last_name" class="form-control" placeholder="Apellido del Usuario" aria-describedby="sizing-addon2" pattern="[a-zA-ZÑñÇç. ].{2,}"  required>
+				     	<input type="text" name="last_name" class="form-control" placeholder="Apellido del Usuario" aria-describedby="sizing-addon2" pattern="[a-zA-Z. ].{2,}"  required>
 				     	<label>Email *</label>
 				     	<input type="email" name="email" class="form-control" placeholder="Email" aria-describedby="sizing-addon2" required>
 				     	<label>Télefono/Celular *</label>
@@ -60,18 +66,18 @@
 			    <div class="col-md-9">
 			    	<legend>Tipo de Usuario</legend>
                                 <input type="checkbox" name="fac"> Facturador<br>
-                                <legend>Tipo de Usuario</legend>
-                                <select id="business" name="business" class="form-control select2">
+                                <legend>Sucursal</legend>
+                                <select id="branch" name="branch" class="form-control select2">
                                         <option></option>
                                          <?php foreach($sucursales as $sucursal){?>
                                         <option value="{{$sucursal->id}}">{{$sucursal->name}}</option>
                                          <?php }?>                                                                                        
                                     </select>
 			        <div class="list-group">
-                                    
+                                        
 			          @foreach($sucursales as $sucursal)
 					  <li class="list-group-item"><label>{{ Form::checkbox('sucursales[]', $sucursal->id)}}  {{$sucursal->name}}</label></li>
-					  @endforeach	  
+				@endforeach	  
 					</div>
 			    </div>
                             </div>
@@ -98,7 +104,7 @@
 		</div><!-- /.box -->
 
 	<script type="text/javascript">
-
+            $("#branch").select2();
 			$("form").submit(function() {
 			    $(this).submit(function() {
 			        return false;
