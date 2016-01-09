@@ -35,15 +35,11 @@
                             <input type="text" name ="number_branch" class="form-control" placeholder="Escriba Número de la Sucursal asignada por Impuestos" title="Ingrese el nombre proporcionado por Impuestos"  value="{{$sucursal->number_branch}}" required>
                              
                             <p></p>
-                            <label>Selecciones al menos un tipo de Documento</label>
-                              {{---documento consulta anidada--}}
-                               <div class="list-group">
-                                  @foreach( TypeDocument::getDocumentos() as $type_document)
-                                  <li class="list-group-item">
-
-                                    <label>{{ Form::checkbox('tipo_documento[]', $type_document->id,TypeDocumentBranch::hasTypeDocument($type_document->id,$sucursal->id))}}  {{$type_document->name}}</label>
-                                  </li>
-                                  @endforeach   
+                             <label>Tipo de Facturación *</label>                              
+                               <div class="list-group">                                  
+                                   <li class="list-group-item"><input type="radio" name="type_fac"  value="0"> Facturación Web<br></li>
+                                  <li class="list-group-item"><input type="radio" name="type_fac"  value="2"> Facturación POS<br></li>
+                                  <li class="list-group-item"><input type="radio" name="type_fac" value="1" checked> Facturación por Terceros<br></li>                                  
                                 </div>
 
                             <p></p>
@@ -100,27 +96,7 @@
                       <input type="text" name ="state" class="form-control" placeholder="Municipio" title="Ingrese el Municipio"  value="{{$sucursal->state}}" required><p></p>
 
                   </div>
-                  <div class="col-md-4">
-                    <legend>Información Adicional</legend>
-                     {{-- {{ Former::legend('Información Adicional') }} --}}
-                     {{-- {{ Form::checkbox('third_view', '1')}} --}}
-                     <div class="checkbox">
-                        <label>
-                          {{ Form::checkbox('third_view', '1')}} Facturación por Terceros
-                        </label>
-                      </div>
-                     {{-- {{ Former::checkbox('third_view')->label('Facturación por Terceros')->title('Seleccione si fuera el caso')}}     --}}
-                  </div>
-<!--                  <div class="col-md-5">
-                    <legend>Documentos</legend>                     
-                     <div class="checkbox">
-                        <label>
-                            <?php //foreach ($documents as $document) {?>
-                             <input  type="checkbox" name="vehicle"> I have a bike<br>                             
-                            <?php //} ?>
-                        </label>
-                      </div>                     
-                  </div>-->
+                  
               </div> 
            
 

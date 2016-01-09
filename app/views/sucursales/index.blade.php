@@ -40,7 +40,7 @@
 
           @foreach($sucursales as $sucursal)
               <tr>
-                  <td>{{ $sucursal->public_id}}</td>
+                  <td>{{ $sucursal->id}}</td>
                   <td>{{ $sucursal->name }}</td>
                   <td>{{ $sucursal->work_phone }}</td>
                   <td>{{ $sucursal->deadline }}</td>
@@ -48,8 +48,8 @@
 
                   <!-- we will also add show, edit, and delete buttons -->
 				  <td>
-                    <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("sucursales/".$sucursal->public_id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
-                    <a class="btn btn-warning btn-xs" href="{{ URL::to("sucursales/".$sucursal->public_id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("sucursales/".$sucursal->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
+                    <a class="btn btn-warning btn-xs" href="{{ URL::to("sucursales/".$sucursal->id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
                   </td>
 				  
               </tr>

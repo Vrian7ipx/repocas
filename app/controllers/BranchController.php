@@ -48,15 +48,14 @@ class BranchController extends \BaseController {
 	 * @return Response
 	 */
 	public function store()
-	{
-            
+	{            
 		 if (Auth::user()->is_admin)
 		 {
 
 			$branch = Branch::createNew();
 			// $branch->setAccountId(Session::get('account_id'));
 
-			$branch->setType_documents(Input::get('tipo_documento'));
+			//$branch->setType_documents(Input::get('tipo_documento'));
 			
 			$branch->setName(Input::get('branch_name'));
 	
@@ -76,7 +75,9 @@ class BranchController extends \BaseController {
 			$branch->setNumber_process(Input::get('number_process'));
 			$branch->setNumber_autho(Input::get('number_autho'));
 			$branch->setLaw(Input::get('law'));
-			$branch->setType_thrird(Input::get('third_view'));
+                        $branch->setType_thrird(2);
+			//$branch->setType_thrird(Input::get('type_fac'));
+                        //$branch->type_third=Input::get('type_fac');
 			$branch->sfc = Input::get('sfc');
 
 			// return var_dump($branch);
@@ -105,16 +106,22 @@ class BranchController extends \BaseController {
 	{		                        
 		if (Auth::user()->is_admin)
 		{
-			$branch = Branch::buscar($public_id);
+			$branch = Branch::where('id',$public_id)->first();
 			$documents=$this->getWorkingDocuments();                                          
+                        if($branch->type_third==0)
+                            $type = "Facturación Web";
+                        if($branch->type_third==1)
+                            $type = "Facturación por Terceros";
+                        if($branch->type_third==2)
+                            $type = "Facturación POS";
                         $data=[
                             'sucursal'=>$branch,
-                            'documents'=>$documents
+                            'documents'=>$documents,
+                            'type'=>$type,
                         ];
 			return View::make('sucursales.show',$data);
 		} 
-		return Redirect::to('/inicio');
-		// return Response::json(array('branches'=> $branches));
+		return Redirect::to('/inicio');		
 	}
 
 
@@ -129,7 +136,7 @@ class BranchController extends \BaseController {
 		//
 		if (Auth::user()->is_admin)
 		{
-			$branch = Branch::buscar($public_id);
+			$branch = Branch::where('id',$public_id)->first();
                         $data = [
                             'sucursal'=>$branch,
                             'documents'=>$this->getWorkingDocuments()

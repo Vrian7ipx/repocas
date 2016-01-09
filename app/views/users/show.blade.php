@@ -30,31 +30,45 @@
 			    	<p><label>Apellidos :&nbsp</label>{{$usuario->last_name}}</p>
 			    	<p><label>Correo :&nbsp</label>{{$usuario->email}}</p>
 			    	<p><label>Teléfono :&nbsp</label>{{$usuario->phone}}</p>
-			    	 <div class="row">
-			              <div class="col-md-4">
-			                <a href="{{ URL::to('usuarios/'.$usuario->public_id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Usuario &nbsp&nbsp<span class="glyphicon glyphicon-pencil"></span></a>
-			              </div>
-			              <div class="col-md-4">
-			                  <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$usuario->public_id}}" data-href="{{ URL::to('usuarios/'. $usuario->id)}}" data-nombre="{{$usuario->first_name.' '.$usuario->last_name.' ' }}" class="btn btn-danger btn-sm btn-block">Borrar Usuario&nbsp&nbsp<span class="glyphicon glyphicon-trash">  </span></a>
-			               </div>
-			          </div>
-
-
 				</div>
 			    <div class="col-md-6">
 			    	<legend>Datos de Ingreso</legend>
 			    	<label>Nombre de Usuario :&nbsp</label>{{$usuario->username}}
 			    </div>
 			    <div class="col-md-4">
+                                <legend>Tipo de usuario</legend>                                
+                                <li class="list-group-item">{{$rol}}</li>                                
 			    	<legend>Sucursales Asignadas</legend>
 			        <div class="list-group">
 			          @foreach(UserBranch::getSucursales($usuario->id) as $sucursal)
 					  <li class="list-group-item">{{$sucursal->name}}</li>
-					  @endforeach	  
-					</div>
+				  @endforeach	  
+                                </div>
+                                <legend>Tipo de Precio</legend>
+                                <li class="list-group-item">{{$precio}}</li>    
+                                <legend>Grupos Asignados</legend>
+                                <div class="list-group">
+			          @foreach($grupos as $grupo)
+					  <li class="list-group-item">{{$grupo->name}}</li>
+				  @endforeach	  
+                                </div>
 			    </div>
 
 		  	</div>
+              <hr>
+        <div class="row">
+		<div class="col-md-4"></div>
+	            <div class="col-md-2">
+			                <a href="{{ URL::to('usuarios/'.$usuario->public_id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Usuario &nbsp&nbsp<span class="glyphicon glyphicon-pencil"></span></a>
+			              </div>
+			              	            
+	            <div class="col-md-1"></div>
+	         
+	            <div class="col-md-2">
+			                  <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$usuario->public_id}}" data-href="{{ URL::to('usuarios/'. $usuario->id)}}" data-nombre="{{$usuario->first_name.' '.$usuario->last_name.' ' }}" class="btn btn-danger btn-sm btn-block">Borrar Usuario&nbsp&nbsp<span class="glyphicon glyphicon-trash">  </span></a>
+			               </div>
+	</div>
+
 	  </div><!-- /.box-body -->
 	  <div class="box-footer">
 	   

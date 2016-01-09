@@ -664,9 +664,8 @@ class Branch extends EntityModel
     public function getType_thrird()
     {   if($this->fv_type_thrird)
         {
-            return true;    
-        }
-        return false;
+            return $this->fv_type_thrird;    
+        }       
     }
 
     /**

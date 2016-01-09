@@ -5,18 +5,10 @@
 @section('encabezado_descripcion') Nueva Sucursal @stop 
 @section('nivel') <li><a href="{{URL::to('sucursales')}}"><i class="glyphicon glyphicon-home"></i> Sucursales</a></li>
             <li class="active"> Nueva </li> @stop
-
 @section('content')
-  
- 
-
-  
-  {{-- {{Former::framework('TwitterBootstrap3')}} --}}
       {{ Former::open('sucursales')->method('post')->rules(array( 
-            'branch_name' => 'required' 
-        
+            'branch_name' => 'required'         
         )) }}
-
 
         <!-- Apply any bg-* class to to the info-box to color it -->
       <div class="box box-success">
@@ -28,9 +20,6 @@
          
             <div class="row">
                 <div class="col-md-4"> 
-                  
-                      {{-- <legend>Datos Sucursal</legend> --}}
-                      {{-- {{ Former::legend('Sucursal') }} --}}
                        <div class="col-md-12"> 
                             <label>Nombre de la Sucursal *</label>
                             <input type="text" name ="branch_name" class="form-control" placeholder="Escriba el Nombre de la Nueva Sucursal"  required>
@@ -39,14 +28,12 @@
                             <input type="text" name ="number_branch" class="form-control" placeholder="Escriba Número de la Sucursal "  required>
                              
                             <p></p>
-                            <label>Selecciones al menos un tipo de Documento *</label>
-                              {{---documento consulta anidada--}}
-                               <div class="list-group">
-                                  @foreach($documentos as $type_document)
-                                  <li class="list-group-item"><label>{{ Form::checkbox('tipo_documento[]', $type_document->id)}}  {{$type_document->name}}</label></li>
-                                  @endforeach   
+                            <label>Tipo de Facturación *</label>                              
+                               <div class="list-group">                                  
+                                   <li class="list-group-item"><input type="radio" name="type_fac"  value="0"> Facturación Web<br></li>
+                                  <li class="list-group-item"><input type="radio" name="type_fac"  value="2"> Facturación POS<br></li>
+                                  <li class="list-group-item"><input type="radio" name="type_fac" value="1" checked> Facturación por Terceros<br></li>                                  
                                 </div>
-
                             <p></p>
                             <label>Actividad Económica*</label>
                              <textarea class="form-control" rows="1" name="economic_activity" placeholder="Actividad Económica"  required></textarea>
@@ -113,17 +100,6 @@
 
                   {{-- Former::textarea('law')->label('leyenda Genérica  (*)') --}}
                 
-                  </div>
-                  <div class="col-md-6">
-                    <legend>Información Adicional</legend>
-                     {{-- {{ Former::legend('información Adicional') }} --}}
-                     {{-- {{ Form::checkbox('third_view', '1')}} --}}
-                     <div class="checkbox">
-                        <label>
-                          {{ Form::checkbox('third_view', '1')}} Facturación por Terceros
-                        </label>
-                      </div>
-                     {{-- {{ Former::checkbox('third_view')->label('Facturación por Terceros')->title('Seleccione si fuera el caso')}}     --}}
                   </div>
               </div> 
 

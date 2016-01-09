@@ -3,9 +3,7 @@
 @section('title') Nuevo Usuario @stop
 
 @section('head') 
-    <script src="{{ asset('vendor/AdminLTE2/plugins/select2/select2.full.js')}}" type="text/javascript"></script>
-    <script src="{{asset('vendor/AdminLTE2/plugins/select2/i18n/es.js')}}" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AdminLTE2/plugins/select2/select2.css')}}">
+
     <script src="{{ asset('customs/bootstrap-switch.js')}}" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('customs/bootstrap-switch.css')}}">
 @stop
@@ -48,54 +46,71 @@
 				     	<label>Télefono/Celular *</label>
 				     	<input type="text" name="phone" class="form-control" placeholder="Núm Telefónico del Usuario" aria-describedby="sizing-addon2" pattern="([0-9]).{5,11}"  required>
 			     	</div>
-				 </div>
+                              </div>
 			    <div class="col-md-5">
 			    	<legend>Datos de Ingreso</legend>
 			    	<div class="col-md-8">
-			    		<label>Usuario *</label>
+			    		<label>Carnet de Identidad *</label>
 			    		<input type="text" name="username" class="form-control" placeholder="Nombre de Usuario" aria-describedby="sizing-addon2" pattern=".{2,}"  required>
 			    		<label>Contraseña *</label>
 			    		<input type="password" name="password" class="form-control" placeholder="Contraseña del Usuario" aria-describedby="sizing-addon2" pattern=".{4,}"  required>
 			    		<label>Repetir Contraseña *</label>
-			    		<input type="password" name="password_confirm" class="form-control" placeholder="Contraseña del Usuario" aria-describedby="sizing-addon2" pattern=".{5,}"  required>
-
-		         		
-			    </div>
+			    		<input type="password" name="password_confirm" class="form-control" placeholder="Contraseña del Usuario" aria-describedby="sizing-addon2" pattern=".{5,}"  required>		         		
+                                </div>
 			    <div class="col-md-2"></div>
 			    <p></p>
 			    <div class="col-md-9">
 			    	<legend>Tipo de Usuario</legend>
-                                <input type="checkbox" name="fac"> Facturador<br>
+                                Administrador:
+                                <input type="radio" name="admin" value="1">
+                                <br>
+                                Facturador:
+                                <input type="radio" name="admin" value="0" checked>
+                                
                                 <legend>Sucursal</legend>
-                                <select id="branch" name="branch" class="form-control select2">
+                                <select id="branch" name="branch[]" multiple="multiple" class="form-control select2">
                                         <option></option>
-                                         <?php foreach($sucursales as $sucursal){?>
+                                         <?php foreach($sucursales as $sucursal){ ?>
                                         <option value="{{$sucursal->id}}">{{$sucursal->name}}</option>
                                          <?php }?>                                                                                        
+                                    </select>	        
+			    </div>
+                            <div class="col-md-9">			    	
+                                <legend>Tipo de Precio</legend>
+                                <select id="price" name="price" class="form-control select2">
+                                        <option></option>
+                                         <?php foreach  ($precios as $precio){?>
+                                        <option value="{{$precio->id}}">{{$precio->name}}</option>
+                                         <?php }?>                                                                                        
                                     </select>
-			        <div class="list-group">
+			        
+			    </div>
+                            <div class="col-md-9">			    	
+                                <legend>Grupos Asignados</legend>
+                                
+                                <select id="groups" multiple="multiple" name="groups[]" class="form-control select2 multiple">
                                         
-			          @foreach($sucursales as $sucursal)
-					  <li class="list-group-item"><label>{{ Form::checkbox('sucursales[]', $sucursal->id)}}  {{$sucursal->name}}</label></li>
-				@endforeach	  
-					</div>
+                                         <?php foreach  ($grupos as $grupo){?>
+                                        <option value="{{$grupo->id}}">{{$grupo->name}}</option>
+                                         <?php }?>                                                                                        
+                                    </select>
+			        
 			    </div>
                             </div>
-
-                            <hr>
-
-			  	<div class="row">
+                         </div>    
+                      <br><br>
+                      <hr>
+			<div class="row">
 		            <div class="col-md-4"></div>
 		            <div class="col-md-2">
-		                 <a href="{{ url('usuarios/') }}" class="btn btn-default btn-sm btn-block">Cancelar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-remove">  </span></a>
+		                 <a href="{{ url('usuarios/') }}" class="btn btn-default btn-sm btn-block">Cancelar&nbsp;<span class="glyphicon glyphicon-remove">  </span></a>
 		            </div>
-		            <div class="col-md-1"></div>
-		            {{-- <div class="col-md-1"></div> --}}
+		            <div class="col-md-1"></div>		            
 		            <div class="col-md-2">
-		                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-floppy-disk"></span></button>
+		                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar&nbsp;<span class="glyphicon glyphicon-floppy-disk"></span></button>
 		            </div>
 	        	</div>
-
+                         
 			  {{ Former::close()  }}
 		  </div><!-- /.box-body -->
 		  <div class="box-footer">
@@ -105,6 +120,9 @@
 
 	<script type="text/javascript">
             $("#branch").select2();
+            $("#price").select2();
+            $("#groups").select2();
+            //$("#groups").val(items).trigger("change");
 			$("form").submit(function() {
 			    $(this).submit(function() {
 			        return false;

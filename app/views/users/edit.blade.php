@@ -52,31 +52,91 @@
 			     	</div>
 			</div>
 		   
-
+         <script>
+            sucs= [];
+            grus = [];
+            s = 0;
+            g = 0;
+        </script>
 	
 
 		    @if(Auth::user()->is_admin)
-
-		    <div class="col-md-4">
-		    	<legend>Asignación de Sucursal</legend>
-		        <div class="list-group">
-		          @foreach(Account::find($usuario->account_id)->branches as $sucursal)
-				  <li class="list-group-item"><label>{{ Form::checkbox('sucursales[]', $sucursal->id,UserBranch::getUserBranch($usuario->id,$sucursal->id))}}  {{$sucursal->name}}</label></li>
-				  @endforeach	  
-				</div>
-		    </div>
+                     <div class="col-md-5">
+                            <legend>Datos de Ingreso</legend>
+			    	<div class="col-md-8">
+			    		<label>Carnet de Identidad *</label>
+			    		<input type="text" name="username" class="form-control" placeholder="Nombre de Usuario" aria-describedby="sizing-addon2" pattern=".{2,}" value="{{$usuario->username}}" required>
+			    		<label>Contraseña *</label>
+			    		<input type="password" name="password" class="form-control" placeholder="Contraseña del Usuario" aria-describedby="sizing-addon2" pattern=".{4,}" value="**********" required>
+			    		<label>Repetir Contraseña *</label>
+			    		<input type="password" name="password_confirm" class="form-control" placeholder="Contraseña del Usuario" aria-describedby="sizing-addon2" pattern=".{5,}"  value="**********" required>   		
+                                </div>
+			    <div class="col-md-2"></div>
+                        <div class="col-md-9">
+                            			    <p></p>
+			    <div class="col-md-9">
+			    	<legend>Tipo de Usuario</legend>
+                                Administrador:
+                                <input type="radio" name="admin" value="1" <?php if($usuario->is_admin==1){ ?> checked <?php }?> >
+                                <br>
+                                Facturador:
+                                <input type="radio" name="admin" value="0" <?php if($usuario->is_admin==0){ ?> checked <?php }?>>
+                                
+                                <legend>Sucursal</legend>
+                                <select id="branch" name="branch[]" multiple="multiple" class="form-control select2">
+                                        <option></option>
+                                         <?php foreach($sucursales as $key=>$sucursal){ ?>
+                                        <script type="text/javascript">                                            
+                                            <?php if(in_array($sucursal->id, $sucs)){ ?>
+                                            sucs[s++]={{$sucursal->id}};
+                                         <?php }?>
+                                        </script>
+                                        <option value="{{$sucursal->id}}">{{$sucursal->name}}</option>
+                                         <?php }?>                                                                    
+                                    </select>	        
+			    </div>
+                            <div class="col-md-9">			    	
+                                <legend>Tipo de Precio</legend>
+                                <select id="price" name="price" class="form-control select2">
+                                        <option></option>
+                                         <?php foreach  ($precios as $precio){?>
+                                        <option value="{{$precio->id}}" <?php if($usuario->price_type_id==$precio->id){ ?> selected <?php }?> >{{$precio->name}}</option>
+                                         <?php }?>                                                                                        
+                                    </select>
+			        
+			    </div>
+                            <div class="col-md-9">			    	
+                                <legend>Grupos Asignados</legend>
+                                
+                                <select id="groups" multiple="multiple" name="groups[]" class="form-control select2 multiple">
+                                        
+                                         <?php foreach  ($grupos as $grupo){?>
+                                    
+                                    <?php if(in_array($grupo->id, $grus)){ ?>
+                                        <script type="text/javascript">                                            
+                                            grus[g++]={{$grupo->id}};
+                                        </script>
+                                        <?php }?>                             
+                                        <option value="{{$grupo->id}}">{{$grupo->name}}</option>
+                                         <?php }?>                                                                                        
+                                    </select>
+			        
+			    </div>
+                        </div>
+                     </div>
 		    @endif
 
 		  </div>
+              <hr>
 		  	<div class="row">
 	            <div class="col-md-4"></div>
 	            <div class="col-md-2">
-	                 <a href="{{ url('usuarios/') }}" class="btn btn-default btn-sm btn-block">Cancelar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-remove">  </span></a>
+	                 <a href="{{ url('usuarios/') }}" class="btn btn-default btn-sm btn-block">Cancelar&nbsp;<span class="glyphicon glyphicon-remove">  </span></a>
 	            </div>
 	            <div class="col-md-1"></div>
-	            {{-- <div class="col-md-1"></div> --}}
+	         
 	            <div class="col-md-2">
-	                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar&nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-floppy-disk"></span></button>
+	                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar&nbsp;<span class="glyphicon glyphicon-floppy-disk"></span></button>
 	            </div>
 	    	</div>
 		   {{ Former::close()  }} 
@@ -85,6 +145,17 @@
 	    {{-- The footer of the box --}}
 	  </div><!-- box-footer -->
 	</div><!-- /.box -->
+    
 
-  
+  	<script type="text/javascript">
+            
+            
+            $("#branch").select2();
+            $("#price").select2();
+            $("#groups").select2();
+            
+            //console.log(grus);
+            $("#branch").val(sucs).trigger("change");
+            $("#groups").val(grus).trigger("change");
+	</script>
 @stop

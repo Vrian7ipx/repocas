@@ -43,16 +43,14 @@
                         <p><label>LLave de Dosificación: </label> {{$sucursal->key_dosage}} </p>              
 		    </div>	
                     <div class="col-md-6">
-                        <legend>Documentos</legend>
-                        <?php foreach($documents as $document){ ?>
-                            <p><label>{{$document->id}}:  </label> {{" ".$document->name}}  </p>
-                        <?php } ?>
+                        <legend>Tipo de Facturación</legend>
+                        <li class="list-group-item">{{$type}}</li>
                     </div>
 		  </div>
 
 			<div class="row">
 				<div class="col-md-2">
-               	 	<a href="{{ URL::to('sucursales/'.$sucursal->public_id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Sucursal &nbsp<span class="glyphicon glyphicon-pencil"></span></a>
+               	 	<a href="{{ URL::to('sucursales/'.$sucursal->id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Sucursal &nbsp<span class="glyphicon glyphicon-pencil"></span></a>
              	 </div>
 
               <div class="col-md-2">

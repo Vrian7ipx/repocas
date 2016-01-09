@@ -33,10 +33,14 @@ class UserController extends \BaseController {
 		if (Auth::user()->is_admin)
 		{
 			$sucursales =Account::find(Auth::user()->account_id)->branches;
-						// ->select('id','name')	
-						// ->get();
-			// return Response::json(array('sucursales'=>$sucursales));
-			return View::make('users.create')->withSucursales($sucursales);
+                        $prices = PriceType::get();
+                        $groups = Group::get();
+                        $data = [
+                            'sucursales'=>$sucursales,
+                            'precios' => $prices,
+                            'grupos'=>$groups,
+                        ];
+			return View::make('users.create',$data);
 		} 
 		return Redirect::to('/inicio');
 	}
@@ -54,52 +58,47 @@ class UserController extends \BaseController {
 		// return Response::json(Input::all());
 
 		if (Auth::user()->is_admin)
-		{
-
-
-			$usuario = User::createNew();
-		
-
-			$usuario->setUsername(Input::get('username'));
-
-			$usuario->setPassword(Input::get('password'),Input::get('password_confirm'));
-
-
-			$usuario->setFirstName(Input::get('first_name'));
-		
-			$usuario->setLastName(Input::get('last_name'));
-			
-			$usuario->setEmail(Input::get('email'));
-			
-			$usuario->setPhone(Input::get('phone'));
-			$usuario->is_admin = false ;
-			// return var_dump($usuario);
-		
+		{                   
+                    $usuario = User::createNew();		
+                    $usuario->setUsername(Input::get('username'));
+                    $usuario->setPassword(Input::get('password'),Input::get('password_confirm'));
+                    $usuario->setFirstName(Input::get('first_name'));		
+                    $usuario->setLastName(Input::get('last_name'));			
+                    $usuario->setEmail(Input::get('email'));			
+                    $usuario->setPhone(Input::get('phone'));
+                    if(Input::get('admin')==1)
+                        $usuario->is_admin = 1;
+                    else
+                        $usuario->is_admin = 0;
+                    //$usuario->branch_id = Input::get('branch');
+                    $usuario->price_type_id = Input::get('price');
+                    $usuario->group_ids = implode(",",Input::get('groups'));
+                        
+			// return var_dump($usuario);		
 
 		if($usuario->Guardar())
-			{	
-				//redireccionar con el mensaje a la siguiente vista 
-				
-				Session::flash('message',$usuario->getErrorMessage());
+                {	
+                    //redireccionar con el mensaje a la siguiente vista 
 
-				
-				if(Input::has('sucursales'))
-				{	
-					foreach (Input::get('sucursales') as $branch_id) {
-						# code...
-						// $cantidad = $cantidad +$sucursal;
-						$userbranch= UserBranch::createNew();
-						$userbranch->account_id = Auth::user()->account_id;
-						$userbranch->user_id = $usuario->id;
-						$userbranch->branch_id = $branch_id;
-						// $userbranch->branch_id = UserBranch::getPublicId(); 
-						$userbranch->save();
+                    Session::flash('message',$usuario->getErrorMessage());
 
-					}
-				}
-			
-				return Redirect::to('usuarios');
-			}
+
+                    if(Input::has('branch'))
+                    {	
+                            foreach (Input::get('branch') as $branch_id) {
+                                    # code...
+                                    // $cantidad = $cantidad +$sucursal;
+                                    $userbranch= UserBranch::createNew();
+                                    $userbranch->account_id = Auth::user()->account_id;
+                                    $userbranch->user_id = $usuario->id;
+                                    $userbranch->branch_id = $branch_id;
+                                    // $userbranch->branch_id = UserBranch::getPublicId(); 
+                                    $userbranch->save();
+
+                            }
+                    }
+                    return Redirect::to('usuarios');
+                }
 			Session::flash('error',$usuario->getErrorMessage());
 
 		return Redirect::to('usuarios/create');
@@ -124,8 +123,22 @@ class UserController extends \BaseController {
 		{
 
 			$usuario = User::buscar($public_id);
+                        if($usuario->is_admin==1)
+                            $rol="Administrador";
+                        else 
+                            $rol="Facturador";
+                        $price = PriceType::where('id',$usuario->price_type_id)->first();
+                        //print_r(explode(',', $usuario->group_ids));
+                        //return 0;
+                        $groups = Group::whereIn('id',  explode(',', $usuario->group_ids))->get();
+                        $data=[
+                            'usuario'=>$usuario,
+                            'rol'=>$rol,
+                            'precio'=>$price->name,
+                            'grupos' => $groups,
+                        ];
 
-			return View::make('users.show')->with('usuario',$usuario);
+			return View::make('users.show',$data);
 		}
 		return Redirect::to('/inicio');
 
@@ -140,15 +153,31 @@ class UserController extends \BaseController {
 	 * @return Response
 	 */
 	public function edit($public_id)
-	{
-		//
+	{		
 		if (Auth::user()->is_admin)
 		{
 			$usuario = User::buscar($public_id);
-
-
-		// return Response::json(array('editando id' => $usuario ));
-			return View::make('users.edit')->with('usuario',$usuario);
+                        $sucursales =Account::find(Auth::user()->account_id)->branches;
+                        $sucs=array();
+                        foreach ($sucursales as $sucursal)
+                            array_push($sucs,$sucursal->id);
+                        $prices = PriceType::get();
+                        $groups = Group::get();
+                        $grus=array();
+                        $grupos_s= explode(",",$usuario->group_ids);
+                        foreach ($grupos_s as $g)
+                            array_push($grus,$g);
+                        
+                        $data = [
+                            'usuario'=>$usuario,
+                            'sucursales'=>$sucursales,
+                            'precios' => $prices,
+                            'grupos'=>$groups,
+                            'sucs'=>$sucs,
+                            'grus'=>$grus,
+                            'bbr'=>1,
+                        ];
+			return View::make('users.edit',$data);
 		}
 		return Redirect::to('/inicio');
 	}
@@ -176,9 +205,9 @@ class UserController extends \BaseController {
 				# code...
 				$sucursal->delete();
 			}
-			if(Input::get('sucursales'))
+			if(Input::get('branch'))
 			{
-				foreach (Input::get('sucursales') as $branch_id) {
+				foreach (Input::get('branch') as $branch_id) {
 					# code...
 					$existeAsignado = UserBranch::withTrashed()->where('user_id',$usuario->id)
 								 				->where('branch_id',$branch_id)
