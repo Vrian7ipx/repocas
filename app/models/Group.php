@@ -1,5 +1,5 @@
 <?php
-class Group extends Eloquent 
-{	
+class Group extends Eloquent
+{
 }
 ?>
