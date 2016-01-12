@@ -14,7 +14,7 @@
 
 
 	{{Former::framework('TwitterBootstrap3')}}
-  {{ Former::open('usuarios/'.$usuario->public_id)->method('put')->rules(array(
+  {{ Former::open('usuarios/'.$usuario->id)->method('put')->rules(array(
       'name' => 'required|min:3',
       'sucursales' => 'required'
       //'nit' => 'required|Numeric|min:5',
@@ -29,10 +29,7 @@
 	<div class="box box-primary">
 	  <div class="box-header with-border">
 	    <h3 class="box-title">Información de Usuario</h3>
-	    <div class="box-tools pull-right">
-	      <!-- Buttons, labels, and many other things can be placed here! -->
-	      <!-- Here is a label for example -->
-	      
+	    <div class="box-tools pull-right">	      	      
 	    </div><!-- /.box-tools -->
 	  </div><!-- /.box-header -->
 	  <div class="box-body">
@@ -57,9 +54,7 @@
             grus = [];
             s = 0;
             g = 0;
-        </script>
-	
-
+        </script>	
 		    @if(Auth::user()->is_admin)
                      <div class="col-md-5">
                             <legend>Datos de Ingreso</legend>
@@ -141,8 +136,7 @@
 	    	</div>
 		   {{ Former::close()  }} 
 	  </div><!-- /.box-body -->
-	  <div class="box-footer">
-	    {{-- The footer of the box --}}
+	  <div class="box-footer">	    
 	  </div><!-- box-footer -->
 	</div><!-- /.box -->
     

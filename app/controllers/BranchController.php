@@ -163,7 +163,7 @@ class BranchController extends \BaseController {
 			// return Response::json(Input::all());
 			$branch = Branch::buscar($public_id);
 
-			$branch->setType_documents(Input::get('tipo_documento'));
+			//$branch->setType_documents(Input::get('tipo_documento'));
 
 			
 			$branch->setName(Input::get('branch_name'));
@@ -186,7 +186,7 @@ class BranchController extends \BaseController {
 			$branch->setNumber_process(Input::get('number_process'));
 			$branch->setNumber_autho(Input::get('number_autho'));
 			$branch->setLaw(Input::get('law'));
-			$branch->setType_thrird(Input::get('third_view'));
+			$branch->setType_thrird(Input::get('type_fac'));
 
 				// return var_dump($branch);
 

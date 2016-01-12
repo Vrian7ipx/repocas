@@ -21,7 +21,7 @@
        <table id="datatable" class="table table-striped table-hover" cellspacing="0" cellpadding="0" width="100%" style="margin-left:24px;">
 			  <thead>
 		          <tr>
-                  <td>Número</td>
+                  <td>Código</td>
                   @if(Utils::campoExtra() == '131555028')
                   <td>Mátricula</td>
                   @endif
@@ -35,7 +35,7 @@
 
 		<thead>
               <tr>
-                  <th>Número</th>
+                  <th>Código</th>
                   @if(Utils::campoExtra() == '131555028')
                     <th>Mátricula</th>
                   @endif
@@ -50,15 +50,15 @@
           @foreach($clients as $client)
               <tr>
                   <td>{{ $contador++ }}</td>
-                  <td><a href="{{URL::to('clientes/'.$client->public_id)}}">{{ $client->name }}</a></td>
-                  <td><a href="{{URL::to('clientes/'.$client->public_id)}}">{{ $client->nit}}</a></td>
+                  <td><a href="{{URL::to('clientes/'.$client->id)}}">{{ $client->name }}</a></td>
+                  <td><a href="{{URL::to('clientes/'.$client->id)}}">{{ $client->nit}}</a></td>
 
                   <td>{{ $client->work_phone ? $client->work_phone : $client->phone }}</td>
 
                   <td>
-                      {{ Form::open(['url' => 'clientes/'.$client->public_id, 'method' => 'delete', 'class' => 'deleteForm']) }}
-                    <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("clientes/".$client->public_id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
-                    <a class="btn btn-warning btn-xs" href="{{ URL::to("clientes/".$client->public_id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
+                      {{ Form::open(['url' => 'clientes/'.$client->id, 'method' => 'delete', 'class' => 'deleteForm']) }}
+                    <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("clientes/".$client->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
+                    <a class="btn btn-warning btn-xs" href="{{ URL::to("clientes/".$client->id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
                     <a class="btn btn-danger btn-xs" onclick="$(this).closest('form').submit()" type="submit" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-remove"></i></a>
                      {{ Form::close() }}
                   </td>
@@ -101,7 +101,7 @@ $(document).ready(function() {
             dataSrc: 'data'
         },
         columns: [
-              { data: 'public_id' },
+              { data: 'id' },
               { data: 'campo'},
               { data: 'name2' },
               { data: 'nit2' },
@@ -133,11 +133,11 @@ $(document).ready(function() {
          });
          $('#formConfirm').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var public_id = button.data('id');
+            var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
             modal.find('.modal-body').text('¿ Está seguro de borrar ' + name + ' ?');
-            document.getElementById("public_id").value = public_id;
+            document.getElementById("id").value = id;
         });
 
         var table = $('#datatable').DataTable();
@@ -217,11 +217,11 @@ $(document).ready(function() {
          });
          $('#formConfirm').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var public_id = button.data('id');
+            var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
             modal.find('.modal-body').text('¿ Está seguro de borrar ' + name + ' ?');
-            document.getElementById("public_id").value = public_id;
+            document.getElementById("id").value = id;
         });
 
         var table = $('#datatable').DataTable();

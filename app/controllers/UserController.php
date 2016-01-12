@@ -115,14 +115,14 @@ class UserController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($public_id)
+	public function show($id)
 	{
 		//
 
 		if (Auth::user()->is_admin)
 		{
 
-			$usuario = User::buscar($public_id);
+			$usuario = User::where('id',$id)->first();
                         if($usuario->is_admin==1)
                             $rol="Administrador";
                         else 
@@ -152,15 +152,16 @@ class UserController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($public_id)
+	public function edit($id)
 	{		
 		if (Auth::user()->is_admin)
 		{
-			$usuario = User::buscar($public_id);
+			$usuario = User::where('id',$id)->first();
                         $sucursales =Account::find(Auth::user()->account_id)->branches;
                         $sucs=array();
-                        foreach ($sucursales as $sucursal)
-                            array_push($sucs,$sucursal->id);
+                        $ubras= UserBranch::where('user_id',$usuario->id)->get();
+                        foreach ($ubras as $ubra)
+                            array_push($sucs,$ubra->branch_id);   
                         $prices = PriceType::get();
                         $groups = Group::get();
                         $grus=array();
@@ -190,42 +191,44 @@ class UserController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($public_id)
+	public function update($id)
 	{
 		//
 		if (Auth::user()->is_admin)
 		{
-			$usuario = User::buscar($public_id);
+			$usuario = User::where('id',$id)->first();
 			$usuario->first_name = trim(Input::get('first_name'));
 			$usuario->last_name = trim(Input::get('last_name'));
+                        $usuario->email=Input::get('email');		
+                        $usuario->phone=Input::get('phone');
+                        if(Input::get('password') == Input::get('password_confirm')){             
+                            if(Input::get('error')!="**********"){
+                                $usuario->password =Hash::make(Input::get('password'));                            
+                                $usuario->username = Input::get('username');
+                            }
+                        }
+                        else{
+                            Session::flash('error','Las contraseñas no coinciden');
+                            return Redirect::to('usuarios/'.$usuario->id.'/edit');
+                        }
+                        
 			$usuario->save();
 
 
-			foreach (UserBranch::getSucursalesObject($usuario->id) as $sucursal) {
-				# code...
-				$sucursal->delete();
-			}
+			foreach (UserBranch::getSucursalesObject($usuario->id) as $sucursal)				
+				$sucursal->delete();		
 			if(Input::get('branch'))
 			{
-				foreach (Input::get('branch') as $branch_id) {
-					# code...
+				foreach (Input::get('branch') as $branch_id) {					
 					$existeAsignado = UserBranch::withTrashed()->where('user_id',$usuario->id)
 								 				->where('branch_id',$branch_id)
-												->first();
-					// $existeAsignado = UserBranch::where('user_id',$usuario->id)
-					// 			 				->where('branch_id',$branch_id)
-					// 							->first();
-
-
+												->first();					
 					if($existeAsignado)
 					{
 						$existeAsignado->restore();
 					}
 					else
-					{
-
-					// 	if(!$existeAsignado)
-					// {
+					{				
 						$branch = Branch::find($branch_id);
 						$userbranch= UserBranch::createNew();
 						$userbranch->account_id = $usuario->account_id;

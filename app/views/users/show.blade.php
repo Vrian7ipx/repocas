@@ -59,13 +59,13 @@
         <div class="row">
 		<div class="col-md-4"></div>
 	            <div class="col-md-2">
-			                <a href="{{ URL::to('usuarios/'.$usuario->public_id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Usuario &nbsp&nbsp<span class="glyphicon glyphicon-pencil"></span></a>
+			                <a href="{{ URL::to('usuarios/'.$usuario->id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Usuario &nbsp&nbsp<span class="glyphicon glyphicon-pencil"></span></a>
 			              </div>
 			              	            
 	            <div class="col-md-1"></div>
 	         
 	            <div class="col-md-2">
-			                  <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$usuario->public_id}}" data-href="{{ URL::to('usuarios/'. $usuario->id)}}" data-nombre="{{$usuario->first_name.' '.$usuario->last_name.' ' }}" class="btn btn-danger btn-sm btn-block">Borrar Usuario&nbsp&nbsp<span class="glyphicon glyphicon-trash">  </span></a>
+			                  <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$usuario->id}}" data-href="{{ URL::to('usuarios/'. $usuario->id)}}" data-nombre="{{$usuario->first_name.' '.$usuario->last_name.' ' }}" class="btn btn-danger btn-sm btn-block">Borrar Usuario&nbsp&nbsp<span class="glyphicon glyphicon-trash">  </span></a>
 			               </div>
 	</div>
 

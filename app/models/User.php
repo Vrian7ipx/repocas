@@ -258,18 +258,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     	$fv_username  = trim($fv_username);
     	if(!empty($fv_username))
     	{
-    		$cuenta = Account::where('id',$this->getAccount_id())->first();
-    		if($cuenta)
-    		{
-    			$usuarioExiste= User::where('username',$fv_username.'@'.$cuenta->domain)->first();
+    		//$cuenta = Account::where('id',$this->getAccount_id())->first();
+    		//if($cuenta)
+    		//{
+    			$usuarioExiste= User::where('username',$fv_username)->first();
     			if($usuarioExiste)
     			{
-    				$this->fv_error_message = $this->fv_error_message.'<br>- Usuario '.ERROR_DUPLICADO;
-    				
+    				$this->fv_error_message = $this->fv_error_message.'<br>- Usuario '.ERROR_DUPLICADO;    				
     				return $this->fv_username = null;
     			}
-    			return $this->fv_username = $fv_username.'@'.$cuenta->domain;
-    		}
+    			return $this->fv_username = $fv_username;
+    		//}
 
     		$this->fv_error_message = $this->fv_error_message .'<br>- Usuario Identificador Cuenta '.ERROR_ID;
     		return $this->fv_username = null;

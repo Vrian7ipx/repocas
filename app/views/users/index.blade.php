@@ -41,14 +41,14 @@
 
           @foreach($usuarios as $usuario)
               <tr>
-                  <td>{{  $usuario->public_id}}</td>
-                  <td><a href="{{URL::to('usuarios/'.$usuario->public_id)}}">{{   $usuario->username }}</a></td>
-                  <td><a href="{{URL::to('usuarios/'.$usuario->public_id)}}">{{  $usuario->first_name }}</a></td>
+                  <td>{{  $usuario->id}}</td>
+                  <td><a href="{{URL::to('usuarios/'.$usuario->id)}}">{{   $usuario->username }}</a></td>
+                  <td><a href="{{URL::to('usuarios/'.$usuario->id)}}">{{  $usuario->first_name }}</a></td>
                   <td>{{ $usuario->last_name }}</td>
                   <td>{{ $usuario->email}}</td>
 				  <td>
-                    <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("usuarios/".$usuario->public_id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
-                    <a class="btn btn-warning btn-xs" href="{{ URL::to("usuarios/".$usuario->public_id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("usuarios/".$usuario->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
+                    <a class="btn btn-warning btn-xs" href="{{ URL::to("usuarios/".$usuario->id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
                   </td>
 					
               </tr>
