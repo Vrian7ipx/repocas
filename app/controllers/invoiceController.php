@@ -252,46 +252,34 @@ class InvoiceController extends \BaseController {
 	 * @return Response
 	 */
 	public function store()
-	{				          
+	{			            
 		if(sizeof(Input::get('productos'))>1)
 		{
 			if(Input::has('client'))
 			{	
 			 $account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
 			 $branch = Branch::find(Session::get('branch_id'));
-			 $invoice = Invoice::createNew();
-
-
-			//$invoice->setBranch(Session::get('branch_id'));
-			
+			 $invoice = Invoice::createNew();			
 			$invoice->setBranch(Session::get('branch_id'));
 			$invoice->setTerms(trim(Input::get('terms')));
 			$invoice->setPublicNotes(trim(Input::get('public_notes')));
 			$invoice->setInvoiceDate(trim(Input::get('invoice_date')));
 			$invoice->setClient(trim(Input::get('client')));
 			$invoice->setEconomicActivity($branch->economic_activity);
-
-			// $date=date("Y-m-d",strtotime(Input::get('due_date')));
-			 // $date = new DateTime(strtotime(Input::get('due_date')));
 			$dateparser = explode("/",Input::get('due_date'));
                         if(Input::get('due_date')){
                             $date = $dateparser[2].'-'.$dateparser[1].'-'.$dateparser[0];
                             $invoice->setDueDate($date);
                         }
 			$invoice->setDiscount(trim(Input::get('discount')));
-
 			$invoice->setClientName(trim(Input::get('razon')));
-			$invoice->setClientNit(trim(Input::get('nit')));
-		
-			$invoice->setUser(Auth::user()->id);	
-			// $date=date("Y-m-d",strtotime(Input::get('invoice_date')));
+			$invoice->setClientNit(trim(Input::get('nit')));		
+			$invoice->setUser(Auth::user()->id);				
 			$dateparser = explode("/",Input::get('invoice_date'));
-                        $date = $dateparser[2].'-'.$dateparser[1].'-'.$dateparser[0];
-			 // $date = new DateTime(strtotime(Input::get('invoice_date')));
+                        $date = $dateparser[2].'-'.$dateparser[1].'-'.$dateparser[0];			
 			$invoice->setInvoiceDate($date);
 			$invoice->importe_neto = trim(Input::get('total'));
-			$invoice->importe_total=trim(Input::get('subtotal'));
-                        //$invoice->note = trim(Input::get('nota'));
+			$invoice->importe_total=trim(Input::get('subtotal'));                        
                         if(Input::get('nota')){
                         $nota = array();
                         $nota[0] = [
@@ -301,8 +289,7 @@ class InvoiceController extends \BaseController {
                         $invoice->note = json_encode($nota);
                         }
 			//ACCOUTN AND BRANCK
-			$invoice->balance =trim(Input::get('total'));
-			
+			$invoice->balance =trim(Input::get('total'));			
                         $invoice->setAccountName($account->name);	
 			$invoice->setAccountNit($account->nit);
 			$invoice->setBranchName($branch->name);
@@ -318,7 +305,6 @@ class InvoiceController extends \BaseController {
 			$invoice->setLaw($branch->law);
 			$type_document =TypeDocument::where('account_id',Auth::user()->account_id)->firstOrFail();
 			$invoice->invoice_number = branch::getInvoiceNumber();
-
 			 $numAuth = $invoice->number_autho;
 			 $numfactura = $invoice->invoice_number;
 			 $nit = $invoice->client_nit;
@@ -327,10 +313,6 @@ class InvoiceController extends \BaseController {
 			 $llave = $branch->key_dosage; 
 			 $codigoControl = Utils::getControlCode($numfactura,$nit,$fechaEmision,$total,$numAuth,$llave);
 			$invoice->setControlCode($codigoControl);
-                        
-                        //$actual_document = TypeDocument::where('account_id',Auth::user()->account_id)->where('master_id',1)->orderBy('id','DESC')->first();
-                        //$actual_master = $actual_document->id;
-                        
                         $documents = TypeDocumentBranch::where('branch_id',$invoice->branch_id)->orderBy('id','ASC')->get();
                         foreach ($documents as $document)
                         {
@@ -342,81 +324,40 @@ class InvoiceController extends \BaseController {
                         if(Input::get('printer_type')==1)
                             $invoice->logo = 1;                            
                         else
-                            $invoice->logo = 0;
-                                                    
-			
+                            $invoice->logo = 0;                                                    			
 			$invoice->sfc = $branch->sfc;
 			$invoice->qr =$invoice->account_nit.'|'.$invoice->invoice_number.'|'.$invoice->number_autho.'|'.$invoice->invoice_date.'|'.$invoice->importe_neto.'|'.$invoice->importe_total.'|'.$invoice->client_nit.'|'.$invoice->importe_ice.'|0|0|'.$invoice->descuento_total;	
 			if($account->is_uniper)
 			{
 				$invoice->account_uniper = $account->uniper;
 			}
-			
-			
-
-	       
-	  //       require_once(app_path().'/includes/control_code.php');
-			// $codigo_de_control = codigoControl($invoice->invoice_number, $invoice->nit, $invoice->due_date, $total, $number_autho, $key_dosage);	        
 			$invoice->save();
-
-
-
-			//print_r(Input::get('productos'));
-			//return 0;
-			//
-
 			foreach (Input::get('productos') as $producto)
                         {    	
-	    		$prod = $producto;
-	    		// return Response::json($prod);	    		    		       	
-	    		//print_r($prod["'cost'"]);
-	    		//return 0;
-	    		//echo $producto["'product_key'"];
-	    		$product = Product::where('account_id',Auth::user()->account_id)->where('product_key',$producto["'product_key'"])->first();
-		    	// $product = DB::table('products')->where('account_id',Auth::user()->account_id)->where('products.product_key',"=",$producto["'product_key'"])->first();
+                            $prod = $producto;	    		                        
+                            $product = Product::where('account_id',Auth::user()->account_id)->where('product_key',$producto["'product_key'"])->first();		    	
+                            if($product!=null){
+                                $invoiceItem = InvoiceItem::createNew();
+                                $invoiceItem->setInvoice($invoice->id); 
+                                $invoiceItem->setProduct($product->id);
+                                $invoiceItem->setProductKey($producto["'product_key'"]);
 
-		    	//print_r($product);
-		    	//return 0;
-		    	if($product!=null){
-
-					$invoiceItem = InvoiceItem::createNew();
-				  	$invoiceItem->setInvoice($invoice->id); 
-			      	$invoiceItem->setProduct($product->id);
-			      	$invoiceItem->setProductKey($producto["'product_key'"]);
-                                
                                 $proo = DB::table('products')->where('product_key','=',$producto["'product_key'"])->first();
-                                
-			      	$invoiceItem->setNotes($proo->notes);
-			      	$invoiceItem->setCost($producto["'cost'"]);
-			      	$invoiceItem->setQty($producto["'qty'"]);	      		      
-			      	$invoiceItem->save();		  
-		      	}
-                    }
-                    
+
+                                $invoiceItem->setNotes($proo->notes);
+                                $invoiceItem->setCost($producto["'cost'"]);
+                                $invoiceItem->setQty($producto["'qty'"]);	      		      
+                                $invoiceItem->packs=$producto["'pack'"];
+                                $invoiceItem->discount=$producto["'disc'"];
+                                $invoiceItem->bonus=$producto["'bonus'"];
+                                $invoiceItem->save();		  
+                            }
+                        }                    
                 //adicionando cargo al cliente
                 $cliente = Client::find($invoice->client_id);
                 $cliente->balance =$cliente->balance+$invoice->balance;
-                $cliente->save();
-			
-//	    	if(Input::get('mail') == "1" && false) //50dias
-//			{
-//				$client_id = Input::get('client');
-//				$client = DB::table('clients')->where('id','=', $client_id)->first();
-//				$contacts = DB::table('contacts')->where('client_id','=',$client->id)->get(array('id','is_primary','first_name','last_name','email'));
-//				
-//				
-//				$mails = array();
-//				foreach ($contacts as $key => $contact) {
-//					foreach (Input::get('contactos') as $key => $con) {
-//						if(($con['id'] == $contact->id) && (isset($con['checked'])))
-//							array_push($mails, "dtorrez@ipxserver.com");				
-//					}
-//					
-//				}			
-//				$this->sendInvoiceToContact($invoice->getId(),$invoice->getInvoiceDate(),$invoice->getClientNit(),$mails,$invoice);				
-//			}                
-                $newInvoice=Invoice::where('id','=',$invoice->getId())->first();
-                                
+                $cliente->save();        
+                $newInvoice=Invoice::where('id','=',$invoice->getId())->first();                                
                 return Redirect::to("factura/".$newInvoice->getPublicId());
                 }
                 Session::flash('error','por favor ingrese cliente');

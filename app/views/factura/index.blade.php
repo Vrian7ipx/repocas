@@ -53,7 +53,7 @@
               <tr class="active">
 
                   <td>{{ $invoice->invoice_number}}</td>
-                  <td ><a href="{{URL::to('clientes/'.Client::find($invoice->client_id)->public_id)}}">{{ $invoice->getClientName() }}</a></td>
+                  <td ><a href="{{URL::to('clientes/'.Client::find($invoice->client_id)->id)}}">{{ $invoice->getClientName() }}</a></td>
                   <td>{{ $invoice->getInvoiceDate() }}</td>
                   <td>{{ $invoice->getImporteTotal() }}</td>
 
@@ -62,8 +62,8 @@
                   <td>{{ $invoice->getInvoiceStatus() }}</td>
 
                   <td>
-        		<a id="{{$invoice->invoice_number}}" class="btn btn-primary btn-xs jae" data-task="view" href="{{ URL::to("factura/".$invoice->public_id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open" title="hola" ></i></a>
-  		    	<a class="btn btn-warning btn-xs" data-task="view" data-toggle="tooltip" data-original-title="Default tooltip" href="{{ URL::to("copia/".$invoice->public_id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-duplicate"></i></a>
+        		<a id="{{$invoice->invoice_number}}" class="btn btn-primary btn-xs jae" data-task="view" href="{{ URL::to("factura/".$invoice->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open" title="hola" ></i></a>
+  		    	<a class="btn btn-warning btn-xs" data-task="view" data-toggle="tooltip" data-original-title="Default tooltip" href="{{ URL::to("copia/".$invoice->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-duplicate"></i></a>
                   </td>
               </tr>
           @endforeach
@@ -82,7 +82,7 @@
       </div>
       {{ Form::open(array('url' => 'productos/bulk','id' => 'formDelete')) }}
       <div style="display:none">
-        {{ Former::text('public_id') }}
+        {{ Former::text('id') }}
       </div>
       <div class="modal-body" id="frm_body"></div>
       <div class="modal-footer">
@@ -162,11 +162,11 @@ $("#jae2").change(function (){
 
 	$('#formConfirm').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget);
-      var public_id = button.data('id');
+      var id = button.data('id');
       var name = button.data('name');
       var modal = $(this);
       modal.find('.modal-body').text('¿ Está seguro de borrar ' + name + ' ?');
-      document.getElementById("public_id").value = public_id;
+      document.getElementById("id").value = id;
   });
 
     var table = $('#datatable').DataTable(); //mediante esta linea busca

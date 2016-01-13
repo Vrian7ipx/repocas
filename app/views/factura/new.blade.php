@@ -186,10 +186,13 @@
                   <table id="tableb"> <!--class="table table-bordered">-->
                     <tbody><tr>
                       <th class="col-md-1">C&oacute;digo</th>
-                      <th class="col-md-7">Concepto</th>
-                      <th class="col-md-1">Costo Unitario</th>
-                      <th class="col-md-1">Cantidad</th>
-                      <th class="col-md-1">Subtotal</th>
+                      <th class="col-md-4">Concepto</th>
+                      <th class="col-md-1">Precio</th>
+                      <th class="col-md-1">Cant. Paquetes</th>                      
+                      <th class="col-md-1">Cant. Unidades</th>                      
+                      <th class="col-md-1">Bonificación</th>
+                      <th class="col-md-1">Descuento</th>
+                      <th class="col-md-1">Subtotal</th>                      
                       <th class="col-md-1" style="display:none;"></th>
                     </tr>
                     <tr class="new_row" id="new_row1">
@@ -198,25 +201,34 @@
                           <option></option>
                         </select>
                       </td>
-                      <td >
-                      <div class="ui-widget">
-                        <input id="notes1" class="form-control notes" name="products[0]['item']">
-                      </div>
-                      </td>
                       <td>
-                      <input class="form-control cost centertext" type="number" min="0.01" step="any" disabled id="cost1" name="productos[0]['cost']">
+                        <div class="ui-widget">
+                          <input id="notes1" class="form-control notes" name="products[0]['item']">
+                        </div>
                       </td>
-                      <td>
-                        <input class="form-control qty centertext" type="number" min="1" step="1" disabled id="qty1" name="productos[0]['qty']">
+                        <td>
+                        <input class="form-control cost centertext" type="number" min="0.01" step="any"  id="cost1" name="productos[0]['cost']">
                         </td>
                       <td>
-                      <input class="form-control derecha" disabled value='0' id="subtotal1">
+                        <input class="form-control pack centertext" type="number" min="1" step="1"  id="pack1" name="productos[0]['pack']">
                       </td>
                       <td>
-                      <div for="inputError">
-                        <span class="killit" id="killit1" style="color:red" >
-                          <i class="fa fa-minus-circle redlink"></i>
-                        </span>
+                        <input class="form-control qty centertext" type="number" min="1" step="1"  id="qty1" name="productos[0]['qty']">
+                      </td>
+                      <td>
+                        <input class="form-control bonus centertext" type="number" min="1" step="1"  id="qty1" name="productos[0]['bonus']">
+                      </td>
+                      <td>
+                        <input class="form-control disc centertext" type="number" min="1" step="1"  id="disc" name="productos[0]['disc']">
+                      </td>
+                      <td>
+                        <input class="form-control derecha" disabled value='0' id="subtotal1">
+                      </td>
+                      <td>
+                        <div for="inputError">
+                            <span class="killit" id="killit1" style="color:red" >
+                              <i class="fa fa-minus-circle redlink"></i>
+                            </span>
                         </div>
                       </td>
                     </tr>
@@ -1444,12 +1456,15 @@ function addNewRow(){
 
  // tdnotes ="<td><select id='notes"+id_products+"' name=\"productos["+id_products+"]['item']\"class='select2-input notes form-control' data-style='success'><option></option> </select></td>";
   tdcost = "<td ><input disabled class='form-control cost centertext' type='number' min='0.01' step='any' id='cost"+id_products+"' name=\"productos["+id_products+"]['cost']\""+"</td>";
+  tdpack = "<td><input class='form-control pack centertext' type='number' min='1' step='1' id='pack"+id_products+"' name=\"productos["+id_products+"]['pack']\""+"</td>";
   tdqty = "<td><input disabled class='form-control qty centertext' type='number' min='1' step='1' id='qty"+id_products+"' name=\"productos["+id_products+"]['qty']\""+"</td>";
+  tdboni = "<td><input class='form-control boni centertext' type='number' min='1' step='1' id='boni"+id_products+"' name=\"productos["+id_products+"]['boni']\""+"</td>";
+  tddisc = "<td><input class='form-control disc centertext' type='number' min='1' step='1' id='disc"+id_products+"' name=\"productos["+id_products+"]['disc']\""+"</td>";
   //tdsubtotal ="<td><label class='subtotal' id='subtotal"+id_products+"'>0 </label></td>";
   tdsubtotal = "<td><input disabled class='form-control derecha' value='0' id='subtotal"+id_products+"'></td>";
   tdkill= "<td><div for='inputError'><span class='killit' style='color:red' id='killit"+id_products+"'><i class='fa fa-minus-circle redlink'></i></span></div></td>";
   fintr="</tr>";
-  return tr+tdcode+tdnotes+tdcost+tdqty+tdsubtotal+tdkill+fintr;
+  return tr+tdcode+tdnotes+tdcost+tdpack+tdqty+tdboni+tddisc+tdsubtotal+tdkill+fintr;
 }
 
 // $( "form" ).submit(function( event ) {
