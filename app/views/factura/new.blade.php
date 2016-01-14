@@ -53,12 +53,32 @@
   )) }}
 
   <div class="box-body">
-    <!-- Date range -->
-
-    <div class="col-md-12">
-      <legend><b>&nbsp;Fechas</b></legend>
-      <div class="form-group col-md-4">
+    <!-- Date range -->  
+    <legend><b>Datos</b></legend>
+      <div class="col-md-12">
+      <div class="col-md-4">
+        <label>Cliente:</label>
+        </div>
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
         <label>Fecha de Emisi&oacute;n:</label>
+        </div>
+      </div>
+        <div class="col-md-4">
+           <span class="">
+               <select id="client" name="client" onchange="addValuesClient(this)" class="form-control js-data-example-ajax">
+               </select>
+            </span>
+         </div>
+<!--         <div class="col-md-1">
+            <button type="button" class="btn btn-default btn-sm"  data-toggle="modal" data-target="#newclient">  <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Crear Cliente
+            </button>
+          </div>-->
+          <div class="col-md-4">
+        </div>
+        <div class="form-group col-md-4">
+        
         <div class="input-group emision_icon">
           <input class="form-control pull-right" name="invoice_date" id="invoice_date" type="text">
           <div class="input-group-addon">
@@ -66,37 +86,10 @@
           </div>
         </div><!-- /.input group -->
     </div><!-- /.form group -->
-    <div class="col-md-4">
-    </div>
-    <div class="form-group col-md-4">
-      <label>Fecha de Vencimiento:</label>
-      <div class="input-group">
-        <input class="form-control pull-right" name="due_date" id="due_date" type="text">
-        <div class="input-group-addon vencimiento_icon">
-          <i class="fa fa-calendar"></i>
-        </div>
-      </div>
-    </div>
 
-    </div>
-       <legend><b>&nbsp;&nbsp;&nbsp;&nbsp;Cliente</b></legend>
-
-         <div class="col-md-12">
-           <label>Cliente:</label>
-         </div>
-         <div class="col-md-4">
-            <span class="">
-               <select id="client" name="client" onchange="addValuesClient(this)" class="form-control js-data-example-ajax">
-               </select>
-            </span>
-         </div>
-         <div class="col-md-1">
-            <button type="button" class="btn btn-default btn-sm"  data-toggle="modal" data-target="#newclient">  <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Crear Cliente
-            </button>
-          </div>
-    <input id="printer_type" type="hidden" name="printer_type" value="1">
-    <input id="invoice_type" type="hidden" name="invoice_type" value="1">
-    <div class="col-md-12">
+      <input id="printer_type" type="hidden" name="printer_type" value="1">
+      <input id="invoice_type" type="hidden" name="invoice_type" value="1">
+      <div class="col-md-12">
       <div class="form-group col-md-6" id="contactos_client">
 {{-- seleccion de cliente --}}
         <br>
@@ -116,15 +109,7 @@
 
     <!-- Date and time range -->
 
-    <div class="form-group col-md-2">
-      <!-- <label>Descuento</label>
-      <div class="input-group">
-
-        <input class="form-control pull-right" id="discount" value="0" name="discount" type="text">
-        <div class="input-group-addon">
-          <i class="fa">%</i>
-        </div>
-      </div><!-- /.input group -->
+    <div class="form-group col-md-2">      
     </div><!-- /.form group -->
 
     </div>
@@ -141,42 +126,7 @@
 
         <!--botones de adicion de productos y servicios-->
         <div class="col-md-12">
-          <legend><b>Detalle</b></legend>
-
-          <div class="col-md-2">
-          </div>
-          <div class="col-md-2">
-            <label type="hidden" style="color:white">Descuento</label>
-            <div class="input-group">
-                  <button  type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#create_product"><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Crear Producto</button>
-             </div>
-           </div>
-
-        <div class="col-md-1"></div>
-
-        <div class="col-md-2">
-          <label style="color:white">Descuento</label>
-          <div class="input-group">
-            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#create_service"><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Crear Servicio</button>
-          </div>
-        </div>
-
-        <div class="col-md-1"></div>
-
-        <div class=" col-md-1">
-          <label>Descuento</label>
-          <div class="input-group">
-            <input id="discount" class="form-control pull-right" type="text" min="0" value="0" name="discount">
-          </div><!-- /.input group -->
-        </div><!-- /.form group -->
-        <div class=" col-md-1">
-        <label type="hidden" style="color:white">Descuento</label>
-        <!--<input class="form-control" id="desc" checked data-toggle="toggle" data-on="%" data-off="Bs." data-onstyle="primary" data-offstyle="info" type="checkbox">-->
-        <input id="desc" class="desc" data-on-text="%" labelWidth="20%" data-off-text="Bs" type="checkbox" name="my-checkbox" data-off-color="primary" data-label-text="Bs" offColor="primary" handleWidth="100" checked>
-        </div>
-<!--<input id="desc" checked data-toggle="toggle" data-on="%" data-off="$" data-onstyle="primary" data-offstyle="info" type="checkbox">-->
-
-        <div  class="col-md-2"></div>
+          <legend><b>Detalle</b></legend>        
       </div>
 
         <!--ELEMENTOS DE LA FACTURA-->
@@ -187,7 +137,7 @@
                     <tbody><tr>
                       <th class="col-md-1">C&oacute;digo</th>
                       <th class="col-md-4">Concepto</th>
-                      <th class="col-md-1">Precio</th>
+                      <th class="col-md-1">Precio Unitario</th>
                       <th class="col-md-1">Cant. Paquetes</th>                      
                       <th class="col-md-1">Cant. Unidades</th>                      
                       <th class="col-md-1">Bonificación</th>
@@ -207,19 +157,19 @@
                         </div>
                       </td>
                         <td>
-                        <input class="form-control cost centertext" type="number" min="0.01" step="any"  id="cost1" name="productos[0]['cost']">
+                        <input class="form-control cost centertext number_field" id="cost1" name="productos[0]['cost']">
                         </td>
                       <td>
-                        <input class="form-control pack centertext" type="number" min="1" step="1"  id="pack1" name="productos[0]['pack']">
+                        <input class="form-control pack centertext number_field" id="pack1" name="productos[0]['pack']">
                       </td>
                       <td>
-                        <input class="form-control qty centertext" type="number" min="1" step="1"  id="qty1" name="productos[0]['qty']">
+                        <input class="form-control qty centertext number_field" id="qty1" name="productos[0]['qty']">
                       </td>
                       <td>
-                        <input class="form-control bonus centertext" type="number" min="1" step="1"  id="qty1" name="productos[0]['bonus']">
+                        <input class="form-control bonus centertext number_field" id="bonus1" name="productos[0]['bonus']">
                       </td>
                       <td>
-                        <input class="form-control disc centertext" type="number" min="1" step="1"  id="disc" name="productos[0]['disc']">
+                        <input class="form-control disc centertext number_field" id="disc1" name="productos[0]['disc']">
                       </td>
                       <td>
                         <input class="form-control derecha" disabled value='0' id="subtotal1">
@@ -263,21 +213,20 @@
           <div class="col-md-2">
           </div>
           <div class="col-md-2">
-            <h4><b>Total</b></h4>
-            <br>
-            <h4><b>Descuento</b></h4>
-            <br>
-            <h3><b>Total a pagar</b></h3>
+            <label>Sub Total</label><br>
+            <label>Descuentos</label><br>
+            <label>Total a pagar</label><br>
+            <label>ICE neto</label><br>
+            <label>Importe crédito fiscal</label><br>
           </div>
 <!--          <div class="col-md-1">
           </div>-->
           <div class="col-md-1 derecha">
-            <h4><label id="subtotal" >0</label></h4>
-            <br>
-            <h4><label id="descuento_box"  >0</label></h4>
-            <br>
-            <h3><label id="total">0</label></h3>
-
+            <label id="subtotal" >0.00</label><br>
+            <label id="descuento_box">0.00</label><br>
+            <label id="total">0.00</label><br>
+            <label id="ice_neto">0.00</label><br>
+            <label id="importe">0.00</label><br>
           </div>
 
 
@@ -576,6 +525,12 @@
                 console.log("descuento"+number);
         }
     });
+$(document).on('keyup','.number_field',function(){
+        number = $(this).val();
+        if(isNaN(number)){
+            $(this).val(number.substr(0,number.length-1));
+        }        
+    });
     //********************
 
 
@@ -642,8 +597,12 @@ else{
 $('#killit1').css('cursor', 'pointer');
 $("#cost1").val('').prop('disabled', true);
 $("#qty1").val('').prop('disabled', true);
-$('#discount').val("0");
-$("#due_date").val('');
+$("#pack1").val('').prop('disabled', true);
+$("#bonus1").val('').prop('disabled', true);
+$("#disc1").val('').prop('disabled', true);
+
+//$('#discount').val("0");
+///$("#due_date").val('');
 $("#public_notes").val('');
 $("#terms").val('');
 $('#subtotal1').val('').prop('disabled', true);
@@ -683,8 +642,7 @@ var changing_note = false;
 // $(".notes1").select2();
 addProducts(1);
 function addProducts(id_act)
-{
-  console.log("entra a esta opcion");
+{  
   prod_to_add=[];
   products.forEach(function(prod) {
     //if( 0 === isProductSelected(prod['product_key']) ){
@@ -938,55 +896,30 @@ $(document).on('mouseout','.new_row',function(){
   $("#killit"+val).hide();
 });
 
-
-function calculateTotal()
-{
-  sum = 0;
-  // //se optimiza solo tomando los valores de subtotal
-  $( ".cost" ).each(function( index ) {
-  valor = $("#"+this.id).val();
-  ind= this.id.substring(4);
-  canti = $("#qty"+ind).val();
-  console.log(ind);
-  if(valor){
-    valor = canti * valor;
-    sum = parseFloat(valor)+sum;
-  }
-
-  });
-  //sum = parseFloat($("#subtotal").text());
-  console.log(sum);
-  dis= $("#discount").val();
-  dis = (parseFloat(dis)*sum)/100;
-
-  sum = sum - dis;
-  $("#descuento_box").text(dis.toFixed(2));
-  $("#total").text(sum.toFixed(2));
-  $("#total_send").val(sum);
-
-}
-function calculateSubTotal()
-{
-    sum = 0;
-  $( ".cost" ).each(function( index ) {
-  valor = $("#"+this.id).val();
-  ind= this.id.substring(4);
-  canti = $("#qty"+ind).val();
-  console.log(ind);
-  if(valor){
-    valor = canti * valor;
-    sum = parseFloat(valor)+sum;
-  }
-  });
-
-  $("#subtotal").text(parseFloat(sum).toFixed(2)+"");
-  $("#subtotal_send").val(sum);
-}
 function calculateAllTotal(){
     sum = 0;
+    descuentos = 0.00;
   $( ".cost" ).each(function( index ) {
-    valor = $("#"+this.id).val();
     ind= this.id.substring(4);
+    
+    valor = $("#"+this.id).val();
+    costo = $("#cost"+ind).val();
+    boni = $("#bonus"+ind).val();
+    disc = $("#disc"+ind).val();
+
+    if(costo=='')
+        costo=0.00;
+    costo = parseFloat(costo).toFixed(2);
+    if(boni=='')
+        boni=0.00;
+    boni = parseFloat(boni).toFixed(2);
+    disc = $("#disc"+ind).val();
+    if(disc=='')
+        disc= 0.00;
+    disc = parseFloat(disc).toFixed(2);    
+    sum_dis = costo*boni+parseFloat(disc);    
+    descuentos=descuentos+parseFloat(sum_dis);
+    
     canti = $("#qty"+ind).val();
 
     if(valor && canti){
@@ -995,15 +928,20 @@ function calculateAllTotal(){
       sum = parseFloat(valor)+sum;
     }
   });
-  $("#subtotal").text(parseFloat(sum).toFixed(2)+"");
+  
+  $("#descuento_box").text(parseFloat(descuentos).toFixed(2));
+    
+
+  $("#subtotal").text(parseFloat(sum).toFixed(2)+"");  
   $("#subtotal_send").val(sum);
+
   dis= $("#discount").val();
   if($("#desc").prop('checked'))
     dis = (parseFloat(dis)*sum)/100;
     else
         dis=parseFloat(dis);
   sum = sum - dis;
-  $("#descuento_box").text(dis.toFixed(2));
+  //$("#descuento_box").text(dis.toFixed(2));
   if(sum<0)sum=0;
   $("#total").text(sum.toFixed(2));
   $("#total_send").val(sum);
@@ -1057,29 +995,6 @@ function addClientNote(note){
   $(".ui-tooltip").hide();
 }
 
-// $(document).on("autocompleteclose",'.notes',function(event,ui){
-//   code = $("#"+this.id).val();
-//   console.log(code);
-//   updateRowName(code,this.id.substring(5));
-
-//   $('#tableb').append(addNewRow());
-
-//   addProducts(id_products);
-
-// $("#code"+id_products).select2({
-//   placeholder: "Código"
-// });
-// $("#notes"+id_products).select2({
-//   placeholder: "Concepto"
-// });
-
-//     //var productKey = "#product_key"+(idProducts);
-//     //addProducts(idProducts);
-//     $('.killit').css('cursor', 'pointer');
-//     id_products++;
-// });
-
-
 $(document).on("change",'.code',function(){
 
   if(changing_note)
@@ -1096,15 +1011,21 @@ $(document).on("change",'.code',function(){
     {
       //$("#notes"+ind_act).val(prod['product_key']).trigger("change");
       $("#notes"+ind_act).val(prod['notes']);
-      $("#cost"+ind_act).val(prod['cost']).prop('disabled', false);
-      $("#qty"+ind_act).val(1).prop('disabled', false);
-      $("#subtotal"+ind_act).val(prod['cost']);
+      costo =parseFloat(prod['cost']+"")/parseFloat(prod['units']+"");
+      $("#cost"+ind_act).val(costo.toFixed(2)).prop('disabled', false);        
+      $("#qty"+ind_act).val(0).prop('disabled', false);
+      $("#pack"+ind_act).val(0).prop('disabled', false);
+      $("#disc"+ind_act).val(0.00).prop('disabled', false);
+      $("#bonus"+ind_act).val(0).prop('disabled', false);
+      $("#subtotal"+ind_act).val(0);
       //$("input").prop('disabled', false);
     }
   });
   calculateAllTotal();
   if(emptyRows()<1){
   $('#tableb').append(addNewRow());
+  
+
   $('#killit'+id_products).css('cursor', 'pointer');
   addProducts(id_products);
 
@@ -1149,7 +1070,7 @@ function completeItem(ind_act,item_send){
     {
       $("#code"+ind_act).val(prod['product_key']).trigger("change");
       $("#cost"+ind_act).val(prod['cost']).prop('disabled', false);
-      $("#qty"+ind_act).val(1).prop('disabled', false);
+      $("#qty"+ind_act).val(1).prop('disabled', false);      
       $("#subtotal"+ind_act).val(prod['cost']);
     }
   });
@@ -1190,15 +1111,6 @@ $(document).on("change",'.notes',function(){
   id_products++;
   }
 });
-
-// $("#notes1").change(function(){
-//   if(!changing)
-//   console.log("this is changed");
-// changing= false;
-// });
-
-
-
 
 /**agergado de nuevos productos y servicios**/
   $("#save_product").click(function(){
@@ -1249,19 +1161,6 @@ $(document).on("change",'.notes',function(){
     $("#modalError").modal("show");
   }
   function utf8_decode(str_data) {
-  //  discuss at: http://phpjs.org/functions/utf8_decode/
-  // original by: Webtoolkit.info (http://www.webtoolkit.info/)
-  //    input by: Aman Gupta
-  //    input by: Brett Zamir (http://brett-zamir.me)
-  // improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-  // improved by: Norman "zEh" Fuchs
-  // bugfixed by: hitwork
-  // bugfixed by: Onno Marsman
-  // bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-  // bugfixed by: kirilloid
-  //   example 1: utf8_decode('Kevin van Zonneveld');
-  //   returns 1: 'Kevin van Zonneveld'
-
   var tmp_arr = [],
     i = 0,
     ac = 0,
@@ -1326,37 +1225,7 @@ $(document).on("change",'.notes',function(){
       });
   }
 
-  $("#save_service").click(function(){
-    product_key = $("#code_news").val();
-    item = $("#notes_news").val();
-    cost = $("#cost_news").val();
-    category = $("#categoy_news").val();
-    $.ajax({
-          type: 'POST',
-          url:'{{ URL::to('productos') }}',
-          data: 'product_key='+product_key+'&notes='+item+'&cost='+cost+'&category_id=1&json=2',
-          beforeSend: function(){
-            console.log("Inicia ajax with ");
-          },
-          success: function(result)
-          {
-            console.log(result);
-            if(result=="0") {
-            addNewProduct(product_key,item,cost);
-            prod_to_add.push(item);
-            $(".new_row").each(function( index ) {
-              act = this.id.substring(7);
-              //valor = $("#"+this.id).val();
-              //$("#notes"+act).select2({data: [{id:product_key, text: item}]});
-              $( "#notes"+act ).autocomplete('option', 'source', prod_to_add);
-              $("#code"+act).select2({data: [{id:product_key, text: product_key}]});
-            });
-            }
-            else
-                error(result);
-          }
-      });
-  });
+
 function addNewProduct(newkey,newnotes,newcost)
 {
   var newp ={
@@ -1406,39 +1275,103 @@ function addNewProduct(newkey,newnotes,newcost)
   $(document).on('keyup','.qty',function(){
     ind = this.id.substring(3);
     costo = $("#cost"+ind).val();
+    pack = $("#pack"+ind).val();
     if(costo=='')
         costo=0;
     costo = parseFloat(costo).toFixed(2);
     cantidad = $("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
+
+    if(pack=='')
+        pack=0;
+    pack = parseFloat(pack).toFixed(2);
+    pack = products[ind-1]['cost']*pack;
     cantidad = parseFloat(cantidad).toFixed(2);
-
     total_val=$("#total").val();
-
     total_val = parseFloat(total_val).toFixed(2);
-
-    subtotal_val = costo*cantidad;
+    subtotal_val = costo*cantidad+pack;
     $("#subtotal"+ind).val(subtotal_val.toFixed(2));
     calculateAllTotal();
   });
-  $(document).on('keyup','.cost',function(){
+
+  $(document).on('keyup','.bonus',function(){
+    // ind = this.id.substring(4);
+    // boni = $("#boni"+ind).val();
+    // disc = $("#disc"+ind).val();
+    // costo = $("#cost"+ind).val();    
+    // if(costo=='')
+    //     costo=0;
+    // costo = parseFloat(costo).toFixed(2);
+    // if(boni=='')
+    //     boni=0;
+    // boni = parseFloat(boni).toFixed(2);
+    // disc = $("#disc"+ind).val();
+    // if(disc=='')
+    //     disc= 0;
+
+      
+    // total_val=$("#total").val();
+    // total_val = parseFloat(total_val).toFixed(2);
+    // subtotal_val = costo*boni_disc;
+    
+    // $("#subtotal"+ind).val(subtotal_val.toFixed(2));
+    calculateAllTotal();
+  });
+
+  $(document).on('keyup','.pack',function(){
     ind = this.id.substring(4);
     costo = $("#cost"+ind).val();
+    pack = $("#pack"+ind).val();
     if(costo=='')
         costo=0;
     costo = parseFloat(costo).toFixed(2);
     cantidad = $("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
-    cantidad = parseFloat(cantidad).toFixed(2);
 
+    if(pack=='')
+        pack=0;
+    pack = parseFloat(pack).toFixed(2);
+    pack = products[ind-1]['cost']*pack;
+    cantidad = parseFloat(cantidad).toFixed(2);
     total_val=$("#total").val();
     total_val = parseFloat(total_val).toFixed(2);
-
-    subtotal_val = costo*cantidad;
+    subtotal_val = costo*cantidad+pack;
     $("#subtotal"+ind).val(subtotal_val.toFixed(2));
-    $("#total").text((total+subtotal_val)+"");
+    calculateAllTotal();
+  });
+
+  $(document).on('keyup','.cost',function(){
+    ind = this.id.substring(4);
+    costo = $("#cost"+ind).val();
+    pack = $("#pack"+ind).val();
+    bonus = $("#bonus"+ind).val();
+    disc = $("#disc"+ind).val();
+    if(costo=='')
+        costo=0;
+    costo = parseFloat(costo).toFixed(2);    
+    cantidad = $("#qty"+ind).val();
+    if(cantidad=='')
+        cantidad= 0;
+    cantidad = parseFloat(cantidad).toFixed(2);
+    if(pack=='')
+        pack=0;
+    pack = parseFloat(pack).toFixed(2);
+    pack = products[ind-1]['cost']*pack;
+    // if(cantidad=='')
+    //     cantidad= 0;
+    // cantidad = parseFloat(disc).toFixed(2);
+    // if(pack=='')
+    //     pack=0;
+    // pack = parseFloat(pack).toFixed(2);
+    // pack = products[ind-1]['cost']*pack;
+    disc = bonus =0;
+    total_val=$("#total").val();
+    total_val = parseFloat(total_val).toFixed(2);
+    subtotal_val = costo*cantidad+pack-disc-bonus;
+    $("#subtotal"+ind).val(subtotal_val.toFixed(2));
+    //$("#total").text((total+subtotal_val)+"");
     calculateAllTotal();
   });
 
@@ -1450,32 +1383,18 @@ $("#code1").select2().on("select2-focus", function(e) {
 function addNewRow(){
   tr=  "<tr class='new_row' id='new_row"+id_products+"'>";
   tdcode="<td><input class='form-control code' id='code"+id_products+"' name=\"productos["+id_products+"]['product_key']\""+"</td>";
-  tdcode="<td><select id='code"+id_products+"' name=\"productos["+id_products+"]['product_key']\" class='form-control code select2-input' data-style='success'><option></option> </select></td>";
-  //tdnotes = "<td><input class='form-control notes' id='notes"+id_products+"' name=\"productos["+id_products+"]['item']\""+"</td>";
+  tdcode="<td><select id='code"+id_products+"' name=\"productos["+id_products+"]['product_key']\" class='form-control code select2-input' data-style='success'><option></option> </select></td>";  
   tdnotes= "<td><div class='ui-widget'> <input id='notes"+id_products+"' class='form-control notes' name=\"productos["+id_products+"]['item']\"></div></td>";
-
- // tdnotes ="<td><select id='notes"+id_products+"' name=\"productos["+id_products+"]['item']\"class='select2-input notes form-control' data-style='success'><option></option> </select></td>";
-  tdcost = "<td ><input disabled class='form-control cost centertext' type='number' min='0.01' step='any' id='cost"+id_products+"' name=\"productos["+id_products+"]['cost']\""+"</td>";
-  tdpack = "<td><input class='form-control pack centertext' type='number' min='1' step='1' id='pack"+id_products+"' name=\"productos["+id_products+"]['pack']\""+"</td>";
-  tdqty = "<td><input disabled class='form-control qty centertext' type='number' min='1' step='1' id='qty"+id_products+"' name=\"productos["+id_products+"]['qty']\""+"</td>";
-  tdboni = "<td><input class='form-control boni centertext' type='number' min='1' step='1' id='boni"+id_products+"' name=\"productos["+id_products+"]['boni']\""+"</td>";
-  tddisc = "<td><input class='form-control disc centertext' type='number' min='1' step='1' id='disc"+id_products+"' name=\"productos["+id_products+"]['disc']\""+"</td>";
-  //tdsubtotal ="<td><label class='subtotal' id='subtotal"+id_products+"'>0 </label></td>";
+  tdcost = "<td><input disabled class='form-control cost centertext number_field' id='cost"+id_products+"' name=\"productos["+id_products+"]['cost']\""+"</td>";
+  tdpack = "<td><input disabled class='form-control pack centertext number_field' id='pack"+id_products+"' name=\"productos["+id_products+"]['pack']\""+"</td>";
+  tdqty = "<td><input disabled class='form-control qty centertext number_field' id='qty"+id_products+"' name=\"productos["+id_products+"]['qty']\""+"</td>";
+  tdboni = "<td><input disabled class='form-control bonus centertext number_field' id='bonus"+id_products+"' name=\"productos["+id_products+"]['bonus']\""+"</td>";
+  tddisc = "<td><input disabled class='form-control disc centertext number_field' id='disc"+id_products+"' name=\"productos["+id_products+"]['disc']\""+"</td>";  
   tdsubtotal = "<td><input disabled class='form-control derecha' value='0' id='subtotal"+id_products+"'></td>";
   tdkill= "<td><div for='inputError'><span class='killit' style='color:red' id='killit"+id_products+"'><i class='fa fa-minus-circle redlink'></i></span></div></td>";
   fintr="</tr>";
   return tr+tdcode+tdnotes+tdcost+tdpack+tdqty+tdboni+tddisc+tdsubtotal+tdkill+fintr;
 }
-
-// $( "form" ).submit(function( event ) {
-//   if ( $( "input:first" ).val() != "" ) {
-//     $( "span" ).text( "Validado..." ).show();
-//     return;
-//   }
-
-//   $( "span" ).text( "Ingrese Cliente!" ).show().fadeOut( 1000 );
-//   event.preventDefault();
-// });
 
 $("form").submit(function() {
     $(this).submit(function() {

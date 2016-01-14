@@ -20,44 +20,48 @@ class InvoiceController extends \BaseController {
 	{	
 
 		$client = null;
-		$account = Account::findOrFail(Auth::user()->account_id);
-		// if ($clientPublicId) 
-		// {
-		// 	$client = Client::scope($clientPublicId)->firstOrFail();
-  //  		}
-                $branch = Branch::where('id','=',Session::get('branch_id'))->first();                                
-                $today = date("Y-m-d");
-                $expire = $branch->deadline;
-                $today_time = strtotime($today);
-                $expire_time = strtotime($expire);
+		$account = Account::findOrFail(Auth::user()->account_id);		
+        $branch = Branch::where('id','=',Session::get('branch_id'))->first();                                
+        $today = date("Y-m-d");
+        $expire = $branch->deadline;
+        $today_time = strtotime($today);
+        $expire_time = strtotime($expire);
+        if ($expire_time < $today_time)
+        {
+            Session::flash('error','La fecha límite de emisión caducó, porfavor actualice su Dosificación');
+            return Redirect::to('sucursales/'.$branch->public_id.'/edit');  
+        }
+        $last_invoice= Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->max('invoice_date');
+        $last_date=  strtotime($last_invoice);
+        $secs = $today_time - $last_date;// == <seconds between the two times>
+        $days = $secs / 86400;
+        //getting the product within their datas
+        $products = Product::join('prices','products.id','=','prices.product_id')
+        			->where('prices.price_type_id',Auth::user()->price_type_id)
+        			->select(array('products.product_key','products.notes','prices.cost','products.qty','products.units'))
+        			->get();
+        //print_r($products);
+        //return 0;
 
-                if ($expire_time < $today_time)
-                {
-                    Session::flash('error','La fecha límite de emisión caducó, porfavor actualice su Dosificación');
-                    return Redirect::to('sucursales/'.$branch->public_id.'/edit');  
-                }
-                $last_invoice= Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->max('invoice_date');
-                $last_date=  strtotime($last_invoice);
-                $secs = $today_time - $last_date;// == <seconds between the two times>
-                $days = $secs / 86400;
+        // $pagos = Payment::join('invoices', 'invoices.id', '=','payments.invoice_id')
+							 // ->join('invoice_statuses','invoice_statuses.id','=','payments.payment_type_id')							  
+							 //  ->where('payments.client_id',$client->id)
+							 //  ->select('invoices.invoice_number','payments.transaction_reference','invoice_statuses.name','payments.amount','payments.payment_date')
+							 //  ->get();
+
+
                                                                                 
    		$invoiceDesigns = TypeDocument::where('account_id',\Auth::user()->account_id)->orderBy('public_id', 'desc')->get();
-		$data = array(
-				'entityType' => ENTITY_INVOICE,
-				'account' => $account,
-				'invoice' => null,
-				'showBreadcrumbs' => false,
+		$data = array(				
+				'account' => $account,								
 				'data' => Input::old('data'), 
-				'invoiceDesigns' => $invoiceDesigns,
-				'method' => 'POST', 
-				'url' => 'factura', 
-				'title' => trans('texts.new_invoice'),
-                                'vencido'=>0,//$vencido,
-                                'last_invoice_date'=>$days,
-				);
-		$data = array_merge($data, self::getViewModel());				
+				'invoiceDesigns' => $invoiceDesigns,			
+				'last_invoice_date' => $days,
+				'products' => $products 
 
-		return View::make('factura.new', $data);
+				);					
+				$data = array_merge($data, self::getViewModel());				
+			return View::make('factura.new', $data);
 	}
 
         		
@@ -108,8 +112,7 @@ class InvoiceController extends \BaseController {
 	private static function getViewModel()
 	{
 		return [
-			'branches' => Branch::where('account_id', '=', Auth::user()->account_id)->get(),
-			'products' => Product::scope()->orderBy('id')->get(array('product_key','notes','cost','qty')),
+			'branches' => Branch::where('account_id', '=', Auth::user()->account_id)->get(),			
 			//'clients' => Client::scope()->with('contacts')->orderBy('name')->get(),
 			//'client' => Client::where('id','=',$id )->first(),
 			'taxRates' => TaxRate::scope()->orderBy('name')->get(),
@@ -257,9 +260,10 @@ class InvoiceController extends \BaseController {
 		{
 			if(Input::has('client'))
 			{	
-			 $account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
-			 $branch = Branch::find(Session::get('branch_id'));
-			 $invoice = Invoice::createNew();			
+			$account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
+			$branch = Branch::find(Session::get('branch_id'));
+			$tax = TaxRate::where("name",'ICE')->first();
+			$invoice = Invoice::createNew();			
 			$invoice->setBranch(Session::get('branch_id'));
 			$invoice->setTerms(trim(Input::get('terms')));
 			$invoice->setPublicNotes(trim(Input::get('public_notes')));
@@ -331,6 +335,26 @@ class InvoiceController extends \BaseController {
 			{
 				$invoice->account_uniper = $account->uniper;
 			}
+			//calculates ICE
+			$ice = $invoice->amount-$invoice->fiscal;
+			$desc = $invoice->subtotal-$invoice->amount;
+            $invoice->balance=$invoice->amount;
+            $invoice->custom_value1=number_format($ice, 2, '.', '');
+            $invoice->discount = number_format($desc, 2, '.', '');
+			$amount = number_format($invoice->amount, 2, '.', '');
+			$fiscal = number_format($invoice->fiscal, 2, '.', '');
+
+			$icef = number_format($ice, 2, '.', '');
+			$descf = number_format($desc, 2, '.', '');
+
+			if($icef=="0.00"){
+				$icef = 0;
+			}
+			if($descf=="0.00"){
+				$descf = 0;
+			}
+
+
 			$invoice->save();
 			foreach (Input::get('productos') as $producto)
                         {    	
