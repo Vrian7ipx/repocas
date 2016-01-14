@@ -44,9 +44,10 @@
                   <td>{{ $grupo->delimitaciones }}</td>
                   <td>
                     <div class="dropdown">
-			            <a class="btn btn-success btn-xs" data-task="view" href="{{ URL::to("$grupos/".$grupo->public_id.'/edit') }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
-				        <a class="btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#formConfirm" data-id="{{ $grupo->public_id }}" data-name="{{ $grupo->name }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-remove"></i></a>
-                  </td>
+			            <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("grupos/".$grupo->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
+                  <a class="btn btn-warning btn-xs" data-task="view" href="{{ URL::to("grupos/".$grupo->id.'/edit') }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
+				          <!-- <a class="btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#formConfirm" data-id="{{ $grupo->public_id }}" data-name="{{ $grupo->name }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-remove"></i></a> -->
+              </td>
               </tr>
           @endforeach
           </tbody>
