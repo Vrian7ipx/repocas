@@ -916,8 +916,8 @@ function calculateAllTotal(){
     disc = $("#disc"+ind).val();
     if(disc=='')
         disc= 0.00;
-    disc = parseFloat(disc).toFixed(2);    
-    sum_dis = costo*boni+parseFloat(disc);    
+    disc = parseFloat(disc).toFixed(2); 
+    sum_dis = costo*boni+parseFloat(disc);
     descuentos=descuentos+parseFloat(sum_dis);
     
     canti = $("#qty"+ind).val();
@@ -928,7 +928,7 @@ function calculateAllTotal(){
       sum = parseFloat(valor)+sum;
     }
   });
-  
+    
   $("#descuento_box").text(parseFloat(descuentos).toFixed(2));
     
 
@@ -1295,27 +1295,10 @@ function addNewProduct(newkey,newnotes,newcost)
     calculateAllTotal();
   });
 
-  $(document).on('keyup','.bonus',function(){
-    // ind = this.id.substring(4);
-    // boni = $("#boni"+ind).val();
-    // disc = $("#disc"+ind).val();
-    // costo = $("#cost"+ind).val();    
-    // if(costo=='')
-    //     costo=0;
-    // costo = parseFloat(costo).toFixed(2);
-    // if(boni=='')
-    //     boni=0;
-    // boni = parseFloat(boni).toFixed(2);
-    // disc = $("#disc"+ind).val();
-    // if(disc=='')
-    //     disc= 0;
-
-      
-    // total_val=$("#total").val();
-    // total_val = parseFloat(total_val).toFixed(2);
-    // subtotal_val = costo*boni_disc;
-    
-    // $("#subtotal"+ind).val(subtotal_val.toFixed(2));
+  $(document).on('keyup','.bonus',function(){    
+    calculateAllTotal();
+  });
+  $(document).on('keyup','.disc',function(){    
     calculateAllTotal();
   });
 
