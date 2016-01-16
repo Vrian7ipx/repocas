@@ -9,10 +9,10 @@ class ProductController extends \BaseController {
 	 */
 	public function index()
 	{
-		$products =  Product::join('categories', 'categories.id', '=', 'products.category_id')
-				->where('products.account_id', '=', \Auth::user()->account_id)
+		$products =  Product::join('categories', 'categories.id', '=', 'products.category_id')				
 				->where('categories.deleted_at', '=', null)
 				->select('products.public_id', 'products.product_key', 'products.notes','products.is_product', 'products.cost','categories.name as category_name','categories.id as category_id')->get();
+                $products = Product::get();
 		// print_r($products);
 		// return 0;
 	    return View::make('productos.index', array('products' => $products));
@@ -190,13 +190,19 @@ class ProductController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($publicId)
+	public function show($id)
 	{
-		$product = Product::scope($publicId)->with('category')->firstOrFail();
-
-	    $data = array(
-	    	'title' => 'Ver Producto',
-	    	'product' => $product
+            $product = Product::where('id',$id)->first();            
+            $prices = Price::where('product_id',$id)->orderBy('price_type_id','ASC')->get();
+            $new_prices = array();
+            foreach ($prices as $price){
+                $types = PriceType::where('id',$price->price_type_id)->first();
+                $price->name = $types->name;
+                array_push($new_prices, $price);
+            }
+	    $data = array(	    	
+	    	'product' => $product,
+                'precios' => $new_prices,
 	    );
 
 	    return View::make('productos.show', $data);

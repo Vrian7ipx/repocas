@@ -1,9 +1,9 @@
 @extends('header')
 @section('title')Ver Producto @stop
  @section('head') @stop
-@section('encabezado') PRODUCTOS Y SERVICIOS @stop
-@section('encabezado_descripcion') Ver Producto/Servicio @stop 
-@section('nivel') <li><a href="{{URL::to('productos')}}"><i class="fa fa-cube"></i>Productos y Servicios</a></li>
+@section('encabezado') PRODUCTOS @stop
+@section('encabezado_descripcion') Ver Producto @stop 
+@section('nivel') <li><a href="{{URL::to('productos')}}"><i class="fa fa-cube"></i>Productos</a></li>
             <li class="active">Ver </li> @stop
           
 @section('content') 
@@ -11,37 +11,36 @@
 
 <div class="box box-info">
   <div class="box-header with-border">
-    <h3 class="box-title"> <label></label>Detalle del {{$product->is_product?'Producto':'Servicio'}} :  {{ $product->notes }} </label></h3>
+    <h3 class="box-title"> <label></label>Detalle del Producto :  {{ $product->notes }} </label></h3>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
-      <!-- Here is a label for example -->
-      
+      <!-- Here is a label for example -->      
     </div><!-- /.box-tools -->
   </div><!-- /.box-header -->
   <div class="box-body">
-
   	<div class="row">
+            <div class="col-md-6">
 
-			<div class="col-md-8">
-				
-				<p><strong>Código del {{$product->is_product?'Producto':'Servicio'}} </strong> : {{ $product->product_key }}</p>
-				<p><strong>Costo </strong> : {{ $product->cost }}</p>
-				<p><strong>Categoría Asignada </strong> : {{ $product->category->name }}</p>
-				@if($product->is_product)
-					<p><strong>Unidad: </strong> {{ $product->unidad->nombre }}</p>
-				@endif
-
-			</div>
-
-		</div>
-
-            <div class="row">
+                    <p><strong>Código del Producto</strong> : {{ $product->product_key }}</p>                    
+                    <p><strong>Unidades por Paquete</strong> : {{ $product->units}}</p>
+                    <p><strong>Volúmen </strong> : {{ $product->cc }}</p>
+                    <p><strong>Tipo de Envase </strong> : {{ $product->pack_types==1?"Vidrio":"Plástico" }}</p>
+                    <p><strong>Impuesto </strong> : {{ $product->ice==1?"Con ICE":"Sin ICE" }}</p>
+                    @if($product->is_product)
+                            <p><strong>Unidad: </strong> {{ $product->unidad->nombre }}</p>
+                    @endif
+            </div>
+            <div class="col-md-6">
+                <label>Precios</label>
                 
+            </div>
+        </div>
+            <div class="row">               
               <div class="col-md-2">
-                <a href="{{ URL::to('productos/'. $product->public_id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar {{$product->is_product?'Producto':'Servicio'}} &nbsp<span class="glyphicon glyphicon-pencil"></span></a>
+                <a href="{{ URL::to('productos/'. $product->id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Producto &nbsp<span class="glyphicon glyphicon-pencil"></span></a>
               </div>
               <div class="col-md-2">
-                   <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$product->product_key}}" data-href="{{ URL::to('productos/'. $product->public_id)}}" data-nombre="{{ 'Desea eliminar el producto '.$product->notes.' ?' }}" class="btn btn-danger btn-sm btn-block">Borrar {{$product->is_product?'Producto':'Servicio'}}&nbsp<span class="glyphicon glyphicon-trash">  </span></a>
+                   <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$product->product_key}}" data-href="{{ URL::to('productos/'. $product->id)}}" data-nombre="{{ 'Desea eliminar el producto '.$product->notes.' ?' }}" class="btn btn-danger btn-sm btn-block">Borrar Producto&nbsp<span class="glyphicon glyphicon-trash">  </span></a>
                </div>
              </div>
 

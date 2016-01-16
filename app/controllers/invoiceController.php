@@ -19,49 +19,41 @@ class InvoiceController extends \BaseController {
 	public function create()
 	{
 
-		$client = null;
-		$account = Account::findOrFail(Auth::user()->account_id);
-        $branch = Branch::where('id','=',Session::get('branch_id'))->first();
-        $today = date("Y-m-d");
-        $expire = $branch->deadline;
-        $today_time = strtotime($today);
-        $expire_time = strtotime($expire);
-        if ($expire_time < $today_time)
-        {
-            Session::flash('error','La fecha límite de emisión caducó, porfavor actualice su Dosificación');
-            return Redirect::to('sucursales/'.$branch->public_id.'/edit');
-        }
-        $last_invoice= Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->max('invoice_date');
-        $last_date=  strtotime($last_invoice);
-        $secs = $today_time - $last_date;// == <seconds between the two times>
-        $days = $secs / 86400;
-        //getting the product within their datas
-        $products = Product::join('prices','products.id','=','prices.product_id')
-        			->where('prices.price_type_id',Auth::user()->price_type_id)
-        			->select(array('products.product_key','products.notes','prices.cost','products.qty','products.units'))
-        			->get();
-        //print_r($products);
-        //return 0;
 
-        // $pagos = Payment::join('invoices', 'invoices.id', '=','payments.invoice_id')
-							 // ->join('invoice_statuses','invoice_statuses.id','=','payments.payment_type_id')
-							 //  ->where('payments.client_id',$client->id)
-							 //  ->select('invoices.invoice_number','payments.transaction_reference','invoice_statuses.name','payments.amount','payments.payment_date')
-							 //  ->get();
+            $client = null;
+            $account = Account::findOrFail(Auth::user()->account_id);		
+            $branch = Branch::where('id','=',Session::get('branch_id'))->first();                                
+            $today = date("Y-m-d");
+            $expire = $branch->deadline;
+            $today_time = strtotime($today);
+            $expire_time = strtotime($expire);
+            $tax = TaxRate::where('name','ICE')->first();
+            if ($expire_time < $today_time)
+            {
+                Session::flash('error','La fecha límite de emisión caducó, porfavor actualice su Dosificación');
+                return Redirect::to('sucursales/'.$branch->public_id.'/edit');  
+            }
+            $last_invoice= Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->max('invoice_date');
+            $last_date=  strtotime($last_invoice);
+            $secs = $today_time - $last_date;// == <seconds between the two times>
+            $days = $secs / 86400;
+            //getting the product within their datas
+            $products = Product::join('prices','products.id','=','prices.product_id')
+                                    ->where('prices.price_type_id',Auth::user()->price_type_id)
+                                    ->select(array('products.product_key','products.notes','prices.cost','products.qty','products.units','products.ice','products.cc'))
+                                    ->get();                                                                                
+            $invoiceDesigns = TypeDocument::where('account_id',\Auth::user()->account_id)->orderBy('public_id', 'desc')->get();
+            $data = array(				
+                            'account' => $account,								
+                            'data' => Input::old('data'), 
+                            'invoiceDesigns' => $invoiceDesigns,			
+                            'last_invoice_date' => $days,
+                            'products' => $products,
+                            'tax'=>$tax->rate,
+                            );					
+                            $data = array_merge($data, self::getViewModel());				
+                    return View::make('factura.new', $data);
 
-
-
-   		$invoiceDesigns = TypeDocument::where('account_id',\Auth::user()->account_id)->orderBy('public_id', 'desc')->get();
-		$data = array(
-				'account' => $account,
-				'data' => Input::old('data'),
-				'invoiceDesigns' => $invoiceDesigns,
-				'last_invoice_date' => $days,
-				'products' => $products
-
-				);
-				$data = array_merge($data, self::getViewModel());
-			return View::make('factura.new', $data);
 	}
 
 

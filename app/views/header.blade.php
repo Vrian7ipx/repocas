@@ -207,38 +207,25 @@
             {{-- <li class="header"><h3 style="color:black">{{Utils::titulo(Account::find(Auth::user()->account_id)->name)}}</h3></li> --}}
             <!-- Optionally, you can add icons to the links -->
              {{ HTML::nav_link('inicio', 'inicio') }}<i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
-            {{ HTML::nav_link('clientes', 'clientes') }}<i class="ion-person-stalker"></i> <span>&nbsp&nbsp&nbspClientes</span></a></li>
-            <!-- {{ HTML::nav_link('productos', 'productos') }}<i class="fa fa-cube"></i> <span>Productos y Servicios</span></a></li> -->
+            {{ HTML::nav_link('clientes', 'clientes') }}<i class="ion-person-stalker"></i> <span>&nbspClientes</span></a></li>
+            <!-- {{ HTML::nav_link('productos', 'productos') }}<i class="fa fa-cube"></i> <span>Productos</span></a></li> -->
             <li class="treeview">
               <a href="{{URL::to('productos')}}"><i class="fa fa-cubes"></i> <span>Items</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
                 {{ HTML::nav_link('productos', 'productos') }}<i class="glyphicon glyphicon-compressed"></i> <span>Productos</span></a></li>
-                {{ HTML::nav_link('producto/createservice', 'servicios') }}<i class="glyphicon glyphicon-briefcase"></i> <span>Servicios</span></a></li>
+                {{-- HTML::nav_link('producto/createservice', 'servicios') --}}<!-- <i class="glyphicon glyphicon-briefcase"></i> <span>Servicios</span></a></li> -->
                 {{ HTML::nav_link('precios', 'precios') }}<i class="fa fa-server"></i> <span>Precios</span></a></li>
-                {{ HTML::nav_link('unidades', 'unidades') }}<i class="fa fa-cube"></i> <span>Unidades</span></a></li>
+                {{-- HTML::nav_link('unidades', 'unidades') --}}<!-- <i class="fa fa-cube"></i> <span>Unidades</span></a></li> -->
 
               </ul>
 
-            </li>
+            </li> 
 
             <!-- {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-files-o"></i> <span>Facturas</span></a></li> -->
 
-            <li class="treeview">
-              <a href="{{URL::to('factura')}}"><i class="fa fa-files-o"></i> <span>Facturas y Otros</span> <i class="fa fa-angle-left pull-right"></i></a>
-              <ul class="treeview-menu">
-                <!-- {{ HTML::nav_link('factura/create', 'facturas') }}Factura Normal</a></li> -->
-                {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-file-o"></i> <span>Factura Normal</span></a></li>
-                {{ HTML::nav_link('importar', 'importar') }}<i class="fa fa-file-excel-o"></i><span>Factura Excel</span></a></li>
-                @if(Utils::mostrarNota())
-                {{ HTML::nav_link('notaEntrega', 'facturas') }}<i class="fa fa-file-text-o"></i><span>Nota de Entrega</span></a></li>
-                 @endif
-                {{-- HTML::nav_link('importar', 'importar') }}Factura Multiple</a></li>--}}
-                {{-- <li><a href="#">Factura Recurrente</a></li> --}}
-              </ul>
-            </li>
-
-             {{ HTML::nav_link('pagos', 'pagos') }}<i class="fa fa-money"></i> <span>Pagos</span></a></li>
-             {{ HTML::nav_link('creditos', 'creditos') }}<i class="fa fa-credit-card"></i> <span>Créditos</span></a></li>
+           
+              {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-money"></i> <span>Facturas</span></a></li>
+           
 
           </ul><!-- /.sidebar-menu -->
         </section>

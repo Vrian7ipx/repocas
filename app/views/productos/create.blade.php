@@ -95,7 +95,7 @@
                             <div class="row">
                                 <div class="col-md-5">
                                         <label>{{$precio->name}}</label>
-                                    <input class="form-control" type="number" name="price-{{$precio->id}}" placeholder="{{$precio->name}}" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
+                                    <input class="form-control" type="number" step="any"name="price-{{$precio->id}}" placeholder="{{$precio->name}}" aria-describedby="sizing-addon2" required title="Solo se acepta números. Ejem: 500.00" pattern="[0-9]+(\.[0-9][0-9]?)?" >
                                 </div>
                             </div>
                             <?php }?>

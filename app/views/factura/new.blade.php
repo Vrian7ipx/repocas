@@ -899,13 +899,19 @@ $(document).on('mouseout','.new_row',function(){
 function calculateAllTotal(){
     sum = 0;
     descuentos = 0.00;
+    ice_sum = 0;
   $( ".cost" ).each(function( index ) {
-    ind= this.id.substring(4);
+   if($(this).val()!="")     
+   {
     
+    ind= this.id.substring(4);
+    prod = findProduct($("#code"+ind).val());   
     valor = $("#"+this.id).val();
-    costo = $("#cost"+ind).val();
+    //costo = $("#cost"+ind).val();
+    costo = prod['cost']/prod['units'];
     boni = $("#bonus"+ind).val();
     disc = $("#disc"+ind).val();
+    pack = $("#pack"+ind).val();
 
     if(costo=='')
         costo=0.00;
@@ -913,6 +919,9 @@ function calculateAllTotal(){
     if(boni=='')
         boni=0.00;
     boni = parseFloat(boni).toFixed(2);
+    if(pack=='')
+        pack=0;
+    pack = parseFloat(pack).toFixed(2);
     disc = $("#disc"+ind).val();
     if(disc=='')
         disc= 0.00;
@@ -921,32 +930,50 @@ function calculateAllTotal(){
     descuentos=descuentos+parseFloat(sum_dis);
     
     canti = $("#qty"+ind).val();
-
-    if(valor && canti){
-      console.log("calculando el total");
-      valor = canti * valor;
-      sum = parseFloat(valor)+sum;
-    }
+    subto = $("#subtotal"+ind).val();
+    sum = parseFloat(subto)+sum;
+    
+    cantidad=parseFloat(canti)+pack*parseFloat(prod['units'])-boni;
+    
+    var ice_value = {{$tax}};  
+    ice_value = parseFloat(ice_value);
+    console.log("ice--->>> "+cantidad+" "+parseFloat(prod['cc'])+" "+ice_value);
+    if(prod['ice']=="1"){                     
+        ice_sum += cantidad*(parseFloat(prod['cc'])/1000)*ice_value;
+    }    
+  }
+    
   });
+  
     
   $("#descuento_box").text(parseFloat(descuentos).toFixed(2));
     
 
-  $("#subtotal").text(parseFloat(sum).toFixed(2)+"");  
+  $("#subtotal").text(parseFloat(sum).toFixed(2)+"");
+  $("#ice_neto").text(parseFloat(ice_sum).toFixed(2)+"");
   $("#subtotal_send").val(sum);
 
-  dis= $("#discount").val();
-  if($("#desc").prop('checked'))
-    dis = (parseFloat(dis)*sum)/100;
-    else
-        dis=parseFloat(dis);
-  sum = sum - dis;
+  sum = sum - descuentos;
   //$("#descuento_box").text(dis.toFixed(2));
   if(sum<0)sum=0;
   $("#total").text(sum.toFixed(2));
   $("#total_send").val(sum);
+  importe = sum-ice_sum;
+  $("#importe").text(parseFloat(importe.toFixed(2)));
 }
-
+function findProduct(cod_pro)
+{
+    
+    for(i=0;i<products.length;i++){
+        if(products[i]['product_key']==cod_pro){
+            console.log(products[i]['product_key']+"<<<<found");            
+            return products[i];                 
+        }else{
+        console.log(products[i]['product_key']+"<<<<");    
+        }
+    }
+    return null;
+}
 function addContactToSend2(id,name,mail,ind_con,tel){
   div ="<div class='form-group .contact_add'>";// "<div class='col-md-12' id='sendcontacts'>";
   ide = "<input type='hidden' id='contact_id' value='"+id+"' name='contactos["+ind_con+"][id]'>";
@@ -1274,11 +1301,12 @@ function addNewProduct(newkey,newnotes,newcost)
 
   $(document).on('keyup','.qty',function(){
     ind = this.id.substring(3);
-    costo = $("#cost"+ind).val();
+    prod = findProduct($("#code"+ind).val());
+    costo = prod['cost']/prod['units'];
     pack = $("#pack"+ind).val();
-    if(costo=='')
-        costo=0;
-    costo = parseFloat(costo).toFixed(2);
+//    if(costo=='')
+//        costo=0;
+//    costo = parseFloat(costo).toFixed(2);
     cantidad = $("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
@@ -1286,7 +1314,8 @@ function addNewProduct(newkey,newnotes,newcost)
     if(pack=='')
         pack=0;
     pack = parseFloat(pack).toFixed(2);
-    pack = products[ind-1]['cost']*pack;
+    
+    pack = prod['cost']*pack;
     cantidad = parseFloat(cantidad).toFixed(2);
     total_val=$("#total").val();
     total_val = parseFloat(total_val).toFixed(2);
@@ -1304,11 +1333,9 @@ function addNewProduct(newkey,newnotes,newcost)
 
   $(document).on('keyup','.pack',function(){
     ind = this.id.substring(4);
-    costo = $("#cost"+ind).val();
-    pack = $("#pack"+ind).val();
-    if(costo=='')
-        costo=0;
-    costo = parseFloat(costo).toFixed(2);
+    //costo = $("#cost"+ind).val();
+    costo = prod['cost']/prod['units'];
+    pack = $("#pack"+ind).val();    
     cantidad = $("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
@@ -1316,7 +1343,8 @@ function addNewProduct(newkey,newnotes,newcost)
     if(pack=='')
         pack=0;
     pack = parseFloat(pack).toFixed(2);
-    pack = products[ind-1]['cost']*pack;
+    prod = findProduct($("#code"+ind).val());
+    pack = prod['cost']*pack;
     cantidad = parseFloat(cantidad).toFixed(2);
     total_val=$("#total").val();
     total_val = parseFloat(total_val).toFixed(2);
@@ -1341,7 +1369,7 @@ function addNewProduct(newkey,newnotes,newcost)
     if(pack=='')
         pack=0;
     pack = parseFloat(pack).toFixed(2);
-    pack = products[ind-1]['cost']*pack;
+    pack = prod['cost']*pack;
     // if(cantidad=='')
     //     cantidad= 0;
     // cantidad = parseFloat(disc).toFixed(2);
