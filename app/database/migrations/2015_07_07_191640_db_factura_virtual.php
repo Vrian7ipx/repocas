@@ -143,7 +143,7 @@ class DbFacturaVirtual extends Migration {
 
             $t->string('law');
 
-            $t->boolean('type_third')->default(false);
+            $t->integer('type_third')->default(false)->nullable();
 
             $t->integer('invoice_number_counter')->default(0);
 
@@ -226,7 +226,7 @@ class DbFacturaVirtual extends Migration {
             $t->unsignedInteger('user_id')->index();
 
             $t->foreign('account_id')->references('id')->on('accounts');
-            $t->foreign('user_id')->references('id')->on('users');
+
 
         });
 

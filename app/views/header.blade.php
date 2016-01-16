@@ -67,9 +67,9 @@
       <link rel="stylesheet" type="text/css" href="{{ asset('customs/datepicker.custom.css')}}">
       <script src="{{ asset('customs/bootstrap-switch.js')}}" type="text/javascript"></script>
       <link rel="stylesheet" type="text/css" href="{{ asset('customs/bootstrap-switch.css')}}">
-      
-      
-    <!--SELECT2-->  
+
+
+    <!--SELECT2-->
     <script src="{{ asset('vendor/AdminLTE2/plugins/select2/select2.full.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendor/AdminLTE2/plugins/select2/i18n/es.js')}}" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AdminLTE2/plugins/select2/select2.css')}}">
@@ -219,13 +219,13 @@
 
               </ul>
 
-            </li> 
+            </li>
 
             <!-- {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-files-o"></i> <span>Facturas</span></a></li> -->
 
-           
-              {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-money"></i> <span>Facturas</span></a></li>
-           
+
+              {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-money"></i> <span>Factura</span></a></li>
+
 
           </ul><!-- /.sidebar-menu -->
         </section>

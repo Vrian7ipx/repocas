@@ -208,6 +208,9 @@ Route::group(array('before' => 'auth'), function()
   Route::get('clientesDown', 'ClientController@indexDown');
   Route::post('clientesDown', 'ClientController@indexDown');
 
+  Route::get('facturaDown', 'invoiceController@indexDown');
+  Route::post('facturaDown', 'invoiceController@indexDown');
+
   // Route::get('getClients', 'SearchController@getClients');
   Route::get('getProducts', 'SearchController@getProducts');
   Route::get('getInvoices', 'SearchController@getInvoices');

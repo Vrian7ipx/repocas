@@ -21,8 +21,8 @@ class InvoiceController extends \BaseController {
 
 
             $client = null;
-            $account = Account::findOrFail(Auth::user()->account_id);		
-            $branch = Branch::where('id','=',Session::get('branch_id'))->first();                                
+            $account = Account::findOrFail(Auth::user()->account_id);
+            $branch = Branch::where('id','=',Session::get('branch_id'))->first();
             $today = date("Y-m-d");
             $expire = $branch->deadline;
             $today_time = strtotime($today);
@@ -31,7 +31,7 @@ class InvoiceController extends \BaseController {
             if ($expire_time < $today_time)
             {
                 Session::flash('error','La fecha límite de emisión caducó, porfavor actualice su Dosificación');
-                return Redirect::to('sucursales/'.$branch->public_id.'/edit');  
+                return Redirect::to('sucursales/'.$branch->public_id.'/edit');
             }
             $last_invoice= Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->max('invoice_date');
             $last_date=  strtotime($last_invoice);
@@ -41,17 +41,17 @@ class InvoiceController extends \BaseController {
             $products = Product::join('prices','products.id','=','prices.product_id')
                                     ->where('prices.price_type_id',Auth::user()->price_type_id)
                                     ->select(array('products.product_key','products.notes','prices.cost','products.qty','products.units','products.ice','products.cc'))
-                                    ->get();                                                                                
+                                    ->get();
             $invoiceDesigns = TypeDocument::where('account_id',\Auth::user()->account_id)->orderBy('public_id', 'desc')->get();
-            $data = array(				
-                            'account' => $account,								
-                            'data' => Input::old('data'), 
-                            'invoiceDesigns' => $invoiceDesigns,			
+            $data = array(
+                            'account' => $account,
+                            'data' => Input::old('data'),
+                            'invoiceDesigns' => $invoiceDesigns,
                             'last_invoice_date' => $days,
                             'products' => $products,
                             'tax'=>$tax->rate,
-                            );					
-                            $data = array_merge($data, self::getViewModel());				
+                            );
+                            $data = array_merge($data, self::getViewModel());
                     return View::make('factura.new', $data);
 
 	}
@@ -1935,170 +1935,107 @@ class InvoiceController extends \BaseController {
         return $stackAstray;
     }
 
-		public function index($name = null, $numero = null, $nit = null, $create = null, $contact = null)
+		public function index($name = null, $numero = null, $fecha = null, $total = null, $estado = null)
 	{
 
 	 $name = Input::get('name');
 	 $numero = Input::get('numero');
-	 $nit = Input::get('nit');
-	 $create = Input::get('create');
-	 $contact = Input::get('contact');
+	 $fecha = Input::get('fecha');
+	 $total = Input::get('total');
+	 $estado = Input::get('estado');
 
 	//  die("index");
 
 	Session::put('sw','DESC');
 
-	 if(!$numero && !$name && !$nit && !$create && !$contact)
+	 if(!$numero && !$name && !$fecha && !$total && !$estado)
 	 {
-		$clientes= Client::where('account_id', Auth::user()->account_id)
-		->select('id', 'business_name', 'nit', 'created_at')->orderBy('id', 'DESC')->simplePaginate(30);
-
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')->where('client_id', $client->id)->first();
-
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
-		}
-		return View::make('clientes.index', array('clients' => $clientes,'sw'=>'ASC', 'contacts' => $contacts));
+		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->orderBy('invoices.id', 'DESC')
+												->simplePaginate(2);
+		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
 	 }
 	 if ($numero) {
 
-		 $clientes = Client::where('account_id', Auth::user()->account_id)
-		->select('id', 'business_name', 'nit', 'created_at')
-		->where('id', 'like', $numero."%")
-		->orderBy('id', $sw)
-		->simplePaginate(30);
-
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')
-			->where('client_id', $client->id)
-			->first();
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
-		}
+		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+ 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->where('invoices.id','like', $numero."%")
+ 												->orderBy('invoices.id', 'DESC')
+ 												->simplePaginate(2);
 
 		$data = [
-			'clients' => $clientes,
-			'numero' => $numero,
-			'name' => $name,
-			'nit' => $nit,
-			'create' => $create
+			'invoices' => $invoices,
+			'numero' => $numero
 		];
-		return View::make('clientes.index', $data);
+		return View::make('factura.index', $data, array('sw'=>'ASC'));
 	}
 
 	 if ($name) {
 
-		 $clientes = Client::where('account_id', Auth::user()->account_id)
-		->select('id', 'business_name', 'nit', 'created_at')
-		->where('business_name', 'like', $name."%")
-		->orderBy('business_name', $sw)
-		->simplePaginate(30);
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')
-			->where('client_id', $client->id)
-			->first();
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
+		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+ 											 ->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 											 ->where('invoices.client_name','like', $name."%")
+ 											 ->orderBy('invoices.client_name', 'DESC')
+ 											 ->simplePaginate(2);
+
+		 	 $data = [
+		 		 'invoices' => $invoices,
+		 		 'name' => $name
+		 	 ];
+		 	 return View::make('factura.index', $data, array('sw'=>'ASC'));
 		}
 
-		$data = [
-			'clients' => $clientes,
-			'numero' => $numero,
-			'name' => $name,
-			'nit' => $nit,
-			'create' => $create
-		];
-		return View::make('clientes.index', $data);
+		if ($fecha) {
+			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->where('invoices.created_at','like', $fecha."%")
+												->orderBy('invoices.created_at', 'DESC')
+												->simplePaginate(2);
+
+				$data = [
+					'invoices' => $invoices,
+					'fecha' => $fecha
+				];
+				return View::make('factura.index', $data, array('sw'=>'ASC'));
 		}
 
-		if ($nit) {
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('nit', 'like', $nit."%")
-		 ->orderBy('nit', $sw)
-		 ->simplePaginate(30);
-		 foreach ($clientes as $key => $client) {
-			 $contacts = Contact::where('account_id', Auth::user()->account_id)
-			 ->select('first_name', 'last_name')
-			 ->where('client_id', $client->id)
-			 ->first();
-			 $client->contacto_first_name = $contacts->first_name;
-			 $client->contacto_last_name = $contacts->last_name;
-		 }
+		if ($total) {
+			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->where('invoices.importe_total','like', $total."%")
+												->orderBy('invoices.importe_total', 'DESC')
+												->simplePaginate(2);
 
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
+				$data = [
+					'invoices' => $invoices,
+					'total' => $total
+				];
+				return View::make('factura.index', $data, array('sw'=>'ASC'));
 		}
 
-		if ($create) {
-
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('created_at', 'like', $create."%")
-		 ->orderBy('created_at', $sw)
-		 ->simplePaginate(30);
-				 foreach ($clientes as $key => $client) {
-					 $contacts = Contact::where('account_id', Auth::user()->account_id)
-					 ->select('first_name', 'last_name')
-					 ->where('client_id', $client->id)
-					 ->first();
-					 $client->contacto_first_name = $contacts->first_name;
-					 $client->contacto_last_name = $contacts->last_name;
-				 }
-
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
-		}
-
-		if ($contact) {
-
-			$clientes= Client::join('contacts', 'clients.id', '=' , 'contacts.client_id')
-			->select('clients.id', 'clients.nit', 'clients.business_name', 'clients.created_at', 'contacts.first_name', 'contacts.last_name')
-			->where('contacts.first_name', 'like', $contact."%")
-			->orderBy('contacts.first_name', $sw)
-			->simplePaginate(30);
-
-			foreach ($clientes as $key => $client) {
-				$client->contacto_first_name = $client->first_name;
-				$client->contacto_last_name = $client->last_name;
-			}
-			$data = [
-				'clients' => $clientes,
-				'numero' => $numero,
-				'name' => $name,
-				'nit' => $nit,
-				'create' => $create,
-				'contacts' => $contacts
-			];
-			return View::make('clientes.index', $data);
+		if ($estado) {
+			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->where('invoice_statuses.name','like', $estado."%")
+												->orderBy('invoice_statuses.name', 'DESC')
+												->simplePaginate(2);
+				$data = [
+					'invoices' => $invoices,
+					'estado' => $estado
+				];
+				return View::make('factura.index', $data, array('sw'=>'ASC'));
 		}
  }
 
-	 public function indexDown($name = null, $numero = null, $nit = null, $create = null, $contact = null)
-	 {
+	 public function indexDown($name = null, $numero = null, $fecha = null, $total = null, $estado = null)
+	{
 
-
-		 $name = Input::get('name');
-		 $numero = Input::get('numero');
-		 $nit = Input::get('nit');
-		 $create = Input::get('create');
-		 $contact = Input::get('contact');
+		$name = Input::get('name');
+		$numero = Input::get('numero');
+		$fecha = Input::get('fecha');
+		$total = Input::get('total');
+		$estado = Input::get('estado');
 
 
 		if(Session::get('sw')=='DESC')
@@ -2108,162 +2045,85 @@ class InvoiceController extends \BaseController {
 		else {
 			Session::put('sw','DESC');
 		}
-
 		$sw = Session::get('sw');
-		if($numero == "" && $name == "" && $nit == "" && $create == "" && $contact == "")
-		{
 
-		 $clientes= Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')->orderBy('id', $sw)->simplePaginate(30);
+		if(!$numero && !$name && !$fecha && !$total && !$estado)
+ 	 {
+ 		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+ 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->orderBy('invoices.id', $sw)
+ 												->simplePaginate(2);
+ 		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
+ 	 }
+ 	 if ($numero) {
 
-			foreach ($clientes as $key => $client) {
-				$contacts = Contact::where('account_id', Auth::user()->account_id)
-				->select('first_name', 'last_name')->where('client_id', $client->id)->first();
+ 		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+  												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->where('invoices.id','like', $numero."%")
+  												->orderBy('invoices.id', $sw)
+  												->simplePaginate(2);
 
-				$client->contacto_first_name = $contacts->first_name;
-				$client->contacto_last_name = $contacts->last_name;
-			}
-		 return View::make('clientes.index', array('clients' => $clientes,'sw'=>'ASC', 'contacts' => $contacts));
-		}
+ 		$data = [
+ 			'invoices' => $invoices,
+ 			'numero' => $numero
+ 		];
+ 		return View::make('factura.index', $data);
+ 	}
 
-		if ($numero) {
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('id', 'like', $numero."%")
-		 ->orderBy('id', $sw)
-		 ->simplePaginate(30);
+ 	 if ($name) {
 
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')
-			->where('client_id', $client->id)
-			->first();
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
-		}
+ 		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+  											 ->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+  											 ->where('invoices.client_name','like', $name."%")
+  											 ->orderBy('invoices.client_name', $sw)
+  											 ->simplePaginate(2);
 
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
-	 }
+ 		 	 $data = [
+ 		 		 'invoices' => $invoices,
+ 		 		 'name' => $name
+ 		 	 ];
+ 		 	 return View::make('factura.index', $data);
+ 		}
 
-		if ($name) {
+ 		if ($fecha) {
+ 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+ 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->where('invoices.created_at','like', $fecha."%")
+ 												->orderBy('invoices.created_at', $sw)
+ 												->simplePaginate(2);
 
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('business_name', 'like', $name."%")
-		 ->orderBy('business_name', $sw)
-		 ->simplePaginate(30);
+ 				$data = [
+ 					'invoices' => $invoices,
+ 					'fecha' => $fecha
+ 				];
+ 				return View::make('factura.index', $data);
+ 		}
 
-		//  $clientes = Client::join('contacts', 'clients.id' ,'=', 'contacts.client_id')
-		//  ->where('business_name', 'like', $name."%")
-		//  ->select('clients.id', 'clients.business_name', 'clients.nit', 'clients.created_at', 'contacts.first_name', 'contacts.last_name')
-		//  ->orderBy('business_name', $sw)
-		//  ->simplePaginate(30);
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')
-			->where('client_id', $client->id)
-			->first();
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
-		}
-// return $clientes;
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
-		 }
+ 		if ($total) {
+ 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+ 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->where('invoices.importe_total','like', $total."%")
+ 												->orderBy('invoices.importe_total', $sw)
+ 												->simplePaginate(2);
 
-		 if ($nit) {
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('nit', 'like', $nit."%")
-		 ->orderBy('nit', $sw)
-		 ->simplePaginate(30);
-		 foreach ($clientes as $key => $client) {
-			 $contacts = Contact::where('account_id', Auth::user()->account_id)
-			 ->select('first_name', 'last_name')
-			 ->where('client_id', $client->id)
-			 ->first();
-			 $client->contacto_first_name = $contacts->first_name;
-			 $client->contacto_last_name = $contacts->last_name;
-		 }
+ 				$data = [
+ 					'invoices' => $invoices,
+ 					'total' => $total
+ 				];
+ 				return View::make('factura.index', $data);
+ 		}
 
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
-		 }
-
-		 if ($create) {
-
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('created_at', 'like', $create."%")
-		 ->orderBy('created_at', $sw)
-		 ->simplePaginate(30);
-				 foreach ($clientes as $key => $client) {
-					 $contacts = Contact::where('account_id', Auth::user()->account_id)
-					 ->select('first_name', 'last_name')
-					 ->where('client_id', $client->id)
-					 ->first();
-					 $client->contacto_first_name = $contacts->first_name;
-					 $client->contacto_last_name = $contacts->last_name;
-				 }
-
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
-		 }
-
-		 if ($contact) {
-			 return $contacts;
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name', 'client_id')
-			->where('first_name', $contact)
-			->get();
-
-			foreach ($contacts as $key => $contact) {
-				$clientes = Client::where('account_id', Auth::user()->account_id)
-			 ->select('id', 'business_name', 'nit', 'created_at')
-			 ->where('created_at', 'like', $contact->client_id)
-			 ->first();
-
-
-				$contact->contacto_first_name = $client->first_name;
-				$contact->contacto_last_name = $client->last_name;
-			}
-			$data = [
-				'clients' => $clientes,
-				'numero' => $numero,
-				'name' => $name,
-				'nit' => $nit,
-				'create' => $create,
-				'contacts' => $contacts
-			];
-			return View::make('clientes.index', $data);
-		 }
-	 }
-
-
-
+ 		if ($estado) {
+ 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
+ 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->where('invoice_statuses.name','like', $estado."%")
+ 												->orderBy('invoice_statuses.name', $sw)
+ 												->simplePaginate(2);
+ 				$data = [
+ 					'invoices' => $invoices,
+ 					'estado' => $estado
+ 				];
+ 				return View::make('factura.index', $data);
+ 		}
+	}
 }

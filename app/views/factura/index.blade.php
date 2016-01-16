@@ -24,7 +24,7 @@
                   <td><input placeholder="Cliente" id="name" value="{{ $name }}"></input></td>
                   <td><input placeholder="fecha" id="fecha" value="{{ $fecha }}"></input></td>
                   <td><input placeholder="total" id="total" value="{{ $total }}"></input></td>
-                  <td><input placeholder="estado" id="estado" value="{{ $value }}"></input></td>
+                  <td><input placeholder="estado" id="estado" value="{{ $estado }}"></input></td>
                   <td style = "display:none">Acción</td>
 
               </tr>
@@ -46,12 +46,12 @@
           @foreach($invoices as $invoice)
               <tr class="active">
 
-                  <td>{{ $invoice->invoice_number}}</td>
-                  <td ><a href="{{URL::to('clientes/'.Client::find($invoice->client_id)->id)}}">{{ $invoice->getClientName() }}</a></td>
-                  <td>{{ $invoice->getInvoiceDate() }}</td>
-                  <td>{{ $invoice->getImporteTotal() }}</td>
+                  <td>{{ $invoice->id}}</td>
+                  <td ><a href="{{URL::to('clientes/'.Client::find($invoice->client_id)->id)}}">{{ $invoice->client_name }}</a></td>
+                  <td>{{ $invoice->created_at }}</td>
+                  <td>{{ $invoice->importe_total }}</td>
 
-                  <td>{{ $invoice->getInvoiceStatus() }}</td>
+                  <td>{{ $invoice->name }}</td>
 
                   <td>
         		<a id="{{$invoice->invoice_number}}" class="btn btn-primary btn-xs jae" data-task="view" href="{{ URL::to("factura/".$invoice->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open" title="hola" ></i></a>
@@ -61,6 +61,25 @@
           @endforeach
           </tbody>
         </table>
+
+        @if($numero != "")
+        <center><div class="pagination"> {{ $invoices->appends(array('numero' => $numero))->links(); }} </div></center>
+        @endif
+        @if($name != "")
+        <center><div class="pagination"> {{ $invoices->appends(array('name' => $name))->links(); }} </div></center>
+        @endif
+        @if($fecha != "")
+        <center><div class="pagination"> {{ $invoices->appends(array('fecha' => $fecha))->links(); }} </div></center>
+        @endif
+        @if($total != "")
+        <center><div class="pagination"> {{ $invoices->appends(array('total' => $total))->links(); }} </div></center>
+        @endif
+        @if($estado != "")
+        <center><div class="pagination"> {{ $invoices->appends(array('estado' => $estado))->links(); }} </div></center>
+        @endif
+        @if($numero == "" && $name == "" && $fecha == "" && $total == "" && $estado == "")
+        <center><div class="pagination"> {{ $invoices->links(); }} </div></center>
+        @endif
 
     </div>
 </div>
@@ -93,7 +112,7 @@ $('#fecha').keypress(function(event){
     if(keycode == '13'){
         // alert('You pressed a "enter" key in textbox');
         console.log("Enter");
-        fecha = $("#numero").val();
+        fecha = $("#fecha").val();
         window.open('{{URL::to('factura')}}'+'?fecha=' +fecha, "_self");
     }
 });
@@ -103,7 +122,7 @@ $('#total').keypress(function(event){
     if(keycode == '13'){
         // alert('You pressed a "enter" key in textbox');
         console.log("Enter");
-        total = $("#numero").val();
+        total = $("#total").val();
         window.open('{{URL::to('factura')}}'+'?total=' +total, "_self");
     }
 });
@@ -113,10 +132,37 @@ $('#estado').keypress(function(event){
     if(keycode == '13'){
         // alert('You pressed a "enter" key in textbox');
         console.log("Enter");
-        estado = $("#numero").val();
+        estado = $("#estado").val();
         window.open('{{URL::to('factura')}}'+'?estado=' +estado, "_self");
     }
 });
+
+$('#dnumero').click(function(){
+  numero = $("#numero").val();
+  var sw = '{{Session::get('sw')}}';
+  window.open('{{URL::to('facturaDown')}}'+'?numero='+numero, "_self");
+});
+$('#dname').click(function(){
+  name = $("#name").val();
+  var sw = '{{Session::get('sw')}}';
+  window.open('{{URL::to('facturaDown')}}'+'?name='+name, "_self");
+});
+$('#dfecha').click(function(){
+  fecha = $("#fecha").val();
+  var sw = '{{Session::get('sw')}}';
+  window.open('{{URL::to('facturaDown')}}'+'?fecha='+fecha, "_self");
+});
+$('#dtotal').click(function(){
+  total = $("#total").val();
+  var sw = '{{Session::get('sw')}}';
+  window.open('{{URL::to('facturaDown')}}'+'?total='+total, "_self");
+});
+$('#destado').click(function(){
+  estado = $("#estado").val();
+  var sw = '{{Session::get('sw')}}';
+  window.open('{{URL::to('facturaDown')}}'+'?estado='+estado, "_self");
+});
+
 
 </script>
 
