@@ -22,15 +22,12 @@ public function getClients(){
 }
 
 public function getProducts(){
-  $products = Product::where('account_id', Auth::user()->account_id)->select('public_id','product_key', 'notes', 'cost',  'is_product', 'category_id')->orderBy('product_key', 'ASC')->get();
-  foreach ($products as $key => $product) {
-      $producOrService = $product->is_product?'producto':'servicio';
-      $category_name = Category::where('account_id', Auth::user()->account_id)->select('name')->where('id', $product->category_id)->first();
-      $product->product_service = $producOrService;
-      $product->category_name = $category_name->name;
-      $product->accion = "<a class='btn btn-primary btn-xs' data-task='view' href='productos/$product->public_id'  style='text-decoration:none;color:white;'><i class='glyphicon glyphicon-eye-open'></i></a> <a class='btn btn-warning btn-xs' href='productos/$product->public_id/edit' style='text-decoration:none;color:white;'><i class='glyphicon glyphicon-edit'></i></a>";
+  $products = Product::select('id','product_key', 'notes', 'pack_types',  'is_product', 'ice','units','cc')->orderBy('product_key', 'ASC')->get();
+  foreach ($products as $key => $product) {                  
+      $product->pack_types = $product->pack_types==1?"Vidrio":"Plástico";
+      $product->ice = $product->ice?"SÍ":"NO";
+      $product->accion = "<a class='btn btn-primary btn-xs' data-task='view' href='productos/$product->id'  style='text-decoration:none;color:white;'><i class='glyphicon glyphicon-eye-open'></i></a> <a class='btn btn-warning btn-xs' href='productos/$product->id/edit' style='text-decoration:none;color:white;'><i class='glyphicon glyphicon-edit'></i></a>";
   }
-
   $productJson = ['data'=>$products];
   return Response::json($productJson);
 }

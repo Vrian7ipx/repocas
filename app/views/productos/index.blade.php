@@ -26,9 +26,10 @@
               <tr>
                   <td>Código</td>
                   <td>Nombre</td>
-                  <td>Precio</td>
-                  <td>Tipo</td>
-                  <td>Categoría</td>
+                  <td>Tipo envase</td>
+                  <td>ICE</td>
+                  <td>Unidades</td>
+                  <td>Volmen CC</td>                 
                   <td style="display:none;">Acción</td>
               </tr>
           </thead>
@@ -36,9 +37,10 @@
               <tr>
                   <th>Código</th>
                   <th>Nombre</th>
-                  <th>Precio</th>
-                  <th>Tipo</th>
-                  <th>Categoría</th>
+                  <th>Tipo envase</th>
+                  <th>ICE</th>
+                  <th>Unidades</th>
+                  <th>Volumen CC</th>
                   <th style="display:block;">&nbsp;&nbsp;&nbsp;&nbsp;Acción</th>
               </tr>
           </thead>
@@ -47,15 +49,15 @@
           @foreach($products as $product)
               <tr>
                   <td>{{ $product->product_key }}</td>
-                  <td><a href="{{URL::to('productos/'.$product->public_id)}}">{{ $product->notes }}</a></td>
-                  <td>{{ $product->cost }}</td>
+                  <td><a href="{{URL::to('productos/'.$product->id)}}">{{ $product->notes }}</a></td>
+                  <td>{{ $product->pack_types==0?"Vidrio":"Plástico" }}</td>
                   <td>{{ $product->is_product?'producto':'servicio'}}</td>
                   <td><a href="{{URL::to('categorias/'.$product->category_id.'/edit')}}">{{ $product->category_name }}</a></td>
 
                   <td>
-                  {{ Form::open(['url' => 'productos/'.$product->public_id, 'method' => 'delete', 'class' => 'deleteForm']) }}
-                      <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("productos/".$product->public_id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
-                      <a class="btn btn-warning btn-xs" href="{{ URL::to("productos/".$product->public_id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
+                  {{ Form::open(['url' => 'productos/'.$product->id, 'method' => 'delete', 'class' => 'deleteForm']) }}
+                      <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("productos/".$product->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
+                      <a class="btn btn-warning btn-xs" href="{{ URL::to("productos/".$product->id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
                   {{ Form::close() }}
                   </td>
 
@@ -121,9 +123,10 @@ $(document).ready(function() {
   columns: [
         { data: 'product_key' },
         { data: 'notes' },
-        { data: 'cost' },
-        { data: 'product_service' },
-        { data: 'category_name' },
+        { data: 'pack_types' },
+        { data: 'ice' },
+        { data: 'units' },
+        { data: 'cc' },
         { data: 'accion' }
       ],
       "deferRender": true,
@@ -150,11 +153,11 @@ $(document).ready(function() {
    });
    $('#formConfirm').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget);
-      var public_id = button.data('id');
+      var id = button.data('id');
       var name = button.data('name');
       var modal = $(this);
       modal.find('.modal-body').text('¿ Está seguro de borrar ' + name + ' ?');
-      document.getElementById("public_id").value = public_id;
+      document.getElementById("id").value = id;
   });
 
   var table = $('#datatable').DataTable();
