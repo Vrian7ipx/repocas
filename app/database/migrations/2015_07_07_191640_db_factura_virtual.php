@@ -484,10 +484,10 @@ class DbFacturaVirtual extends Migration {
             $t->string('name');
             $t->decimal('rate', 13, 2);
 
-            $t->foreign('account_id')->references('id')->on('accounts');
+            // $t->foreign('account_id')->references('id')->on('accounts');
 
 
-            $t->unsignedInteger('public_id');
+            // $t->unsignedInteger('public_id');
             // $t->unique( array('account_id'));
         });
 
@@ -502,10 +502,10 @@ class DbFacturaVirtual extends Migration {
             $t->text('name');
             $t->text('description');
 
-            $t->foreign('account_id')->references('id')->on('accounts');
+            // $t->foreign('account_id')->references('id')->on('accounts');
 
 
-            $t->unsignedInteger('public_id');
+            // $t->unsignedInteger('public_id');
             // $t->unique( array('account_id'));
         });
 
