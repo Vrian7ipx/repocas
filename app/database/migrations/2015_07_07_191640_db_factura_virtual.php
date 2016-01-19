@@ -318,6 +318,8 @@ class DbFacturaVirtual extends Migration {
             $t->unsignedInteger('business_type_id')->index();
             $t->unsignedInteger('group_id')->index();
             $t->unsignedInteger('zone_id')->index();
+						$t->string('other')->nullable();
+						$t->unsignedInteger('frecuency')->nullable();
 
             $t->foreign('business_type_id')->references('id')->on('business_types');
             $t->foreign('group_id')->references('id')->on('groups');
@@ -505,7 +507,7 @@ class DbFacturaVirtual extends Migration {
             // $t->foreign('account_id')->references('id')->on('accounts');
 
 
-            // $t->unsignedInteger('public_id');
+            $t->unsignedInteger('public_id');
             // $t->unique( array('account_id'));
         });
 
@@ -613,6 +615,7 @@ class DbFacturaVirtual extends Migration {
             $t->date('payment_date')->nullable();
             $t->string('transaction_reference')->nullable();
             $t->string('payer_id')->nullable();
+
 
             $t->foreign('invoice_id')->references('id')->on('invoices');
             $t->foreign('account_id')->references('id')->on('accounts');

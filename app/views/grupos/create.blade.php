@@ -35,7 +35,7 @@
                         <label>Nombre *</label><br>
                         <input type="text" name="name" class="form-control" placeholder="Nombre del Grupo" aria-describedby="sizing-addon2"  pattern=".{1,}" required>
                         <label>Datos Adicionales *</label><br>
-                        <textarea type="text" name="datos" class="form-control" placeholder="Datos Adicionales" aria-describedby="sizing-addon2"  pattern=".{1,}" required></textarea>
+                        <textarea type="text" name="datos" class="form-control" placeholder="Datos Adicionales" aria-describedby="sizing-addon2"  pattern=".{1,}"></textarea>
 
 
 

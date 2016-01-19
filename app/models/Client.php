@@ -86,6 +86,12 @@ class Client extends EntityModel
      */
     private $fv_isDeleted;
 
+
+		private $fv_group;
+
+		private $fv_business_type;
+
+
     /**
      * @var string
      */
@@ -172,6 +178,8 @@ class Client extends EntityModel
     private $fv_user;
 
     private $error_message;
+
+		private $fv_zone;
 
 
     ///FIN DE NUEVAS VARIABLES
@@ -450,7 +458,7 @@ class Client extends EntityModel
      */
     public function setCity($city)
 	{
-	    if(is_null($city))
+	    if($city == "")
 		{
 			$this->fv_city = "Ciudad ".ERROR_NULL."<br>";
 			return;
@@ -666,23 +674,80 @@ class Client extends EntityModel
         return $this->last_login;
     }
 
-    /**
-     * Set customValue1
-     *
-     * @param string $customValue1
-     * @return Clients
-     */
-    public function setCustomValue1($customValue1)
-	{
-	    if(is_null($customValue1))
+
+
+	public function setZone($zone){
+
+		if($zone == "")
 		{
-			$this->fv_customValue1 = "Campo personalizado ".ERROR_NULL."<br>";
+			$this->fv_zone = "Zona ".ERROR_NULL."<br>";
 			return;
 		}
-		$this->fv_customValue1=null;
-		$this->custom_value1=$customValue1;
-	    return $this;
+		$this->fv_zone=null;
+		$this->zone_id = $zone;
+		return $this;
 	}
+
+	public function getZone()
+	{
+		return $this->zone_id;
+	}
+
+	public function setGroup($group){
+
+		if($group == "")
+		{
+			$this->fv_group = "Grupo ".ERROR_NULL."<br>";
+			return;
+		}
+		$this->fv_group=null;
+		$this->group_id = $group;
+		return $this;
+	}
+
+	public function getGroup()
+	{
+		return $this->group_id;
+	}
+
+	public function setBusiness_type_id($business_type){
+
+
+		if($business_type == "")
+		{
+			$this->fv_business_type = "Clasificación ".ERROR_NULL."<br>";
+			return "vacio";
+		}
+		$this->fv_business_type=null;
+		$this->business_type_id = $business_type;
+		return $this;
+	}
+
+	public function getBusiness_type_id()
+	{
+
+		return $this->business_type_id;
+	}
+
+
+
+	/**
+	 * Set customValue1
+	 *
+	 * @param string $customValue1
+	 * @return Clients
+	 */
+			public function setCustomValue1($customValue1)
+		{
+				if(is_null($customValue1))
+			{
+				$this->fv_customValue1 = "Campo personalizado ".ERROR_NULL."<br>";
+				return;
+			}
+			$this->fv_customValue1=null;
+			$this->custom_value1=$customValue1;
+				return $this;
+		}
 
     /**
      * Get customValue1
@@ -1191,14 +1256,26 @@ class Client extends EntityModel
         if($this->fv_publicId){
             $error_messge = $error_messge.$this->fv_publicId;
         }
+				if($this->fv_zone){
+            $error_messge = $error_messge.$this->fv_zone;
+        }
+				if($this->fv_group){
+            $error_messge = $error_messge.$this->fv_group;
+        }
+				if($this->fv_business_type){
+            $error_messge = $error_messge.$this->fv_business_type;
+        }
         return $error_messge;
 	}
 
      public function guardar(){
-		$error = $this->validate();
-		echo $error;
-		return $error==""?false:$error;
-	}
+				$error = $this->validate();
+				if($error == ""){
+					$this->save();
+					return false;
+				}
+				return $error;
+			}
     public function borrar()
     {
         $getTotalCredit = Credit::scope()->where('client_id', '=', $this->id)->whereNull('deleted_at')->where('balance', '>', 0)->sum('balance');

@@ -102,7 +102,7 @@ class ClientController extends \BaseController {
 		$client->setNit(trim(Input::get('nit')));
 		$client->setName(trim(Input::get('name')));
 		$client->setBussinesName(trim(Input::get('business_name')));
-                $client->setWorkPhone(trim(Input::get('work_phone')));
+    $client->setWorkPhone(trim(Input::get('work_phone')));
 		$client->setCustomValue1(trim(Input::get('l1')));
 		$client->setCustomValue2(trim(Input::get('l2')));
 		$client->setCustomValue3(trim(Input::get('l3')));
@@ -113,12 +113,15 @@ class ClientController extends \BaseController {
 		$client->setAddress2(trim(Input::get('address2')));
 		$client->setPrivateNotes(trim(Input::get('private_notes')));
 
-                //improve this put method
-                $client->other=trim(Input::get('other'));
-                $client->zone_id=Input::get('zone');
-                $client->city=Input::get('city');
-                $client->group_id = Input::get('group');
-                $client->business_type_id = Input::get('business');
+		 $client->setZone(trim(Input::get('zone')));
+		 $client->other=trim(Input::get('other'));
+		$client->setCity(trim(Input::get('city')));
+		$client->setGroup(trim(Input::get('group')));
+		$client->setBusiness_type_id(trim(Input::get('business')));
+		
+                // $client->city=Input::get('city');
+                // $client->group_id = Input::get('group');
+                // $client->business_type_id = Input::get('business');
                 $dias="";
                 for($i=1;$i<8;$i++){
                     if(Input::get('d'.$i))
@@ -131,7 +134,6 @@ class ClientController extends \BaseController {
 
 		$resultado = $client->guardar();
 
-		// $new_contacts = json_decode(Input::get('data'));
                 if(Input::get('json')=="1")
                 {
                     $client->save();
@@ -139,7 +141,6 @@ class ClientController extends \BaseController {
                 }
 		if(!$resultado){
 			$message = "Cliente creado con éxito";
-//			echo "producto salvado";
 			$client->save();
 		}
 		else
@@ -149,6 +150,7 @@ class ClientController extends \BaseController {
                     return Redirect::to($url)
                     ->withInput();
 		}
+
 		$isPrimary = true;
 
 

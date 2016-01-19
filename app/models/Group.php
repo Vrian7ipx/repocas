@@ -65,7 +65,7 @@ class Group extends EntityModel
   }
 
   public function setCode($code){
-    if(is_null($code)){
+    if($code == ""){
       $this->fv_code = "código ".ERROR_NULL."<br>";
       return;
     }
@@ -79,7 +79,7 @@ class Group extends EntityModel
   }
 
   public function setName($name){
-    if(is_null($name)){
+    if($name == ""){
       $this->fv_name = "nombre ".ERROR_NULL."<br>";
       return;
     }

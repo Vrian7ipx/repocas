@@ -7,7 +7,7 @@ class UserController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	
+
 	public function index()
 	{
 		//
@@ -29,7 +29,7 @@ class UserController extends \BaseController {
 	 */
 	public function create()
 	{
-	
+
 		if (Auth::user()->is_admin)
 		{
 			$sucursales =Account::find(Auth::user()->account_id)->branches;
@@ -41,10 +41,10 @@ class UserController extends \BaseController {
                             'grupos'=>$groups,
                         ];
 			return View::make('users.create',$data);
-		} 
+		}
 		return Redirect::to('/inicio');
 	}
- 
+
 
 	/**
 	 * Store a newly created resource in storage.
@@ -58,33 +58,34 @@ class UserController extends \BaseController {
 		// return Response::json(Input::all());
 
 		if (Auth::user()->is_admin)
-		{                   
-                    $usuario = User::createNew();		
+		{
+                    $usuario = User::createNew();
                     $usuario->setUsername(Input::get('username'));
                     $usuario->setPassword(Input::get('password'),Input::get('password_confirm'));
-                    $usuario->setFirstName(Input::get('first_name'));		
-                    $usuario->setLastName(Input::get('last_name'));			
-                    $usuario->setEmail(Input::get('email'));			
+                    $usuario->setFirstName(Input::get('first_name'));
+                    $usuario->setLastName(Input::get('last_name'));
+                    $usuario->setEmail(Input::get('email'));
                     $usuario->setPhone(Input::get('phone'));
                     if(Input::get('admin')==1)
                         $usuario->is_admin = 1;
                     else
                         $usuario->is_admin = 0;
                     //$usuario->branch_id = Input::get('branch');
-                    $usuario->price_type_id = Input::get('price');
-                    $usuario->group_ids = implode(",",Input::get('groups'));
-                        
-			// return var_dump($usuario);		
+                    $usuario->setPriceType(Input::get('price'));
+                    $usuario->setGroupId(implode(",",Input::get('groups')));
+										$usuario->setBranch(Input::get('branch'));
+
+			// return var_dump($usuario);
 
 		if($usuario->Guardar())
-                {	
-                    //redireccionar con el mensaje a la siguiente vista 
+                {
+                    //redireccionar con el mensaje a la siguiente vista
 
                     Session::flash('message',$usuario->getErrorMessage());
 
 
                     if(Input::has('branch'))
-                    {	
+                    {
                             foreach (Input::get('branch') as $branch_id) {
                                     # code...
                                     // $cantidad = $cantidad +$sucursal;
@@ -92,7 +93,7 @@ class UserController extends \BaseController {
                                     $userbranch->account_id = Auth::user()->account_id;
                                     $userbranch->user_id = $usuario->id;
                                     $userbranch->branch_id = $branch_id;
-                                    // $userbranch->branch_id = UserBranch::getPublicId(); 
+                                    // $userbranch->branch_id = UserBranch::getPublicId();
                                     $userbranch->save();
 
                             }
@@ -125,7 +126,7 @@ class UserController extends \BaseController {
 			$usuario = User::where('id',$id)->first();
                         if($usuario->is_admin==1)
                             $rol="Administrador";
-                        else 
+                        else
                             $rol="Facturador";
                         $price = PriceType::where('id',$usuario->price_type_id)->first();
                         //print_r(explode(',', $usuario->group_ids));
@@ -153,7 +154,7 @@ class UserController extends \BaseController {
 	 * @return Response
 	 */
 	public function edit($id)
-	{		
+	{
 		if (Auth::user()->is_admin)
 		{
 			$usuario = User::where('id',$id)->first();
@@ -161,14 +162,14 @@ class UserController extends \BaseController {
                         $sucs=array();
                         $ubras= UserBranch::where('user_id',$usuario->id)->get();
                         foreach ($ubras as $ubra)
-                            array_push($sucs,$ubra->branch_id);   
+                            array_push($sucs,$ubra->branch_id);
                         $prices = PriceType::get();
                         $groups = Group::get();
                         $grus=array();
                         $grupos_s= explode(",",$usuario->group_ids);
                         foreach ($grupos_s as $g)
                             array_push($grus,$g);
-                        
+
                         $data = [
                             'usuario'=>$usuario,
                             'sucursales'=>$sucursales,
@@ -199,11 +200,11 @@ class UserController extends \BaseController {
 			$usuario = User::where('id',$id)->first();
 			$usuario->first_name = trim(Input::get('first_name'));
 			$usuario->last_name = trim(Input::get('last_name'));
-                        $usuario->email=Input::get('email');		
+                        $usuario->email=Input::get('email');
                         $usuario->phone=Input::get('phone');
-                        if(Input::get('password') == Input::get('password_confirm')){             
+                        if(Input::get('password') == Input::get('password_confirm')){
                             if(Input::get('error')!="**********"){
-                                $usuario->password =Hash::make(Input::get('password'));                            
+                                $usuario->password =Hash::make(Input::get('password'));
                                 $usuario->username = Input::get('username');
                             }
                         }
@@ -211,24 +212,24 @@ class UserController extends \BaseController {
                             Session::flash('error','Las contraseñas no coinciden');
                             return Redirect::to('usuarios/'.$usuario->id.'/edit');
                         }
-                        
+
 			$usuario->save();
 
 
-			foreach (UserBranch::getSucursalesObject($usuario->id) as $sucursal)				
-				$sucursal->delete();		
+			foreach (UserBranch::getSucursalesObject($usuario->id) as $sucursal)
+				$sucursal->delete();
 			if(Input::get('branch'))
 			{
-				foreach (Input::get('branch') as $branch_id) {					
+				foreach (Input::get('branch') as $branch_id) {
 					$existeAsignado = UserBranch::withTrashed()->where('user_id',$usuario->id)
 								 				->where('branch_id',$branch_id)
-												->first();					
+												->first();
 					if($existeAsignado)
 					{
 						$existeAsignado->restore();
 					}
 					else
-					{				
+					{
 						$branch = Branch::find($branch_id);
 						$userbranch= UserBranch::createNew();
 						$userbranch->account_id = $usuario->account_id;
@@ -242,7 +243,7 @@ class UserController extends \BaseController {
 			return Redirect::to('usuarios');
 		}
 		return Redirect::to('/inicio');
-		
+
 	}
 
 
@@ -256,7 +257,7 @@ class UserController extends \BaseController {
 	{
 		//
 		if (Auth::user()->is_admin)
-		{	
+		{
 
 			$usuario = User::find($id);
 			if(!$usuario->is_admin)
@@ -298,13 +299,13 @@ class UserController extends \BaseController {
 		Session::put('branch_id',Input::get('branch_id'));
 		$sucursal= Branch::find(Session::get('branch_id'));
 		Session::put('branch_name',$sucursal->name);
-		
+
 		// return Response::json(array('info  ' =>$sucursal));
 		return Redirect::to('inicio');
 	}
 	public function indexSucursal()
-	{	
-		
+	{
+
 		if(Auth::user()->is_admin)
 		{
 			$branches = Account::find(Auth::user()->account_id)->branches;
