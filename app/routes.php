@@ -122,6 +122,7 @@ Route::group(array('before' => 'auth.basic'), function()
 
     Route::get('obtenerFactura/{public_id}','PosController@obtenerFactura');
 
+    Route::get('clientesPOS','PosController@clientes');
    //modulos para golden
     Route::get('/loginPOS','PosController@loginPOS');
     Route::get('cliente/{nit}','ClientController@cliente');
@@ -205,8 +206,13 @@ Route::group(array('before' => 'auth'), function()
   Route::post('generateBookSales','AccountController@export');
 
 
+  Route::get('clientesDown', 'ClientController@indexDown');
+  Route::post('clientesDown', 'ClientController@indexDown');
 
-  Route::get('getClients', 'SearchController@getClients');
+  Route::get('facturaDown', 'invoiceController@indexDown');
+  Route::post('facturaDown', 'invoiceController@indexDown');
+
+  // Route::get('getClients', 'SearchController@getClients');
   Route::get('getProducts', 'SearchController@getProducts');
   Route::get('getInvoices', 'SearchController@getInvoices');
 

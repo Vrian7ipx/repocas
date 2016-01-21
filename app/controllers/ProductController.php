@@ -278,7 +278,7 @@ class ProductController extends \BaseController {
                     $price->product_id = $product->id;
                     $price->save();
                 }
-    Session::flash('message',"Producto actualizado con exito");
+                Session::flash('message',"Producto actualizado con exito");
 		return Redirect::to('productos');
 	}
 
