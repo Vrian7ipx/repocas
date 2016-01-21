@@ -191,7 +191,7 @@
 
           <!-- Sidebar user panel -->
           <div class="user-panel">
-            &nbsp;<img   width="180" height="70" src="data:image/jpg;base64,{{Utils::logoMenu()}}" />
+            <!-- <img   width="145" height="100" src="data:image/jpg;base64,{{Utils::logoMenu()}}" /> -->
             <div class="pull-left image">
               <img src="{{asset('images/Icon-user.png')}}" class="img-circle" alt="User Image">
             </div>

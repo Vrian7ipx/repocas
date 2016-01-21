@@ -929,9 +929,10 @@ class InvoiceController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($publicId=0)
+	public function show($publicId)
 	{
-             $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('public_id','=',$publicId)->first(
+
+             $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('id','=',$publicId)->first(
                 array(
                 'id',
                 'user_id',
@@ -972,6 +973,7 @@ class InvoiceController extends \BaseController {
                 'phone',
                 'document_number')
                 );
+								// return $invoice;
 
 
 		$account = Account::find(Auth::user()->account_id);
@@ -982,9 +984,9 @@ class InvoiceController extends \BaseController {
 		$invoice['third']=$invoice->type_third;
 		$invoice['is_uniper'] = $account->is_uniper;
 		$invoice['uniper'] = $account->uniper;
-		$invoice['logo'] = $invoice->getLogo();
+		//$invoice['logo'] = $invoice->getLogo();
 
-		$client_id = $invoice->getClient();
+		//$client_id = $invoice->getClient();
 		$client = DB::table('clients')->where('id','=', $client_id)->first();
 		$contacts = Contact::where('client_id',$client->id)->get(array('id','is_primary','first_name','last_name','email'));
                 $status=  InvoiceStatus::where('id',$invoice->invoice_status_id)->first();
@@ -1011,6 +1013,7 @@ class InvoiceController extends \BaseController {
                         'user'      => $user,
                         'status'    => $status->name=="Parcial"?"Parcialmente Pagado":$status->name,
 		);
+
 
 		// return Response::json($data);
 
@@ -1100,7 +1103,7 @@ class InvoiceController extends \BaseController {
 
 	public function verFactura($publicId){
 
-           $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('public_id','=',$publicId)->first(
+           $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('id','=',$publicId)->first(
                     array(
                     'id',
                     'user_id',
@@ -1158,7 +1161,7 @@ class InvoiceController extends \BaseController {
             $invoice->logo = $document->logo;
             //echo $invoice->javascript." ";
             //return 0;
-            $client_id = $invoice->getClient();
+            // $client_id = $invoice->getClient();
             $client = DB::table('clients')->where('id','=', $client_id)->first();
             $contacts = Contact::where('client_id',$client->id)->get(array('id','is_primary','first_name','last_name','email'));
             //echo $client_id;
@@ -1953,7 +1956,7 @@ class InvoiceController extends \BaseController {
 		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->orderBy('invoices.id', 'DESC')
-												->simplePaginate(2);
+												->simplePaginate(15);
 		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
 	 }
 	 if ($numero) {
@@ -1962,7 +1965,7 @@ class InvoiceController extends \BaseController {
  												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.id','like', $numero."%")
  												->orderBy('invoices.id', 'DESC')
- 												->simplePaginate(2);
+ 												->simplePaginate(15);
 
 		$data = [
 			'invoices' => $invoices,
@@ -1977,7 +1980,7 @@ class InvoiceController extends \BaseController {
  											 ->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
  											 ->where('invoices.client_name','like', $name."%")
  											 ->orderBy('invoices.client_name', 'DESC')
- 											 ->simplePaginate(2);
+ 											 ->simplePaginate(15);
 
 		 	 $data = [
 		 		 'invoices' => $invoices,
@@ -1991,7 +1994,7 @@ class InvoiceController extends \BaseController {
 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.created_at','like', $fecha."%")
 												->orderBy('invoices.created_at', 'DESC')
-												->simplePaginate(2);
+												->simplePaginate(15);
 
 				$data = [
 					'invoices' => $invoices,
@@ -2005,7 +2008,7 @@ class InvoiceController extends \BaseController {
 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.importe_total','like', $total."%")
 												->orderBy('invoices.importe_total', 'DESC')
-												->simplePaginate(2);
+												->simplePaginate(15);
 
 				$data = [
 					'invoices' => $invoices,
@@ -2019,7 +2022,7 @@ class InvoiceController extends \BaseController {
 												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoice_statuses.name','like', $estado."%")
 												->orderBy('invoice_statuses.name', 'DESC')
-												->simplePaginate(2);
+												->simplePaginate(15);
 				$data = [
 					'invoices' => $invoices,
 					'estado' => $estado
@@ -2052,7 +2055,7 @@ class InvoiceController extends \BaseController {
  		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
  												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
  												->orderBy('invoices.id', $sw)
- 												->simplePaginate(2);
+ 												->simplePaginate(15);
  		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
  	 }
  	 if ($numero) {
@@ -2061,7 +2064,7 @@ class InvoiceController extends \BaseController {
   												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
  												->where('invoices.id','like', $numero."%")
   												->orderBy('invoices.id', $sw)
-  												->simplePaginate(2);
+  												->simplePaginate(15);
 
  		$data = [
  			'invoices' => $invoices,
@@ -2076,7 +2079,7 @@ class InvoiceController extends \BaseController {
   											 ->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
   											 ->where('invoices.client_name','like', $name."%")
   											 ->orderBy('invoices.client_name', $sw)
-  											 ->simplePaginate(2);
+  											 ->simplePaginate(15);
 
  		 	 $data = [
  		 		 'invoices' => $invoices,
@@ -2090,7 +2093,7 @@ class InvoiceController extends \BaseController {
  												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
  												->where('invoices.created_at','like', $fecha."%")
  												->orderBy('invoices.created_at', $sw)
- 												->simplePaginate(2);
+ 												->simplePaginate(15);
 
  				$data = [
  					'invoices' => $invoices,
@@ -2104,7 +2107,7 @@ class InvoiceController extends \BaseController {
  												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
  												->where('invoices.importe_total','like', $total."%")
  												->orderBy('invoices.importe_total', $sw)
- 												->simplePaginate(2);
+ 												->simplePaginate(15);
 
  				$data = [
  					'invoices' => $invoices,
@@ -2118,7 +2121,7 @@ class InvoiceController extends \BaseController {
  												->select('invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
  												->where('invoice_statuses.name','like', $estado."%")
  												->orderBy('invoice_statuses.name', $sw)
- 												->simplePaginate(2);
+ 												->simplePaginate(15);
  				$data = [
  					'invoices' => $invoices,
  					'estado' => $estado

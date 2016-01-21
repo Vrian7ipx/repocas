@@ -55,9 +55,9 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-      'database'  => 'repocas',
-      'username'  => 'root',
-      'password'  => 'bandagriss',
+      		'database'  => 'cascadadb',
+      		'username'  => 'cascadadb-user',
+      		'password'  => 'cascadadb-user-pass',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

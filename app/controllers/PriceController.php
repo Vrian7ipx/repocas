@@ -27,7 +27,7 @@ class PriceController extends \BaseController {
         {
             $price = Price::createNew();
             $price->account_id = 1;
-            if(Input::get('price-'.$priceType->id))                    
+            if(Input::get('price-'.$product->id))                    
                 $price->cost=Input::get('price-'.$priceType->id);                    
             else                    
                 $price =$default_cost;       
