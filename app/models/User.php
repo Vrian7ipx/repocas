@@ -21,7 +21,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	private $fv_username;
 	private $fv_password;
-	
+
 	private $fv_first_name;
 	private $fv_last_name;
 	private $fv_email;
@@ -31,9 +31,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	private $fv_error_message;
 
+	private $fv_price_type;
+
+	private $fv_group_id;
 
 
-	 
 	protected $fillable =  array('id','username','email','password');
 
 
@@ -44,7 +46,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 
 	protected $hidden = array('password', 'remember_token');
-	
+
 	public function account()
 	{
 		return $this->belongsTo('Account');
@@ -70,7 +72,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @return mixed
 	 */
 	public function getAuthIdentifier()
-	{		
+	{
 		return $this->getKey();
 	}
 
@@ -105,12 +107,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		$user = new User;
 
 
-		if (Auth::check()) 
+		if (Auth::check())
 		{
 			$user->account_id = Auth::user()->account_id;
 		}else
 		{
-			$user->account_id = Session::get('account_id');	
+			$user->account_id = Session::get('account_id');
 		}
 
 		$last_user = User::PublicId()->orderBy('public_id', 'DESC')->select('public_id')->first();
@@ -147,7 +149,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		// $usuarios = Account::find($account_id)->users;
 
 		return $usuarios;
-	}	
+	}
 
 	public function isPro()
 	{
@@ -196,7 +198,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		{
 			return '';
 		}
-	}	
+	}
 
 
 	public function getMaxNumClients()
@@ -217,15 +219,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         }
 	}
 	public function scopePublicId($query)
-    {	
+    {
     	// if(Auth::check)
     	// {
-    	// 	return $query->where('account_id', Auth::user->id ) 
+    	// 	return $query->where('account_id', Auth::user->id )
     	// }
     	//en caso de no estar con session
-    	if (Auth::check()) 
+    	if (Auth::check())
 		{
-			$accountId = Auth::user()->account_id;	
+			$accountId = Auth::user()->account_id;
 		}
 		else
 		{
@@ -234,7 +236,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		//validar para el caso de que se intente ingresar directo XD
         return $query->where('account_id',$accountId);
     }
-	
+
 	//validacion  por datos
     /**
      * Gets the value of fv_username.
@@ -264,7 +266,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     			$usuarioExiste= User::where('username',$fv_username)->first();
     			if($usuarioExiste)
     			{
-    				$this->fv_error_message = $this->fv_error_message.'<br>- Usuario '.ERROR_DUPLICADO;    				
+    				$this->fv_error_message = $this->fv_error_message.'<br>- Usuario '.ERROR_DUPLICADO;
     				return $this->fv_username = null;
     			}
     			return $this->fv_username = $fv_username;
@@ -272,9 +274,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
     		$this->fv_error_message = $this->fv_error_message .'<br>- Usuario Identificador Cuenta '.ERROR_ID;
     		return $this->fv_username = null;
-    		
+
     	}
-        
+
     	$this->fv_error_message = $this->fv_error_message.'<br>- Usuario '.ERROR_NULL;
         return $this->fv_username = null;
     }
@@ -297,7 +299,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      * @return self
      */
     public function setPassword($fv_password,$fv_password_confirm)
-    {	
+    {
     	$fv_password = trim($fv_password);
     	$fv_password_confirm = trim($fv_password_confirm);
 
@@ -315,21 +317,21 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     				$this->fv_error_message = $this->fv_error_message.'<br>- password min '.ERROR_SIZE_PASSWORD;
     				return $this->fv_password = null;
     			}
-    			
+
     			return $this->fv_password = $fv_password;
     		}
-    		
-    		$this->fv_error_message = $this->fv_error_message.'<br>- Debe Confirmar Password '.ERROR_NULL;	
-        
+
+    		$this->fv_error_message = $this->fv_error_message.'<br>- Debe Confirmar Password '.ERROR_NULL;
+
         	return $this->fv_password = null;
 
     	}
-    	$this->fv_error_message = $this->fv_error_message.'<br>- Password '.ERROR_NULL;	
-        
+    	$this->fv_error_message = $this->fv_error_message.'<br>- Password '.ERROR_NULL;
+
         return $this->fv_password = null;
     }
 
-   
+
     /**
      * Gets the value of fv_first_name.
      *
@@ -349,13 +351,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      * @return self
      */
     public function setFirstName($fv_first_name)
-    {	
+    {
     	if(!empty($fv_first_name))
     	{
     		 return $this->fv_first_name = $fv_first_name;
 
     	}
-       	$this->fv_error_message = $this->fv_error_message.'<br>- Nombre '.ERROR_NULL;	
+       	$this->fv_error_message = $this->fv_error_message.'<br>- Nombre '.ERROR_NULL;
         return $this->fv_first_name=null;
     }
 
@@ -383,7 +385,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     		return  $this->fv_last_name = $fv_last_name;
 
     	}
-       	$this->fv_error_message = $this->fv_error_message.'<br>- Apellido '.ERROR_NULL;	
+       	$this->fv_error_message = $this->fv_error_message.'<br>- Apellido '.ERROR_NULL;
         return $this->fv_last_name=null;
     }
 
@@ -412,7 +414,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			if(!filter_var($email, FILTER_VALIDATE_EMAIL))
 			{
 				$this->fv_error_message = $this->fv_error_message .'<br>- Email '.$email.ERROR_DATO_EMAIL;
-				return $this->fv_email = null; 
+				return $this->fv_email = null;
 			}
 			return $this->fv_email = $email;
 		}
@@ -420,7 +422,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->fv_email = null;
     }
 
-    
+
     /**
      * Gets the value of fv_account_id.
      *
@@ -454,7 +456,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			if(!$account_idExiste)
 			{
 				$this->fv_error_message = $this->fv_error_message .'<br>- Identificador Cuenta '.ERROR_ID;
-				return  $this->fv_account_id=null;	
+				return  $this->fv_account_id=null;
 			}
 			return $this->fv_account_id = $account_id;
 
@@ -464,11 +466,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	public function setPhone($fv_phone)
 	{
-		
+
 		if(!empty($fv_phone))
 		{
 			$fv_phone = trim($fv_phone);
-			
+
 			if(!is_numeric($fv_phone))
 			{
 
@@ -478,13 +480,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			if($fv_phone<0)
 			{
 				$this->fv_error_message = $this->fv_error_message .'<br>- Telefono '.$fv_phone.ERROR_NUMERICO_POSITIVO;
-				return  $this->fv_phone =null;		
+				return  $this->fv_phone =null;
 			}
 			return  $this->fv_phone = $fv_phone;
 		}
 
 		return $this->fv_phone =null;
-		
+
 	}
 	public function getPhone()
 	{
@@ -492,8 +494,47 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		{
 			return $this->fv_phone;
 		}
-		
+
 	}
+
+	public function setPriceType($price){
+		if($price == ""){
+			$this->fv_error_message = $this->fv_error_message.'<br>- Tipo de Precio '.ERROR_NULL;
+			return;
+		}
+		$this->fv_price_type = null;
+		$this->price_type_id = $price;
+		return $this;
+	}
+
+	public function getPriceType(){
+		$this->price_type_id;
+	}
+
+	public function setGroupId($group){
+		if($group == ""){
+			$this->fv_error_message = $this->fv_error_message.'<br>- Grupo '.ERROR_NULL;
+			return;
+		}
+		$this->fv_group_id = null;
+		$this->group_ids = $group;
+		return $this;
+	}
+
+	public function getGroupId(){
+		$this->group_ids;
+	}
+
+	public function setBranch($branch){
+		if($branch == ""){
+			$this->fv_error_message = $this->fv_error_message.'<br>- Sucursal '.ERROR_NULL;
+			return;
+		}
+		return $this;
+	}
+
+
+
 
     public function getErrorMessage()
 	{
@@ -512,6 +553,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$this->password =Hash::make($this->getPassword());
 			$this->username =$this->getUsername();
 			$this->phone = $this->getPhone();
+
 			$this->save();
 
 			$this->fv_error_message = "Registro Existoso";
@@ -519,7 +561,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		}
 
 		return false;
-  	}	
+  	}
 
 
 }

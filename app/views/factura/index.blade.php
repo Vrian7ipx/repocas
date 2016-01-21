@@ -20,11 +20,11 @@
           <thead>
               <tr>
                   <!--<td><input class="selectAll" type="checkbox"></td>-->
-                  <td><input placeholder="Nº" id="numero" value="{{ $numero }}"></td>
+                  <td><input placeholder="Código" id="numero" value="{{ $numero }}"></td>
                   <td><input placeholder="Cliente" id="name" value="{{ $name }}"></input></td>
-                  <td><input placeholder="fecha" id="fecha" value="{{ $fecha }}"></input></td>
-                  <td><input placeholder="total" id="total" value="{{ $total }}"></input></td>
-                  <td><input placeholder="estado" id="estado" value="{{ $estado }}"></input></td>
+                  <td><input placeholder="Fecha" id="fecha" value="{{ $fecha }}"></input></td>
+                  <td><input placeholder="Total" id="total" value="{{ $total }}"></input></td>
+                  <td><input placeholder="Estado" id="estado" value="{{ $estado }}"></input></td>
                   <td style = "display:none">Acción</td>
 
               </tr>
