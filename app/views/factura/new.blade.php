@@ -98,6 +98,8 @@
         <input id="nit" placeholder="NIT"  type="hidden" name="nit" >
         <input id="razon"  placeholder="Razón Social" type="hidden" name="razon">
         <input id="total_send" type="hidden" name="total" >
+        <input id="ice_send" type="hidden" name="importe_ice" >
+        <input id="fiscal_send" type="hidden" name="importe_fiscal" >
         <input id="subtotal_send" type="hidden" name="subtotal" >
 
     </div>
@@ -913,9 +915,9 @@ function calculateAllTotal(){
     disc = $("#disc"+ind).val();
     pack = $("#pack"+ind).val();
 
-    if(costo=='')
-        costo=0.00;
-    costo = parseFloat(costo).toFixed(2);
+//    if(costo=='')
+//        costo=0.00;
+//    costo = parseFloat(costo).toFixed(2);
     if(boni=='')
         boni=0.00;
     boni = parseFloat(boni).toFixed(2);
@@ -932,33 +934,38 @@ function calculateAllTotal(){
     canti = $("#qty"+ind).val();
     subto = $("#subtotal"+ind).val();
     sum = parseFloat(subto)+sum;
+    //parseFloat(subto)
     
     cantidad=parseFloat(canti)+pack*parseFloat(prod['units'])-boni;
     
     var ice_value = {{$tax}};  
     ice_value = parseFloat(ice_value);
     console.log("ice--->>> "+cantidad+" "+parseFloat(prod['cc'])+" "+ice_value);
-    if(prod['ice']=="1"){                     
+    if(prod['ice']=="1"){
         ice_sum += cantidad*(parseFloat(prod['cc'])/1000)*ice_value;
-    }    
+    }
   }
     
   });
   
-    
+  sum = sum - descuentos;
+  importe = sum-ice_sum;  
   $("#descuento_box").text(parseFloat(descuentos).toFixed(2));
+  $("#ice_send").val(ice_sum);
+  $("#fiscal_send").val(importe);
     
 
   $("#subtotal").text(parseFloat(sum).toFixed(2)+"");
   $("#ice_neto").text(parseFloat(ice_sum).toFixed(2)+"");
   $("#subtotal_send").val(sum);
 
-  sum = sum - descuentos;
+  
+  console.log(importe+"-->");
   //$("#descuento_box").text(dis.toFixed(2));
   if(sum<0)sum=0;
   $("#total").text(sum.toFixed(2));
   $("#total_send").val(sum);
-  importe = sum-ice_sum;
+  
   $("#importe").text(parseFloat(importe.toFixed(2)));
 }
 function findProduct(cod_pro)
@@ -1335,11 +1342,10 @@ function addNewProduct(newkey,newnotes,newcost)
     ind = this.id.substring(4);
     //costo = $("#cost"+ind).val();
     costo = prod['cost']/prod['units'];
-    pack = $("#pack"+ind).val();    
+    pack = $("#pack"+ind).val();
     cantidad = $("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
-
     if(pack=='')
         pack=0;
     pack = parseFloat(pack).toFixed(2);

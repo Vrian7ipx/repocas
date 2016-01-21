@@ -251,8 +251,8 @@ class InvoiceController extends \BaseController {
 		if(sizeof(Input::get('productos'))>1)
 		{
 			if(Input::has('client'))
-			{
-			$account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
+			{				
+                        $account = Account::where('id', Auth::user()->account_id)->first();
 			$branch = Branch::find(Session::get('branch_id'));
 			$tax = TaxRate::where("name",'ICE')->first();
 			$invoice = Invoice::createNew();
@@ -300,7 +300,7 @@ class InvoiceController extends \BaseController {
 			$invoice->setDeadline($branch->deadline);
 			$invoice->setLaw($branch->law);
 			$type_document =TypeDocument::where('account_id',Auth::user()->account_id)->firstOrFail();
-			$invoice->invoice_number = branch::getInvoiceNumber();
+			
 			 $numAuth = $invoice->number_autho;
 			 $numfactura = $invoice->invoice_number;
 			 $nit = $invoice->client_nit;
@@ -308,6 +308,15 @@ class InvoiceController extends \BaseController {
 			 $total = $invoice->importe_total;
 			 $llave = $branch->key_dosage;
 			 $codigoControl = Utils::getControlCode($numfactura,$nit,$fechaEmision,$total,$numAuth,$llave);
+                         
+                        //calculates ICE
+			
+			//$desc = $invoice->subtotal-$invoice->amount;
+                        
+                        $invoice->importe_ice=number_format(Input::get('importe_ice'), 2, '.', '');
+                        $invoice->debito_fiscal = number_format(Input::get('importe_fiscal'), 2, '.', '');
+                        //$invoice->discount = number_format($desc, 2, '.', '');
+                        
 			$invoice->setControlCode($codigoControl);
                         $documents = TypeDocumentBranch::where('branch_id',$invoice->branch_id)->orderBy('id','ASC')->get();
                         foreach ($documents as $document)
@@ -326,27 +335,8 @@ class InvoiceController extends \BaseController {
 			if($account->is_uniper)
 			{
 				$invoice->account_uniper = $account->uniper;
-			}
-			//calculates ICE
-			$ice = $invoice->amount-$invoice->fiscal;
-			$desc = $invoice->subtotal-$invoice->amount;
-            $invoice->balance=$invoice->amount;
-            $invoice->custom_value1=number_format($ice, 2, '.', '');
-            $invoice->discount = number_format($desc, 2, '.', '');
-			$amount = number_format($invoice->amount, 2, '.', '');
-			$fiscal = number_format($invoice->fiscal, 2, '.', '');
-
-			$icef = number_format($ice, 2, '.', '');
-			$descf = number_format($desc, 2, '.', '');
-
-			if($icef=="0.00"){
-				$icef = 0;
-			}
-			if($descf=="0.00"){
-				$descf = 0;
-			}
-
-
+			}			
+                        $invoice->invoice_number = branch::getInvoiceNumber();
 			$invoice->save();
 			foreach (Input::get('productos') as $producto)
                         {
@@ -365,8 +355,9 @@ class InvoiceController extends \BaseController {
                                 $invoiceItem->setQty($producto["'qty'"]);
                                 $invoiceItem->packs=$producto["'pack'"];
                                 $invoiceItem->discount=$producto["'disc'"];
-                                $invoiceItem->bonus=$producto["'bonus'"];
-                                $invoiceItem->save();
+                                $invoiceItem->boni=$producto["'bonus'"];
+                                $invoiceItem->save();		  
+
                             }
                         }
                 //adicionando cargo al cliente
@@ -929,10 +920,9 @@ class InvoiceController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($publicId)
-	{
-
-             $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('id','=',$publicId)->first(
+	public function show($id=0)
+	{   
+             $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('public_id','=',$id)->first(
                 array(
                 'id',
                 'user_id',
@@ -983,10 +973,10 @@ class InvoiceController extends \BaseController {
 		$invoice['invoice_items']=$products;
 		$invoice['third']=$invoice->type_third;
 		$invoice['is_uniper'] = $account->is_uniper;
-		$invoice['uniper'] = $account->uniper;
-		//$invoice['logo'] = $invoice->getLogo();
-
-		//$client_id = $invoice->getClient();
+		$invoice['uniper'] = $account->uniper;				
+		$invoice['logo'] = $invoice->logo;
+	
+		$client_id = $invoice->client_id;
 		$client = DB::table('clients')->where('id','=', $client_id)->first();
 		$contacts = Contact::where('client_id',$client->id)->get(array('id','is_primary','first_name','last_name','email'));
                 $status=  InvoiceStatus::where('id',$invoice->invoice_status_id)->first();
@@ -1096,14 +1086,9 @@ class InvoiceController extends \BaseController {
 		return View::make('factura.ver',$data);
         }
 
-
-
-
-
-
-	public function verFactura($publicId){
-
-           $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('id','=',$publicId)->first(
+	public function verFactura($id){
+          
+           $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('public_id','=',$id)->first(
                     array(
                     'id',
                     'user_id',
@@ -1340,9 +1325,9 @@ class InvoiceController extends \BaseController {
         	// return  Response::json(Input::all());
                 $account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
                 $matriz = Branch::where('account_id','=',Auth::user()->account_id)->where('number_branch','=',0)->first();
-                $branch = Branch::where('id','=',Session::get('branch_id'))->first();
-                //$branchDocument = TypeDocumentBranch::where('branch_id','=',$branch->id)->firstOrFail();
-                $type_document =TypeDocument::where('account_id',Auth::user()->account_id)->where('master_id',Input::get('invoice_type'))->orderBy('id','DESC')->firstOrFail();
+                $branch = Branch::where('id','=',Session::get('branch_id'))->first();                
+                $type_document =TypeDocument::where('account_id',Auth::user()->account_id)->where('master_id',Input::get('invoice_type'))->orderBy('id','DESC')->firstOrFail();                
+
                 if(Input::get('printer_type')==1)
                     $js=$type_document->javascript_web;
                 else
@@ -1365,8 +1350,7 @@ class InvoiceController extends \BaseController {
 			'client_id'=>Input::get('client'),
 			'client_name'=>Input::get('nombre'),
 			'client_nit'=>Input::get('nit'),
-			'control_code'=>'00-00-00-00',
-			//'deadline'=>Input::get('due_date'),LOL
+			'control_code'=>'00-00-00-00',			
                         'deadline'=>$branch->deadline,
 			'descuento_total'=>Input::get('discount'),
 			'economic_activity'=>$branch->economic_activity,

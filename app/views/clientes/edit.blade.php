@@ -202,7 +202,7 @@
         $("#zone").select2();        
         $("#zone").select2("val",'{{$client->zone_id}}');;
         $("#city").select2()                
-        $("#city").select2("val","Oruro");
+        $("#city").select2("val","{{$client->city}}");
         $("#group").select2();
         $("#group").select2("val",'{{$client->group_id}}');;
         $("#business").select2();
