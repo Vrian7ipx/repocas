@@ -98,7 +98,7 @@
         </div>
       </form>
       <div class="col-xs-12">
-          	<iframe id="theFrame" type="text/html" src="{{asset('verFactura/'.$invoice->public_id.'?copia='.$copia)}}"  frameborder="1" width="100%" height="1180"></iframe>
+          	<iframe id="theFrame" type="text/html" src="{{asset('verFactura/'.$invoice->id.'?copia='.$copia)}}"  frameborder="1" width="100%" height="1180"></iframe>
       </div>
       <div class="col-md-6">
           <div class="box box-solid">
@@ -130,7 +130,7 @@
               </div>
             </div>
            <?php $i++;} }?>
-              <form action="{{asset('nuevanota/'.$invoice->public_id)}}" method="POST">
+              <form action="{{asset('nuevanota/'.$invoice->id)}}" method="POST">
               <textarea id="nota"  name="nota" class="form-control" placeholder="Nota interna" rows="2"></textarea><p></p>
               <div  class="col-xs-2"><button class="btn btn-small btn-primary" type="submit" >Guardar Nota</button></div>
              </form>
