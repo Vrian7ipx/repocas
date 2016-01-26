@@ -22,6 +22,7 @@ class PosController extends \BaseController {
     							->get(array('products.id','product_key','notes','cost','ice','units','cc'));
 
     	$user_branch= UserBranch::where('user_id',Auth::user()->id)->first();
+    	// return Response::json($user_branch);
 
     	$sucursal = DB::table('branches')
     						->select('name','address1','address2','number_autho','deadline','key_dosage','economic_activity','invoice_number_counter','law','type_third')
@@ -331,6 +332,7 @@ class PosController extends \BaseController {
 	     $ice = DB::table('tax_rates')->select('rate')->where('name','=','ice')->first();
 	     //
 	     // creando invoice
+	     $cuenta = Account::find(1);
 	     $invoice = Invoice::createNew();
 	     $invoice->invoice_number=$invoice_number;
 	     $invoice->client_id=$client_id;
@@ -360,8 +362,10 @@ class PosController extends \BaseController {
 	     $invoice->phone=$branch->work_phone;
 			$invoice->city=$branch->city;
 			$invoice->state=$branch->state;
+		 $invoice->account_name = $cuenta->name;
+		 $invoice->account_nit = $cuenta->nit;
 	     // $invoice->industry_id=$branch->industry_id;
-
+		 $invoice->qr =$invoice->account_nit.'|'.$invoice->invoice_number.'|'.$invoice->number_autho.'|'.$invoice->invoice_date.'|'.$invoice->importe_neto.'|'.$invoice->importe_total.'|'.$invoice->client_nit.'|'.$invoice->importe_ice.'|0|0|'.$invoice->descuento_total;
 	     // $invoice->country_id= $branch->country_id;
 	     $invoice->key_dosage = $branch->key_dosage;
 	     $invoice->deadline = $branch->deadline;

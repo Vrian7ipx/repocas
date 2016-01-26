@@ -1,82 +1,71 @@
 @extends('header')
-@section('title') Gestión de Sucursales @stop
-@section('head') @stop
-@section('encabezado') SUCURSALES @stop
-@section('encabezado_descripcion') Gestión de Sucursales @stop
-@section('nivel') <li><a href="#"><i class="glyphicon glyphicon-home"></i> Sucursales</a></li> @stop
+@section('title')Tipo de Negocio @stop
+  @section('head') @stop
+@section('encabezado')  NEGOCIO @stop
+@section('encabezado_descripcion') Gestion del Tipo de Negocio @stop
+         <li class="active"> Negocio </li> @stop
 
 @section('content')
 
-
 <div class="box">
-   <div class="box-header with-border">
-    <h3 class="box-title">
-      <a href="{{ url('sucursales/create') }}" class="btn btn-success" role="button">Crear Sucursal &nbsp<span class="glyphicon glyphicon-plus-sign"></span></a></h3>
+  <div class="box-header with-border">
+    <h3 class="box-title"><a href="{{ url('negocios/create') }}" class="btn btn-success" role="button">Nuevo Tipo de Negocio &nbsp<span class="glyphicon glyphicon-plus-sign"></span></a></h3>
+    <div class="box-tools pull-right">
+      <!-- Buttons, labels, and many other things can be placed here! -->
+      <!-- Here is a label for example -->
+      <span class="label label-info">Gestión del tipo de Negocio</span>
+    </div><!-- /.box-tools -->
   </div><!-- /.box-header -->
-
-  <div class="box-body">
-        <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+  <div class="table-responsive">
+     <table id="datatable" class="table table-striped table-hover" cellspacing="0" cellpadding="0" width="100%" style="margin-left:24px;">
           <thead>
               <tr>
-                  <td>Id</td>
+                  <td>Código</td>
                   <td>Nombre</td>
-                  <td>Teléfono</td>
-                  <td>Fecha Limite Emisión</td>
-                  <td>Ciudad</td>
-                  <td style = "display:none">Acción</td>
+                  <td style="display:none;">Acción</td>
               </tr>
           </thead>
 			<thead>
               <tr>
-                  <th>Id</th>
+                  <th>Código</th>
                   <th>Nombre</th>
-                  <th>Teléfono</th>
-                  <th>Fecha Limite Emisión</th>
-                  <th>Ciudad</th>
-                  <th style = "display:block">&nbsp;Acción</th>
+                  <th>Acción</th>
               </tr>
           </thead>
           <tbody>
 
-          @foreach($sucursales as $sucursal)
+          @foreach($businesses as $business )
               <tr>
-                  <td>{{ $sucursal->id}}</td>
-                  <td>{{ $sucursal->name }}</td>
-                  <td>{{ $sucursal->work_phone }}</td>
-                  <td>{{ $sucursal->deadline }}</td>
-                  <td>{{ $sucursal->city}}</td>
-
-                  <!-- we will also add show, edit, and delete buttons -->
-				  <td>
-                    <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("sucursales/".$sucursal->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
-                    <a class="btn btn-warning btn-xs" href="{{ URL::to("sucursales/".$sucursal->id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
-                  </td>
-
+                  <td>{{ $business->cod }}</td>
+                  <td>{{ $business->name }}</td>
+                  <td>
+                    <div class="dropdown">
+			            <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("negocios/".$business->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
+                  <a class="btn btn-warning btn-xs" data-task="view" href="{{ URL::to("negocios/".$business->id.'/edit') }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
+              </td>
               </tr>
           @endforeach
           </tbody>
         </table>
   </div><!-- /.box-body -->
-  <div class="box-footer">
-
-  </div><!-- box-footer -->
+  {{-- <div class="box-footer">
+    The footer of the box
+  </div><!-- box-footer --> --}}
 </div><!-- /.box -->
 
 
 
-
-
-
-
-
-  <script type="text/javascript">
-$(document).ready(function() {
+<script type="text/javascript">
+	$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+     //Setup - add a text input to each footer cell
     $('#datatable thead td').each( function () {
         var title = $('#datatable thead td').eq( $(this).index() ).text();
 		var tamaño = 10;
 		if (title == 'Nº') {
 		  tamaño = 3;
 		  $(this).html('<div class="form-group  has-feedback"><input size="'+tamaño+'" placeholder="'+title+'" type="text" class="form-control" id="place"><span style="text-decoration:none;color:#D3D3D3;" class="glyphicon glyphicon-search form-control-feedback"></span></div>');
+
 		}
 		else{
 		tamaño = 10;
@@ -87,10 +76,8 @@ $(document).ready(function() {
     // DataTable
 	$('#datatable').DataTable(
       {
-        "deferRender": true,
-        "lengthMenu": [[30, 50, 100, -1], [30, 50, 100, "Todo"]],
       "language": {
-		"zeroRecords": "No se encontro el registro",
+		"zeroRecords": "&nbsp;&nbsp;&nbsp;No se encontro el registro",
         "sLengthMenu":    "&nbsp;&nbsp;&nbsp;Mostrar _MENU_ registros",
         "sZeroRecords":   "&nbsp;&nbsp;&nbsp;No se encontraron resultados",
         "sEmptyTable":    "&nbsp;&nbsp;&nbsp;Ningún dato disponible en esta tabla",
@@ -110,6 +97,17 @@ $(document).ready(function() {
     }
    });
 
+   $('#formConfirm').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var public_id = button.data('id');
+      var name = button.data('name');
+	  //alert(name);
+
+      var modal = $(this);
+      modal.find('.modal-body').text('¿ Está seguro de borrar el Grupo ' + name + ' ?');
+      document.getElementById("public_id").value = public_id;
+  });
+
     var table = $('#datatable').DataTable();
 
     // Apply the search
@@ -128,7 +126,5 @@ $(document).ready(function() {
 } );
 
 </script>
-
-
 
 @stop

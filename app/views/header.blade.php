@@ -208,23 +208,28 @@
             <!-- Optionally, you can add icons to the links -->
              {{ HTML::nav_link('inicio', 'inicio') }}<i class="fa fa-dashboard"></i> <span>Inicio</span></a></li>
             {{ HTML::nav_link('clientes', 'clientes') }}<i class="ion-person-stalker"></i> <span>&nbspClientes</span></a></li>
-            <!-- {{ HTML::nav_link('productos', 'productos') }}<i class="fa fa-cube"></i> <span>Productos</span></a></li> -->
+            {{ HTML::nav_link('productos', 'productos') }}<i class="fa fa-cube"></i> <span>Productos</span></a></li>
+
+            @if(Auth::user()->is_admin)
             <li class="treeview">
               <a href="{{URL::to('productos')}}"><i class="fa fa-cubes"></i> <span>Items</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                {{ HTML::nav_link('productos', 'productos') }}<i class="glyphicon glyphicon-compressed"></i> <span>Productos</span></a></li>
+                <!-- {{-- HTML::nav_link('productos', 'productos') --}}<i class="glyphicon glyphicon-compressed"></i> <span>Productos</span></a></li> -->
                 {{-- HTML::nav_link('producto/createservice', 'servicios') --}}<!-- <i class="glyphicon glyphicon-briefcase"></i> <span>Servicios</span></a></li> -->
                 {{ HTML::nav_link('precios', 'precios') }}<i class="fa fa-server"></i> <span>Precios</span></a></li>
+                {{ HTML::nav_link('zonas', 'zonas') }}<i class="fa fa-map-o"></i> <span>Zonas</span></a></li>
+                {{ HTML::nav_link('negocios', 'negocios') }}<i class="glyphicon glyphicon-briefcase"></i> <span>Tipo de Negocio</span></a></li>
                 {{-- HTML::nav_link('unidades', 'unidades') --}}<!-- <i class="fa fa-cube"></i> <span>Unidades</span></a></li> -->
 
               </ul>
 
             </li>
+            @endif
 
             <!-- {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-files-o"></i> <span>Facturas</span></a></li> -->
 
 
-              {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-money"></i> <span>Factura</span></a></li>
+              {{ HTML::nav_link('factura', 'factura') }}<i class="fa fa-money"></i> <span>Facturas</span></a></li>
 
 
           </ul><!-- /.sidebar-menu -->
@@ -335,8 +340,7 @@
                 </a>
               </li>
             </ul><!-- /.control-sidebar-menu -->
-            <h4 class="control-sidebar-heading">Tipo de Impresora </h4>
-            <input id="model_invoice" class="bbb" data-on-text="Normal" labelWidth="20%" data-off-text="Fiscal" type="checkbox" name="my-checkbox" data-label-text="Fiscal" offColor="primary" data-off-color="primary" handleWidth="100" checked>
+            
 
 
           </div><!-- /.tab-pane -->
@@ -440,20 +444,20 @@
     </div>
   </body>
   <script type="text/javascript">
-    $("#model_invoice").bootstrapSwitch();
-    $("#model_invoice").on('switchChange.bootstrapSwitch',function(e, data){
+    // $("#model_invoice").bootstrapSwitch();
+    // $("#model_invoice").on('switchChange.bootstrapSwitch',function(e, data){
 
-        if($("#model_invoice").prop('checked'))      {
-            $("#printer_type").val("1");
-            $( "#model_invoice" ).siblings(".bootstrap-switch-label").text("Fiscal");
-        }
-       //     $("#model_invoice.bootstrap-switch-label").text("Fiscal");
-        else{
-            $("#printer_type").val("0");
-            $( "#model_invoice" ).siblings(".bootstrap-switch-label").text("Normal");
-        }
-            //$("#model_invoice .bootstrap-switch-label").text("Normal");
-    });
+    //     if($("#model_invoice").prop('checked'))      {
+    //         $("#printer_type").val("1");
+    //         $( "#model_invoice" ).siblings(".bootstrap-switch-label").text("Fiscal");
+    //     }
+    //    //     $("#model_invoice.bootstrap-switch-label").text("Fiscal");
+    //     else{
+    //         $("#printer_type").val("0");
+    //         $( "#model_invoice" ).siblings(".bootstrap-switch-label").text("Normal");
+    //     }
+    //         //$("#model_invoice .bootstrap-switch-label").text("Normal");
+    // });
     window.brian = "hola";
     $(".cc_form").click(function(){
         $(this).select();

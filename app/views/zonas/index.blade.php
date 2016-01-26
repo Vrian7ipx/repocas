@@ -3,18 +3,17 @@
   @section('head') @stop
 @section('encabezado')  ZONAS @stop
 @section('encabezado_descripcion') Gestion de Zonas @stop
-@section('nivel') <li><a href="{{URL::to('productos')}}"><i class="fa fa-cube"></i> Zonas</a></li>
          <li class="active"> Zonas </li> @stop
 
 @section('content')
 
 <div class="box">
   <div class="box-header with-border">
-    <h3 class="box-title"><a href="{{ url('grupos/create') }}" class="btn btn-success" role="button">Nueva Zona &nbsp<span class="glyphicon glyphicon-users"></span></a></h3>
+    <h3 class="box-title"><a href="{{ url('zonas/create') }}" class="btn btn-success" role="button">Nueva Zona &nbsp;<span class="glyphicon glyphicon-plus-sign"></span></a></h3>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
-      <span class="label label-info">Gestión de Grupos</span>
+      <span class="label label-info">Gestión de Zonas</span>
     </div><!-- /.box-tools -->
   </div><!-- /.box-header -->
   <div class="table-responsive">
@@ -23,7 +22,6 @@
               <tr>
                   <td>Código</td>
                   <td>Nombre</td>
-                  <td>Datos Adicionales</td>
                   <td style="display:none;">Acción</td>
               </tr>
           </thead>
@@ -31,22 +29,19 @@
               <tr>
                   <th>Código</th>
                   <th>Nombre</th>
-                  <th>Datos Adicionales</th>
                   <th>Acción</th>
               </tr>
           </thead>
           <tbody>
 
-          @foreach($grupos as $grupo )
+          @foreach($zones as $zone )
               <tr>
-                  <td>{{ $grupo->code }}</td>
-                  <td>{{ $grupo->name }}</td>
-                  <td>{{ $grupo->delimitaciones }}</td>
+                  <td>{{ $zone->reg_code }}</td>
+                  <td>{{ $zone->name }}</td>
                   <td>
                     <div class="dropdown">
-			            <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("grupos/".$grupo->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
-                  <a class="btn btn-warning btn-xs" data-task="view" href="{{ URL::to("grupos/".$grupo->id.'/edit') }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
-				          <!-- <a class="btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#formConfirm" data-id="{{ $grupo->public_id }}" data-name="{{ $grupo->name }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-remove"></i></a> -->
+			            <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("zonas/".$zone->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
+                  <a class="btn btn-warning btn-xs" data-task="view" href="{{ URL::to("zonas/".$zone->id.'/edit') }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
               </td>
               </tr>
           @endforeach
@@ -58,27 +53,6 @@
   </div><!-- box-footer --> --}}
 </div><!-- /.box -->
 
-
-<div class="modal fade" id="formConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="frm_title">Borrar Grupo</h4>
-      </div>
-      {{ Form::open(array('url' => '$grupos/bulk','id' => 'formDelete')) }}
-      <div style="display:none">
-        {{ Former::text('public_id') }}
-      </div>
-      <div class="modal-body" id="frm_body"></div>
-      <div class="modal-footer">
-        {{ Form::submit('Si',array('class' => 'btn btn-primary col-sm-2 pull-right','style' => 'margin-left:10px;'))}}
-        <button type="button" class="btn btn-danger col-sm-2 pull-right" data-dismiss="modal" id="frm_cancel">No</button>
-      </div>
-      {{ Form::close()}}
-    </div>
-  </div>
-</div>
 
 
 <script type="text/javascript">

@@ -8,19 +8,20 @@ class GroupController extends \BaseController {
 	 * @return Response
 	 */
    public function index(){
-     $grupos = DB::table('groups')->select('id','code', 'name', 'delimitaciones')->get();
-     $grupos = Group::select('id','code', 'name', 'delimitaciones')->get();
-     return View::make('grupos.index', array('grupos' => $grupos));
-
-   }
+     if(Auth::user()->is_admin){
+       $grupos = Group::select('id','code', 'name', 'delimitaciones')->get();
+       return View::make('grupos.index', array('grupos' => $grupos));
+    }
+    return View::make('cuentas.dashboard');
+  }
 
    public function create(){
-
      return View::make('grupos.create');
    }
 
-   public function store(){
 
+   public function store(){
+     if(Auth::user()->is_admin){
      $group = Group::createNew();
      $group->setAccount(Auth::user()->account_id);
      $group->setCode(trim(Input::get('codigo')));
@@ -37,15 +38,16 @@ class GroupController extends \BaseController {
        Session::flash('error', $error);
        return Redirect::to('grupos/create');
      }
+    }
+    return View::make('cuentas.dashboard');
    }
 
    public function edit($id){
-
-    //  $grupo = DB::table('groups')->where('id', $id)->select('code', 'name', 'delimitaciones')->get();
+     if(Auth::user()->is_admin){
      $grupo = Group::where('id', $id)->first();
-    //  return $grupo->delimitaciones;
      return View::make('grupos.edit')->with('grupo', $grupo);
-
+    }
+    return View::make('cuentas.dashboard');
    }
 
    public function update($id){

@@ -195,9 +195,11 @@ class UserController extends \BaseController {
 	public function update($id)
 	{
 		//
+		// return Response::json(Input::all());
 		if (Auth::user()->is_admin)
 		{
 			$usuario = User::where('id',$id)->first();
+
 			$usuario->first_name = trim(Input::get('first_name'));
 			$usuario->last_name = trim(Input::get('last_name'));
                         $usuario->email=Input::get('email');
@@ -217,10 +219,14 @@ class UserController extends \BaseController {
 
 
 			foreach (UserBranch::getSucursalesObject($usuario->id) as $sucursal)
+			{
 				$sucursal->delete();
+			}	
+			// return "Eliminado las asignarSucursal";
 			if(Input::get('branch'))
 			{
-				foreach (Input::get('branch') as $branch_id) {
+				foreach (Input::get('branch') as $branch_id)
+				{
 					$existeAsignado = UserBranch::withTrashed()->where('user_id',$usuario->id)
 								 				->where('branch_id',$branch_id)
 												->first();

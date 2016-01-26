@@ -1,8 +1,8 @@
 @extends('header')
-@section('title')Ver Zona @stop
+@section('title')Ver Tipo de Negocio @stop
  @section('head') @stop
-@section('encabezado') Zona @stop
-@section('encabezado_descripcion') Ver Zona @stop
+@section('encabezado') NEGOCIO @stop
+@section('encabezado_descripcion') Ver Tipo de Negocio @stop
             <li class="active">Ver </li> @stop
 
 @section('content')
@@ -10,7 +10,7 @@
 
 <div class="box box-info">
   <div class="box-header with-border">
-    <h3 class="box-title"> <label></label>Zona   {{ $zone->name }} </label></h3>
+    <h3 class="box-title"> <label></label>Tipo de Negocio   {{ $business->name }} </label></h3>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
@@ -23,8 +23,8 @@
 
 			<div class="col-md-8">
 
-				<p><strong>Código </strong> : {{ $zone->reg_code }}</p>
-				<p><strong>Nombre  </strong> : {{ $zone->name }}</p>
+				<p><strong>Código </strong> : {{ $business->cod }}</p>
+				<p><strong>Nombre  </strong> : {{ $business->name }}</p>
 
 
 			</div>
@@ -34,10 +34,10 @@
             <div class="row">
 
               <div class="col-md-2">
-                <a href="{{ URL::to('zonas/'. $zone->id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar Zona &nbsp<span class="glyphicon glyphicon-pencil"></span></a>
+                <a href="{{ URL::to('negocios/'. $business->id.'/edit') }}" class="btn btn-primary btn-sm btn-block"> Editar &nbsp<span class="glyphicon glyphicon-pencil"></span></a>
               </div>
               <div class="col-md-2">
-                   <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$zone->id}}" data-href="{{ URL::to('zonas/'. $zone->id)}}" data-nombre="{{ 'Desea eliminar Zona '.$zone->name.' ?' }}" class="btn btn-danger btn-sm btn-block">Borrar Zona &nbsp<span class="glyphicon glyphicon-trash">  </span></a>
+                   <a href="#" data-toggle="modal"  data-target="#formConfirm" data-id="{{$business->id}}" data-href="{{ URL::to('negocios/'. $business->id)}}" data-nombre="{{ 'Desea eliminar Tipo de Negocio '.$business->name.' ?' }}" class="btn btn-danger btn-sm btn-block">Borrar  &nbsp<span class="glyphicon glyphicon-trash">  </span></a>
                </div>
              </div>
 
@@ -58,7 +58,7 @@
         <h4 class="modal-title" id="frm_title">Delete</h4>
       </div>
 
-      {{ Form::open(array('url' => 'zonas/id','id' => 'formBorrar')) }}
+      {{ Form::open(array('url' => 'negocios/id','id' => 'formBorrar')) }}
       {{ Form::hidden('_method', 'DELETE') }}
       <div class="modal-body" id="frm_body">
       </div>
