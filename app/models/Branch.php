@@ -25,7 +25,7 @@ class Branch extends EntityModel
 
 
 	private $fv_error_message;
-	
+
 
 	protected $fillable = array('name');
 
@@ -52,8 +52,8 @@ class Branch extends EntityModel
 	{
 		if(Auth::check())
 		{
-			 $account_id = Auth::user()->account_id;	
-		
+			 $account_id = Auth::user()->account_id;
+
 		}
 		else
 		{
@@ -64,7 +64,7 @@ class Branch extends EntityModel
 	}
 
 
-	
+
 	// public function getNextInvoiceNumber($isQuote = false)
 	// {
 	// 	$counter = $isQuote ? $this->quote_number_counter : $this->invoice_number_counter;
@@ -73,7 +73,7 @@ class Branch extends EntityModel
 	// 	return $prefix . $counter;
 	// }
 
-	// public function incrementCounter($isQuote = false) 
+	// public function incrementCounter($isQuote = false)
 	// {
 	// 	if ($isQuote) {
 	// 		$this->quote_number_counter += 1;
@@ -100,26 +100,26 @@ class Branch extends EntityModel
 	// 		}
 	// 		else
 	// 		{
-	// 			$datelimit1 = $this->deadline;	
+	// 			$datelimit1 = $this->deadline;
 	// 			$today = new DateTime('now');
 
 	// 			$today = $today->format('Y-m-d');
-	// 			$datelimit = DateTime::createFromFormat('Y-m-d', $datelimit1);	
+	// 			$datelimit = DateTime::createFromFormat('Y-m-d', $datelimit1);
 	// 			$datelimit = $datelimit->format('Y-m-d');
 
-	// 			$valoresPrimera = explode ("-", $datelimit); 
-	// 			$valoresSegunda = explode ("-", $today); 
+	// 			$valoresPrimera = explode ("-", $datelimit);
+	// 			$valoresSegunda = explode ("-", $today);
 
-	// 			$diaPrimera    = $valoresPrimera[2];  
-	// 			$mesPrimera  = $valoresPrimera[1];  
-	// 			$anyoPrimera   = $valoresPrimera[0]; 
+	// 			$diaPrimera    = $valoresPrimera[2];
+	// 			$mesPrimera  = $valoresPrimera[1];
+	// 			$anyoPrimera   = $valoresPrimera[0];
 
-	// 			$diaSegunda   = $valoresSegunda[2];  
-	// 			$mesSegunda = $valoresSegunda[1];  
+	// 			$diaSegunda   = $valoresSegunda[2];
+	// 			$mesSegunda = $valoresSegunda[1];
 	// 			$anyoSegunda  = $valoresSegunda[0];
 
-	// 			$diasPrimeraJuliano = gregoriantojd($mesPrimera, $diaPrimera, $anyoPrimera);  
-	// 			$diasSegundaJuliano = gregoriantojd($mesSegunda, $diaSegunda, $anyoSegunda);     
+	// 			$diasPrimeraJuliano = gregoriantojd($mesPrimera, $diaPrimera, $anyoPrimera);
+	// 			$diasSegundaJuliano = gregoriantojd($mesSegunda, $diaSegunda, $anyoSegunda);
 
 	// 			return  $diasPrimeraJuliano - $diasSegundaJuliano < 0;
 	// 		}
@@ -127,9 +127,9 @@ class Branch extends EntityModel
 	// }
 
 	// public function isValid()
-	// {	
+	// {
 
-	// 	$datelimit1 = $this->deadline;	
+	// 	$datelimit1 = $this->deadline;
 
 	// 	if (!$datelimit1)
 	// 	{
@@ -141,22 +141,22 @@ class Branch extends EntityModel
 	// 	$today = new DateTime('now');
 
 	// 	$today = $today->format('Y-m-d');
-	// 	$datelimit = DateTime::createFromFormat('Y-m-d', $datelimit1);	
+	// 	$datelimit = DateTime::createFromFormat('Y-m-d', $datelimit1);
 	// 	$datelimit = $datelimit->format('Y-m-d');
 
-	// 	$valoresPrimera = explode ("-", $datelimit); 
-	// 	$valoresSegunda = explode ("-", $today); 
+	// 	$valoresPrimera = explode ("-", $datelimit);
+	// 	$valoresSegunda = explode ("-", $today);
 
-	// 	$diaPrimera    = $valoresPrimera[2];  
-	// 	$mesPrimera  = $valoresPrimera[1];  
-	// 	$anyoPrimera   = $valoresPrimera[0]; 
+	// 	$diaPrimera    = $valoresPrimera[2];
+	// 	$mesPrimera  = $valoresPrimera[1];
+	// 	$anyoPrimera   = $valoresPrimera[0];
 
-	// 	$diaSegunda   = $valoresSegunda[2];  
-	// 	$mesSegunda = $valoresSegunda[1];  
+	// 	$diaSegunda   = $valoresSegunda[2];
+	// 	$mesSegunda = $valoresSegunda[1];
 	// 	$anyoSegunda  = $valoresSegunda[0];
 
-	// 	$diasPrimeraJuliano = gregoriantojd($mesPrimera, $diaPrimera, $anyoPrimera);  
-	// 	$diasSegundaJuliano = gregoriantojd($mesSegunda, $diaSegunda, $anyoSegunda);     
+	// 	$diasPrimeraJuliano = gregoriantojd($mesPrimera, $diaPrimera, $anyoPrimera);
+	// 	$diasSegundaJuliano = gregoriantojd($mesSegunda, $diaSegunda, $anyoSegunda);
 
 	// 	return  $diasPrimeraJuliano - $diasSegundaJuliano < 0;
 
@@ -167,8 +167,8 @@ class Branch extends EntityModel
 	// public function getInvoiceLabels()
 	// {
 	// 	$data = [];
-	// 	$fields = [ 
-	// 		'invoice',  		
+	// 	$fields = [
+	// 		'invoice',
  //  		'invoice_date',
  //  		'due_date',
  //  		'invoice_number',
@@ -201,11 +201,11 @@ class Branch extends EntityModel
 
 	// 	return $data;
 	// }
-	
+
 
 	/* Validacion de datos */
 
-  
+
 
     /**
      * Gets the value of fv_name.
@@ -226,7 +226,7 @@ class Branch extends EntityModel
      */
    public function setName($nombre)
 	{
-		 
+
 		 if(!empty($nombre))
 		 {
 
@@ -238,8 +238,8 @@ class Branch extends EntityModel
             }else{
 
                 $nameExiste=Account::find($this->getAccount_id())->where('name',$name)->first();
-            }    
-		 	
+            }
+
 		 	if($nameExiste)
 		 	{
 		 		$this->fv_error_message = $this->fv_error_message . '<br> - Nombre '.$name.ERROR_DUPLICADO;
@@ -250,7 +250,7 @@ class Branch extends EntityModel
 		 	// return null;
 		 	$this->fv_error_message = $this->fv_error_message .'<br> - Nombre '.ERROR_NULL;
 		 	return $this->fv_name = null;
-		 
+
 	}
 
     /**
@@ -333,7 +333,7 @@ class Branch extends EntityModel
 
     		return  $this->fv_state = $fv_state;
     	}
-	       
+
     	$this->fv_error_message = $this->fv_error_message .'<br> - Estado '.ERROR_NULL;
         return  $this->fv_state = null;
     }
@@ -360,7 +360,7 @@ class Branch extends EntityModel
     {
     	if(!empty($fv_city))
     	{
-    		return $this->fv_city = $fv_city;	
+    		return $this->fv_city = $fv_city;
     	}
         $this->fv_error_message = $this->fv_error_message .'<br> - Ciudad '.ERROR_NULL;
         return $this->fv_city = null;
@@ -390,7 +390,7 @@ class Branch extends EntityModel
     	{
 
 			$fv_workphone = trim($fv_workphone);
-			
+
 			//if(!is_numeric($fv_workphone))
 			//{
 
@@ -400,7 +400,7 @@ class Branch extends EntityModel
 			//if($fv_workphone<0)
 			//{
 			//	$this->fv_error_message = $this->fv_error_message . '<br>- Telefono '.$fv_workphone.ERROR_NUMERICO_POSITIVO;
-			//	return  $this->fv_workphone =null;		
+			//	return  $this->fv_workphone =null;
 			//}
 			return  $this->fv_workphone = $fv_workphone;
 		}
@@ -432,7 +432,7 @@ class Branch extends EntityModel
     	// {
 
 			$fv_number_branch = trim($fv_number_branch);
-			
+
 			if(!is_numeric($fv_number_branch))
 			{
 
@@ -442,14 +442,14 @@ class Branch extends EntityModel
 			if($fv_number_branch<0)
 			{
 				$this->fv_error_message = $this->fv_error_message . '<br>- Numero de Sucursal '.$fv_number_branch.ERROR_NUMERICO_POSITIVO;
-				return  $this->fv_number_branch =null;		
+				return  $this->fv_number_branch =null;
 			}
 			return  $this->fv_number_branch = $fv_number_branch;
 		// }
 		// $this->fv_error_message = $this->fv_error_message .'<br>- Numero de Sucursal '.ERROR_NULL;
 		// return  $this->fv_number_branch=null;
 
-      
+
     }
 
     /**
@@ -476,7 +476,7 @@ class Branch extends EntityModel
     	{
 
 			$fv_number_process = trim($fv_number_process);
-			
+
 			if(!is_numeric($fv_number_process))
 			{
 
@@ -486,14 +486,14 @@ class Branch extends EntityModel
 			if($fv_number_process<0)
 			{
 				$this->fv_error_message = $this->fv_error_message . '<br>- Numero de Proceso '.$fv_number_process.ERROR_NUMERICO_POSITIVO;
-				return  $this->fv_number_process =null;		
+				return  $this->fv_number_process =null;
 			}
 			return  $this->fv_number_process = $fv_number_process;
 		}
 		$this->fv_error_message = $this->fv_error_message .'<br>- Numero de Proceso '.ERROR_NULL;
 		return  $this->fv_number_process=null;
 
-      
+
     }
 
     /**
@@ -519,7 +519,7 @@ class Branch extends EntityModel
     	{
 
 			$fv_nummber_autho = trim($fv_nummber_autho);
-			
+
 			if(!is_numeric($fv_nummber_autho))
 			{
 
@@ -529,14 +529,14 @@ class Branch extends EntityModel
 			if($fv_nummber_autho<0)
 			{
 				$this->fv_error_message = $this->fv_error_message . '<br>- Numero de Autorizacion '.$fv_nummber_autho.ERROR_NUMERICO_POSITIVO;
-				return  $this->fv_nummber_autho =null;		
+				return  $this->fv_nummber_autho =null;
 			}
 			return  $this->fv_nummber_autho = $fv_nummber_autho;
 		}
 		$this->fv_error_message = $this->fv_error_message .'<br>- Numero de Autorizacion '.ERROR_NULL;
 		return  $this->fv_nummber_autho=null;
 
-       
+
     }
 
     /**
@@ -567,7 +567,7 @@ class Branch extends EntityModel
     		// 	return $this->fv_deadline = null;
     		// }
 
-    		return $this->fv_deadline =date("Y-m-d", strtotime($fv_deadline)) ;	
+    		return $this->fv_deadline =date("Y-m-d", strtotime($fv_deadline)) ;
     	}
 
         $this->fv_error_message = $this->fv_error_message .'<br> - Fecha Limite '.ERROR_NULL;
@@ -596,7 +596,7 @@ class Branch extends EntityModel
     {
     	if(!empty($fv_key_dossage))
     	{
-    		return $this->fv_key_dossage = $fv_key_dossage;	
+    		return $this->fv_key_dossage = $fv_key_dossage;
     	}
         $this->fv_error_message = $this->fv_error_message .'<br> - Llave de Dosificacion '.ERROR_NULL;
         return $this->fv_key_dossage = null;
@@ -623,7 +623,7 @@ class Branch extends EntityModel
     {
       if(!empty($fv_economic_activity))
     	{
-    		return $this->fv_economic_activity = $fv_economic_activity;	
+    		return $this->fv_economic_activity = $fv_economic_activity;
     	}
         $this->fv_error_message = $this->fv_error_message .'<br> - Actividad Economica '.ERROR_NULL;
         return $this->fv_economic_activity = null;
@@ -650,7 +650,7 @@ class Branch extends EntityModel
     {
        if(!empty($fv_law))
     	{
-    		return $this->fv_law = $fv_law;	
+    		return $this->fv_law = $fv_law;
     	}
         $this->fv_error_message = $this->fv_error_message .'<br> - Leyenda '.ERROR_NULL;
         return $this->fv_law = null;
@@ -664,8 +664,8 @@ class Branch extends EntityModel
     public function getType_thrird()
     {   if($this->fv_type_thrird)
         {
-            return $this->fv_type_thrird;    
-        }       
+            return $this->fv_type_thrird;
+        }
     }
 
     /**
@@ -705,7 +705,7 @@ class Branch extends EntityModel
     	{
 
 			$fv_invoice_counter = trim($fv_invoice_counter);
-			
+
 			if(!is_numeric($fv_invoice_counter))
 			{
 
@@ -715,7 +715,7 @@ class Branch extends EntityModel
 			if($fv_invoice_counter<0)
 			{
 				$this->fv_error_message = $this->fv_error_message . '<br>- Contador de Factura '.$fv_invoice_counter.ERROR_NUMERICO_POSITIVO;
-				return  $this->fv_invoice_counter =null;		
+				return  $this->fv_invoice_counter =null;
 			}
 			return  $this->fv_invoice_counter = $fv_invoice_counter;
 		}
@@ -753,7 +753,7 @@ class Branch extends EntityModel
 			if(!$account_idExiste)
 			{
 				$this->fv_error_message = $this->fv_error_message .'<br>- Identificador Cuenta '.ERROR_ID;
-				return  $this->fv_account_id=null;	
+				return  $this->fv_account_id=null;
 			}
 			return $this->fv_account_id = $account_id;
 
@@ -786,7 +786,7 @@ class Branch extends EntityModel
 		{
 			if(!is_array($fv_type_documents_branch))
 			{
-				$this->fv_error_message = $this->fv_error_message .'<br>- Identificadores '.ERROR_ARRAY;	
+				$this->fv_error_message = $this->fv_error_message .'<br>- Identificadores '.ERROR_ARRAY;
 				return  $this->fv_type_documents_branch=null;
 			}
 			foreach ($fv_type_documents_branch as $type_document) {
@@ -797,12 +797,12 @@ class Branch extends EntityModel
                 }else{
                     $type_documentExiste = TypeDocument::find($type_document)->where('account_id',$this->getAccount_id())->first();
                 }
-				
-				
+
+
                 if(!$type_documentExiste)
 				{
 					$this->fv_error_message = $this->fv_error_message .'<br>- Identificador '.ERROR_ID;
-					return  $this->fv_type_documents_branch=null;	
+					return  $this->fv_type_documents_branch=null;
 				}
 			}
 			return $this->fv_type_documents_branch =$fv_type_documents_branch;
@@ -810,9 +810,9 @@ class Branch extends EntityModel
 		$this->fv_error_message = $this->fv_error_message .'<br>- Identificadores '.ERROR_NULL;
 		return  $this->fv_type_documents_branch=null;
 
-      
+
     }
-    
+
   //   public function setBranch_type_id($branch_type_id)
   //   {
   //   	if(!empty($branch_type_id))
@@ -826,7 +826,7 @@ class Branch extends EntityModel
 		// 	if(!$branch_type_idExiste)
 		// 	{
 		// 		$this->fv_error_message = $this->fv_error_message .'<br>- Identificador Sucursal '.ERROR_ID;
-		// 		return  $this->fv_branch_type_id=null;	
+		// 		return  $this->fv_branch_type_id=null;
 		// 	}
 		// 	return $this->fv_branch_type_id = $branch_type_id;
 
@@ -847,7 +847,7 @@ class Branch extends EntityModel
         if(!$this->id)
         {
 
-        
+
       		if(empty($this->fv_error_message))
     		{
 
@@ -865,19 +865,35 @@ class Branch extends EntityModel
                 $this->economic_activity = $this->fv_economic_activity;
                 $this->number_process = $this->fv_number_process;
                 $this->number_autho = $this->fv_nummber_autho;
-               
+
                 $this->law = $this->fv_law;
                 $this->type_third = $this->getType_thrird();
                 $this->invoice_number_counter = 1;
                 $this->save();
 
-                foreach ($this->fv_type_documents_branch as $documento) {
-                 # code...
+                $documento = TypeDocument::find(1);
+
                  $tipo = new TypeDocumentBranch();
                  $tipo->branch_id = $this->id;
-                 $tipo->type_document_id = $documento;
+                 $tipo->type_document_id = $documento->id;
+                 if($this->type_third!=2)//si no es pos entonces es facturador web
+                 {
+                     $tipo->template = $documento->javascript_web;
+                 }
+                 else
+                 {
+                     $tipo->template = $documento->javascript_pos;
+                 }
+
                  $tipo->save();
-                }
+
+                // foreach ($this->fv_type_documents_branch as $documento) {
+                //  # code...
+                //  $tipo = new TypeDocumentBranch();
+                //  $tipo->branch_id = $this->id;
+                //  $tipo->type_document_id = $documento;
+                //  $tipo->save();
+                // }
 
         			$this->fv_error_message = "Registro Existoso";
         			return true;
@@ -885,13 +901,13 @@ class Branch extends EntityModel
         }
         $this->fv_error_message = $this->fv_error_message . ' Sucursal '.ERROR_DUPLICADO .'<br>' ;
 		return false;
-  	}	
+  	}
     public function Actualizar()
     {
         if($this->id)
         {
 
-        
+
             if(empty($this->fv_error_message))
             {
 
@@ -902,7 +918,7 @@ class Branch extends EntityModel
                 {
                     $usuarios = UserBranch::getUsersBranch($this->id,$this->account_id);
 
-                    // si no tiene usuarios asignados y no tiene facturas puede hacer los cambios --esto es para de baja necesito descansar XD 
+                    // si no tiene usuarios asignados y no tiene facturas puede hacer los cambios --esto es para de baja necesito descansar XD
                     // if(!$usuarios)
                     // {
                         $this->account_id = $this->account_id?$this->account->id:$this->fv_account_id;
@@ -919,7 +935,7 @@ class Branch extends EntityModel
                         $this->economic_activity = $this->fv_economic_activity;
                         $this->number_process = $this->fv_number_process;
                         $this->number_autho = $this->fv_nummber_autho;
-                       
+
                         $this->law = $this->fv_law;
                         $this->type_third = $this->getType_thrird();
                         $this->invoice_number_counter = 1;
@@ -932,14 +948,14 @@ class Branch extends EntityModel
                             # code...
                             $type_document_branch->delete();
                         }
-                                                  
-                        foreach ($this->fv_type_documents_branch as $type_document_nuevos) 
+
+                        foreach ($this->fv_type_documents_branch as $type_document_nuevos)
                         {
                             # code...
                             //TODO: acabar esta parte de la consulta me falta la asignacion  XD ...... :()
                             $existeAsignado = TypeDocumentBranch::withTrashed()->where('branch_id',$this->id)
                                                                                 ->where('type_document_id',$type_document_nuevos)->first();
-                         
+
                             if($existeAsignado)
                             {
                                 $existeAsignado->restore();
@@ -950,26 +966,26 @@ class Branch extends EntityModel
                                 $tipo = new TypeDocumentBranch();
                                 $tipo->branch_id = $this->id;
                                 $tipo->type_document_id = $type_document_nuevos;
-                                $tipo->save();    
-                        
+                                $tipo->save();
+
                             }
                         }
-                       
+
 
                         $this->fv_error_message = "Registro Actualizado";
                         return true;
 
                     // }
-                    
+
                     // $this->fv_error_message = $this->fv_error_message . ' debe reasignar a los usuarios de esta sucursal <br>';
                     // return false;
                 }
 
                 //si tiene facturas hay que verificar la  fecha actual sea mayor a la fecha limite
-               
-           
+
+
                 $this->name =$this->fv_name;
-             
+
                 $this->address2 = $this->fv_address2;
                 $this->address1 = $this->fv_address1;
                 $this->work_phone = $this->fv_workphone;
@@ -980,7 +996,7 @@ class Branch extends EntityModel
                 $fecha_limite = new DateTime($this->deadline);
                 if($fecha_actual >$fecha_limite)
                 {
-                   
+
 
                     $this->number_branch= $this->fv_number_branch;
                     //docificaciones y numero de invoicce nada masXD
@@ -991,24 +1007,24 @@ class Branch extends EntityModel
                     $this->number_autho = $this->fv_nummber_autho;
                     $this->law = $this->fv_law;
                     $this->type_third = $this->getType_thrird();
-                    //colocamos la sucursal en 1 de nuevo 
+                    //colocamos la sucursal en 1 de nuevo
                     $this->invoice_number_counter = 1;
-                }              
-                
+                }
+
                 $this->save();
-                //modificacion  
+                //modificacion
                 foreach (TypeDocumentBranch::where('branch_id',$this->id) as $type_document_branch) {
                             # code...
                             $type_document_branch->delete();
                         }
-                                                  
-                                foreach ($this->fv_type_documents_branch as $type_document_nuevos) 
+
+                                foreach ($this->fv_type_documents_branch as $type_document_nuevos)
                                 {
                                     # code...
                                     //TODO: acabar esta parte de la consulta me falta la asignacion  XD ...... :()
                                     $existeAsignado = TypeDocumentBranch::withTrashed()->where('branch_id',$this->id)
                                                                                 ->where('type_document_id',$type_document_nuevos)->first();
-                                 
+
                                     if($existeAsignado)
                                     {
                                         $existeAsignado->restore();
@@ -1019,8 +1035,8 @@ class Branch extends EntityModel
                                         $tipo = new TypeDocumentBranch();
                                         $tipo->branch_id = $this->id;
                                         $tipo->type_document_id = $type_document_nuevos;
-                                        $tipo->save();    
-                                
+                                        $tipo->save();
+
                                     }
                                 }
 
@@ -1030,7 +1046,7 @@ class Branch extends EntityModel
         }
         $this->fv_error_message = $this->fv_error_message . ' Sucursal '.ERROR_NULL .'<br>' ;
         return false;
-    }   
+    }
 
     //atributo especial para el counter del invoice number
     public static function getInvoiceNumber($branch_id=null)
@@ -1057,14 +1073,14 @@ class Branch extends EntityModel
             ->update(array('invoice_number_counter' => $numeroFacturado+1));
         // $sucursal->invoice_number_counter=  $sucursal->invoice_number_counter+1;
         // $sucursal->save();
-        
+
         DB::commit();
-        
+
         return $numeroFacturado;
     }
 
     //para el dashboard
 
-    
+
 
 }

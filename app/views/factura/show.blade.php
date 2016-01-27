@@ -52,8 +52,7 @@
             <div class="btn-group col-xs-3" role="group">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#contacts">Enviar &nbsp;<span class="glyphicon glyphicon-send" aria-hidden="true"></span> </button>
             </div>
-            <div class="btn-group col-xs-3" role="group">
-              <a type="button"  class="btn btn-success" href="{{ URL::to('pagoCliente/'.$invoice->client_id.'/'.$invoice->id) }}" role="button" >Pagar &nbsp;<span class="glyphicon glyphicon-usd" aria-hidden="true"></span></a>
+            <div class="btn-group col-xs-3" role="group">              
             </div>
             <div class="btn-group col-xs-3" role="group">
               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#anular_modal">Anular&nbsp;&nbsp;<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></button>
@@ -97,8 +96,9 @@
            </div>
         </div>
       </form>
+     
       <div class="col-xs-12">
-          	<iframe id="theFrame" type="text/html" src="{{asset('verFactura/'.$invoice->public_id.'?copia='.$copia)}}"  frameborder="1" width="100%" height="1180"></iframe>
+          	<iframe id="theFrame" type="text/html" src="{{asset('verFactura/'.$invoice->id.'?copia='.$copia)}}"  frameborder="1" width="100%" height="1180"></iframe>
       </div>
       <div class="col-md-6">
           <div class="box box-solid">
@@ -130,7 +130,7 @@
               </div>
             </div>
            <?php $i++;} }?>
-              <form action="{{asset('nuevanota/'.$invoice->public_id)}}" method="POST">
+              <form action="{{asset('nuevanota/'.$invoice->id)}}" method="POST">
               <textarea id="nota"  name="nota" class="form-control" placeholder="Nota interna" rows="2"></textarea><p></p>
               <div  class="col-xs-2"><button class="btn btn-small btn-primary" type="submit" >Guardar Nota</button></div>
              </form>
@@ -149,7 +149,7 @@
           </div>
             <div class="modal-footer center">
                 <br>
-              <a type="button"  class="btn btn-large btn-default" href="{{ URL::to('anular/'.$invoice->public_id.'/') }}" role="button" >Anular</a>
+              <a type="button"  class="btn btn-large btn-default" href="{{ URL::to('anular/'.$invoice->id.'/') }}" role="button" >Anular</a>
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             </div>
       </div>

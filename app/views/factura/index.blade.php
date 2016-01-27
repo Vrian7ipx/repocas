@@ -46,7 +46,7 @@
           @foreach($invoices as $invoice)
               <tr class="active">
 
-                  <td>{{ $invoice->id}}</td>
+                  <td>{{ $invoice->invoice_number }}</td>
                   <td ><a href="{{URL::to('clientes/'.Client::find($invoice->client_id)->id)}}">{{ $invoice->client_name }}</a></td>
                   <td>{{ $invoice->created_at }}</td>
                   <td>{{ $invoice->importe_total }}</td>

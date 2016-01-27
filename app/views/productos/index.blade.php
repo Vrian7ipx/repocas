@@ -11,7 +11,7 @@
 <div class="box">
   <div class="box-header with-border">
     <h3 class="box-title">
-      <a href="{{ url('productos/create') }}" class="btn btn-success" role="button"><span class="glyphicon glyphicon-compressed" aria-hidden="true"></span> Nuevo Producto</a>
+      <a href="{{ url('productos/create') }}" class="btn btn-success" role="button"> Nuevo Producto &nbsp;<span class="glyphicon glyphicon-plus-sign"></span></a></h3>
       <!-- <a href="{{ url('producto/createservice') }}" class="btn btn-success" role="button"> <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Nuevo Servicio</a><br></h3>
 
       <a href="{{ url('categorias')}}" class="btn btn-primary" > Categorías </a>
@@ -29,7 +29,7 @@
                   <td>Tipo envase</td>
                   <td>ICE</td>
                   <td>Unidades</td>
-                  <td>Volmen CC</td>                 
+                  <td>Volmen CC</td>
                   <td style="display:none;">Acción</td>
               </tr>
           </thead>

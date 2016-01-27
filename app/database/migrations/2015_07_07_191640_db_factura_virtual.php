@@ -260,6 +260,8 @@ class DbFacturaVirtual extends Migration {
 
             $t->string('cod');
             $t->string('name');
+						$t->timestamps();
+						$t->softDeletes();
 
             $t->foreign('account_id')->references('id')->on('accounts');
 
@@ -272,6 +274,11 @@ class DbFacturaVirtual extends Migration {
             $t->increments('id');
             $t->string('reg_code');
             $t->string('name')->nullable;
+						$t->timestamps();
+						$t->softDeletes();
+						$t->unsignedInteger('account_id');
+
+						$t->foreign('account_id')->references('id')->on('accounts');
 
         });
 
@@ -582,6 +589,9 @@ class DbFacturaVirtual extends Migration {
             $t->float('discount');
 
             $t->text('unidad');
+						$t->float('boni')->nullable();
+						$t->integer('packs')->nullable();
+						$t->integer('units')->nullable();
              $t->integer('public_id');
 
             $t->foreign('invoice_id')->references('id')->on('invoices');
@@ -755,6 +765,7 @@ class DbFacturaVirtual extends Migration {
             $t->increments('id');
             $t->unsignedInteger('branch_id');
             $t->unsignedInteger('type_document_id');
+            $t->mediumText('template')->nullable();
 
             $t->timestamps();
             $t->softDeletes();

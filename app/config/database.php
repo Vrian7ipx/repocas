@@ -55,9 +55,10 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-      'database'  => 'cascada2',
-      'username'  => 'cascada2-user',
-      'password'  => 'cascada2-user-pass',
+
+      'database'  => 'cascada',
+      'username'  => 'cascada-user',
+      'password'  => 'cascada-user-pass',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
