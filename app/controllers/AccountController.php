@@ -181,7 +181,9 @@ class AccountController extends \BaseController {
 		if(Auth::user()->is_admin)
 		{
 			$account = Account::find(Auth::user()->account_id);
-			return View::make('cuentas.edit')->with('cuenta',$account);
+			$taxRate = TaxRate::find(Auth::user()->account_id);
+			// return View::make('cuentas.edit')->with('cuenta', $account, 'tax_rates', $taxRate);
+			return View::make('cuentas.edit', array('cuenta' => $account, 'tax_rates' => $taxRate));
 		}
 
 			return Redirect::to('inicio');
@@ -226,14 +228,16 @@ class AccountController extends \BaseController {
                         $cuenta->custom_client_label6 = Input::get('l6');
 
 												$tax_rates = TaxRate::find(Auth::user()->account_id);
-												return $tax_rates;
 
-												$ice = Input::get('cambio');
+												$ice = Input::get('rate');
 													if(is_numeric($ice)){
-															$cuenta->exchange = $ice;
+															$tax_rates->rate = $ice;
 														}
+												$tax_rates->save();
+
 
                     $cuenta->save();
+
                     if ( Input::hasFile('imgInp')) {
                         $file = Input::file('imgInp')->getRealPath();
                         $data = file_get_contents($file);
