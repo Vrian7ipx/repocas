@@ -35,7 +35,7 @@
 				<strong>Razón Social</strong> : {{$client->business_name }}
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<strong>NIT/CI</strong> : {{ $client->nit }}
-				
+
 
 			</div>
 		</div>
@@ -49,11 +49,11 @@
                             @if ( $client->address2 || $client->address1)
                                 <i class="glyphicon glyphicon-home" style="width: 20px"></i>
                             @endif
-                          
+
                             {{ $client->address2 }}<br/>
                             {{ $client->address1 }}</p>
 			  <p><i>{{ $client->private_notes }}</i></p>
-                         
+
 			</div>
 
 			<div class="col-md-3">
@@ -80,16 +80,16 @@
 				</p>
                                 <p>
                                 <b>Clasificaci&oacute;n:</b>
-                                    {{$negocio}}				
+                                    {{$negocio}}
                                 </p>
-                                
+
                                 <p>
                                     <b>Frecuencia:</b>
-                                   @foreach ($days as $day) 
+                                   @foreach ($days as $day)
                                       <small class="label bg-orange">{{$day}}</small>
                                     @endforeach
                                 </p>
-                                
+
 				@if ($client->account->custom_client_label1 && $client->custom_value1)
                              {{ $client->account->custom_client_label1 . ': ' . $client->custom_value1 }}<br/>
                             @endif
@@ -181,8 +181,6 @@
 		<div id="content">
 		    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
 		        <li class="active"><a href="#facturas" data-toggle="tab">Facturas</a></li>
-		        <li><a href="#pagos" data-toggle="tab">Pagos</a></li>
-                        <li><a href="#creditos" data-toggle="tab">Créditos</a></li>
 		    </ul>
 		    <div id="my-tab-content" class="tab-content">
 		        <div class="tab-pane active" id="facturas">
@@ -225,64 +223,6 @@
 
 		        </div>
 		        <div class="tab-pane" id="pagos">
-
-		             {{-- tabla pagos --}}
-		             <br>
-		             <table id="tpagos" class="table table-bordered table-hover" cellspacing="0" width="100%">
-			          <thead>
-			              <tr>
-			                  <td>Número de Factura</td>
-			                  <td>Referencia de transacción</td>
-			                  <td>Método</td>
-			                  <td>Monto Pagado</td>
-			                  <td>Fecha de Pago</td>
-
-			              </tr>
-			          </thead>
-			          <tbody>
-
-			          @foreach($pagos as $pago)
-			              <tr>
-			                  <td>{{ $pago->invoice_number}}</td>
-			                  <td>{{ $pago->transaction_reference }}</td>
-			                  <td>{{ $pago->name }}</td>
-			                  <td>{{ $pago->amount }}</td>
-			                  <td>{{ $pago->payment_date}}</td>
-
-
-			              </tr>
-			          @endforeach
-			          </tbody>
-			        </table>
-
-		        </div>
-		        <div class="tab-pane" id="creditos">
-
-		             {{-- tabla pagos --}}
-		             <br>
-		             <table id="tcreditos" class="table table-bordered table-hover" cellspacing="0" width="100%">
-			          <thead>
-			              <tr>
-			                  <td>Número</td>
-			                  <td>Monto de Cr&eacute;dito</td>
-			                  <td>Saldo</td>
-			                  <td>Fecha</td>
-			                  <td>Notas</td>
-			              </tr>
-			          </thead>
-			          <tbody>
-
-			          @foreach($creditos as $credito)
-			              <tr>
-			                  <td>{{ $credito->getCreditNumber() }}</td>
-			                  <td>{{ $credito->getAmount() }}</td>
-			                  <td>{{ $credito->getBalance() }}</td>
-			                  <td>{{ $credito->getCreditDate() }}</td>
-			                  <td>{{ $credito->getPrivateNotes() }}</td>
-			              </tr>
-			          @endforeach
-			          </tbody>
-			        </table>
 
 		        </div>
 		    </div>

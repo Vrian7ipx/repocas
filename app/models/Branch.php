@@ -914,7 +914,7 @@ class Branch extends EntityModel
                 $facturas = Invoice::where('branch_id',$this->id)->where('account_id',$this->account_id)->first();
 
                 //si no tienen facturas seguir
-                if(!$facturas)
+                if(!$facturas || true)
                 {
                     $usuarios = UserBranch::getUsersBranch($this->id,$this->account_id);
 

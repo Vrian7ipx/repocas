@@ -37,9 +37,9 @@
                             <p></p>
                              <label>Tipo de Facturación *</label>                              
                                <div class="list-group">                                  
-                                   <li class="list-group-item"><input type="radio" name="type_fac"  value="0"> Facturación Web<br></li>
-                                  <li class="list-group-item"><input type="radio" name="type_fac"  value="2"> Facturación POS<br></li>
-                                  <li class="list-group-item"><input type="radio" name="type_fac" value="1" checked> Facturación por Terceros<br></li>                                  
+                                   <li class="list-group-item"><input type="radio" name="type_fac"  value="0" <?php if($sucursal->type_third == 0) {?> checked <?php }?> > Facturación Web<br></li>
+                                  <li class="list-group-item"><input type="radio" name="type_fac"  value="2" <?php if($sucursal->type_third == 2) {?> checked <?php }?>> Facturación POS<br></li>
+                                  <li class="list-group-item"><input type="radio" name="type_fac" value="1" <?php if($sucursal->type_third == 1) {?> checked <?php }?>> Facturación por Terceros<br></li>                                  
                                 </div>
 
                             <p></p>
@@ -109,9 +109,35 @@
             </div>
             {{-- <div class="col-md-1"></div> --}}
             <div class="col-md-2">
-                <button type="submit" class="btn btn-success dropdown-toggle btn-sm btn-block"> Guardar &nbsp&nbsp&nbsp&nbsp<span class="glyphicon glyphicon-floppy-disk"></span></button>
+                <a href="#" data-toggle="modal"  data-target="#formConfirm" class="btn btn-success dropdown-toggle btn-sm btn-block">Guardar  <span class="glyphicon glyphicon-floppy-disk">  </span></a>
             </div>
+            
         </div>
+
+         <div class="modal fade" id="formConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="frm_title">Modificar Sucursal: {{$sucursal->name}}</h4>
+              </div>
+           
+            
+              <div class="modal-body" id="frm_body">
+                <p> Esta Seguro de modificar la sucursal <b>{{$sucursal->name}} </b>, tenga en cuenta que <b>se reiniciaran las credenciales de dosificacion y el numero de facturacion.</b></p>
+              </div>
+              <div class="modal-footer">
+                
+                {{ Form::submit('aceptar',array('class' => 'btn btn-primary col-sm-2 pull-right','style' => 'margin-left:10px;'))}}
+                <button type="button" class="btn btn-danger col-sm-2 pull-right" data-dismiss="modal" id="frm_cancel">Cancelar</button>
+                
+                
+
+              </div>
+            </div>
+          </div>
+        </div>
+
 
          {{ Former::close() }}
    
