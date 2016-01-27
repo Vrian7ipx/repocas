@@ -37,7 +37,7 @@ class InvoiceController extends \BaseController {
             if ($expire_time < $today_time)
             {
                 Session::flash('error','La fecha límite de emisión caducó, porfavor actualice su Dosificación');
-                return Redirect::to('sucursales/'.$branch->public_id.'/edit');
+                return Redirect::to('sucursales/'.$branch->id.'/edit');
             }
             $last_invoice= Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->max('invoice_date');
             $last_date=  strtotime($last_invoice);
@@ -369,7 +369,7 @@ class InvoiceController extends \BaseController {
 
 		                                $invoiceItem->setNotes($proo->notes);
 		                                $invoiceItem->setCost($producto["'cost'"]);
-		                                $invoiceItem->setQty($producto["'qty'"]);
+		                                $invoiceItem->setQty($producto["'qty'"]+$proo->units*$producto["'pack'"]);
 		                                $invoiceItem->packs=$producto["'pack'"];
 		                                $invoiceItem->discount=$producto["'disc'"];
 		                                $invoiceItem->boni=$producto["'bonus'"];
@@ -625,7 +625,7 @@ class InvoiceController extends \BaseController {
 		$second_year  = $second[0];
 		$a = gregoriantojd($first_month, $first_day, $first_year);
 		$b = gregoriantojd($second_month, $second_day, $second_year);
-		$errorS = "ExpirÃ³ la fecha lÃ­mite de " . $branch->name;
+		$errorS = "Expiró la Fecha Límite de " . $branch->name;
 		if($a - $b < 0)
 		{
 			Session::flash('error', $errorS);
@@ -730,7 +730,7 @@ class InvoiceController extends \BaseController {
 				}
 				if($aux == 0)
 				{
-					$errorMessage = trans('El cliente no tiene Correo ElectrÃ³nico.');
+					$errorMessage = trans('El cliente no tiene Correo Electrónico.');
 					Session::flash('error', $errorMessage);
 				}
 				else
@@ -1344,7 +1344,7 @@ class InvoiceController extends \BaseController {
                     $js=$type_document->javascript_web;
                 else
                     $js=$type_document->javascript_pos;
-                $client = Client::where('id',Input::get('client'))->first();
+                $client = Client::where('id',Input::get('client'))->first();                
                 $invoice =(object) [
 			'id'=>'0',
 			'account_name'=>$account->name,
@@ -1355,8 +1355,8 @@ class InvoiceController extends \BaseController {
 			'terms'=>Input::get('terms'),
 			'importe_neto'=>Input::get('total'),
 			'importe_total'=>Input::get('subtotal'),
-                        'importe_ice'=>0,
-                        'debito_fiscal'=>0,
+			'importe_ice'=>number_format(Input::get('importe_ice'), 2, '.', ''),
+			'debito_fiscal' => number_format(Input::get('importe_fiscal'), 2, '.', ''),			                        
 			'branch_name'=>$branch->name,
 			'city'=>$branch->city,
 			'client_id'=>Input::get('client'),
@@ -1399,7 +1399,7 @@ class InvoiceController extends \BaseController {
                                 'product_key'=>$producto["'product_key'"],
                                 'notes'=>$product->notes,
                                 'cost'=>$producto["'cost'"],
-                                'qty'=>$producto["'qty'"],
+                                'qty'=>$producto["'qty'"]+$product->units*$producto["'pack'"],   
                             ];
                             array_push($products, $prod);
 		      	}
@@ -1669,11 +1669,13 @@ class InvoiceController extends \BaseController {
 
     }
     public function anular($publicId){
-        $invoice = Invoice::where('account_id','=', Auth::user()->account_id)->where('public_id','=',$publicId)->first();
+			// return $publicId;30
+        $invoice = Invoice::where('account_id','=', Auth::user()->account_id)->where('id','=',$publicId)->first();
         $invoice->invoice_status_id = 6;
         $invoice->save();
-        $invoices = Invoice::where('account_id',Auth::user()->account_id)->orderBy('public_id', 'DESC')->get();
-	return View::make('factura.index', array('invoices' => $invoices));
+				return Redirect::to('factura');
+  //       $invoices = Invoice::where('account_id',Auth::user()->account_id)->orderBy('public_id', 'DESC')->get();
+	// return View::make('factura.index', array('invoices' => $invoices));
     }
 
     public function importar(){
@@ -1951,7 +1953,7 @@ class InvoiceController extends \BaseController {
 	 if(!$numero && !$name && !$fecha && !$total && !$estado)
 	 {
 		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->orderBy('invoices.created_at', 'DESC')
 												->simplePaginate(15);
@@ -1960,7 +1962,7 @@ class InvoiceController extends \BaseController {
 	 if ($numero) {
 
 		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoices.invoice_number','like', $numero."%")
  												->orderBy('invoices.invoice_number', 'DESC')
@@ -1976,7 +1978,7 @@ class InvoiceController extends \BaseController {
 	 if ($name) {
 
 		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 											 ->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 											 ->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 											 ->where('invoices.branch_id',Session::get('branch_id'))
  											 ->where('invoices.client_name','like', $name."%")
  											 ->orderBy('invoices.client_name', 'DESC')
@@ -1991,7 +1993,7 @@ class InvoiceController extends \BaseController {
 
 		if ($fecha) {
 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoices.created_at','like', $fecha."%")
 												->orderBy('invoices.created_at', 'DESC')
@@ -2006,7 +2008,7 @@ class InvoiceController extends \BaseController {
 
 		if ($total) {
 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoices.importe_total','like', $total."%")
 												->orderBy('invoices.importe_total', 'DESC')
@@ -2021,7 +2023,7 @@ class InvoiceController extends \BaseController {
 
 		if ($estado) {
 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoice_statuses.name','like', $estado."%")
 												->orderBy('invoice_statuses.name', 'DESC')
@@ -2056,7 +2058,7 @@ class InvoiceController extends \BaseController {
 		if(!$numero && !$name && !$fecha && !$total && !$estado)
  	 {
  		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
  												->orderBy('invoices.created_at', $sw)
  												->simplePaginate(15);
@@ -2065,7 +2067,7 @@ class InvoiceController extends \BaseController {
  	 if ($numero) {
 
  		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-  												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+  												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 													->where('invoices.branch_id',Session::get('branch_id'))
  											  	->where('invoices.invoice_number','like', $numero."%")
   												->orderBy('invoices.invoice_number', $sw)
@@ -2081,7 +2083,7 @@ class InvoiceController extends \BaseController {
  	 if ($name) {
 
  		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-  											 ->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+  											 ->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												 ->where('invoices.branch_id',Session::get('branch_id'))
   											 ->where('invoices.client_name','like', $name."%")
   											 ->orderBy('invoices.client_name', $sw)
@@ -2096,7 +2098,7 @@ class InvoiceController extends \BaseController {
 
  		if ($fecha) {
  			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
  												->where('invoices.created_at','like', $fecha."%")
  												->orderBy('invoices.created_at', $sw)
@@ -2111,7 +2113,7 @@ class InvoiceController extends \BaseController {
 
  		if ($total) {
  			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
  												->where('invoices.importe_total','like', $total."%")
  												->orderBy('invoices.importe_total', $sw)
@@ -2126,7 +2128,7 @@ class InvoiceController extends \BaseController {
 
  		if ($estado) {
  			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
  												->where('invoice_statuses.name','like', $estado."%")
  												->orderBy('invoice_statuses.name', $sw)

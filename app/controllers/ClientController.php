@@ -118,7 +118,7 @@ class ClientController extends \BaseController {
 		$client->setCity(trim(Input::get('city')));
 		$client->setGroup(trim(Input::get('group')));
 		$client->setBusiness_type_id(trim(Input::get('business')));
-		
+
                 // $client->city=Input::get('city');
                 // $client->group_id = Input::get('group');
                 // $client->business_type_id = Input::get('business');
@@ -342,10 +342,10 @@ class ClientController extends \BaseController {
 		$client->setPrivateNotes(trim(Input::get('private_notes')));
                 //improve this put method
                 $client->other=trim(Input::get('other'));
-                $client->zone_id=Input::get('zone');
-                $client->city=Input::get('city');
-                $client->group_id = Input::get('group');
-                $client->business_type_id = Input::get('business');
+                $client->setZone(trim(Input::get('zone')));
+                $client->setCity(trim(Input::get('city')));
+                $client->setGroup(trim(Input::get('group')));
+                $client->setBusiness_type_id(trim(Input::get('business')));
                 $dias="";
                 for($i=1;$i<8;$i++){
                     if(Input::get('d'.$i))
@@ -472,7 +472,8 @@ class ClientController extends \BaseController {
 	public function destroy($public_id)
 	{
 
-		$client = Client::scope($public_id)->firstOrFail();
+		// $client = Client::scope($public_id)->firstOrFail();
+		$client = Client::where('account_id',Account::find(Auth::user()->account_id))->where('public_id',$public_id)->first();
 
 		if($client->borrar()){
 

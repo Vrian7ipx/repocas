@@ -300,7 +300,7 @@ class PosController extends \BaseController {
     		$bonidesc= $bonidesc +$bd;
     		$amount = $amount +$st-$bd;
 
-    		$ice = DB::table('tax_rates')->select('rate')->where('name','=','ice')->first();
+    		$ice = DB::table('tax_rates')->select('rate')->where('name','=','ICE')->first();
     		if($pr->ice == 1)
     		{
     			
@@ -453,7 +453,7 @@ class PosController extends \BaseController {
     	$datos = $factura;    	    	
 		$user_id = Auth::user()->getAuthIdentifier();
 		$user  = DB::table('users')->select('account_id','branch_id','price_type_id')->where('id',$user_id)->first();
-    	$ice = DB::table('tax_rates')->select('rate')->where('name','=','ice')->first();
+    	$ice = DB::table('tax_rates')->select('rate')->where('name','=','ICE')->first();
     	$branch = DB::table('branches')->where('id','=',$user->branch_id)->first();	
         //$branch = DB::table('branches')->where('id','=',1)->first();	
 
@@ -1337,5 +1337,9 @@ class PosController extends \BaseController {
 
    		return Response::json($array); 	
     }
+    public function version()
+	{
+		return Response::json(array('version'=> '3.5'));
+	}
 
 }

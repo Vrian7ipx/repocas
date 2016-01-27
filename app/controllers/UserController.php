@@ -205,7 +205,7 @@ class UserController extends \BaseController {
                         $usuario->email=Input::get('email');
                         $usuario->phone=Input::get('phone');
                         if(Input::get('password') == Input::get('password_confirm')){
-                            if(Input::get('error')!="**********"){
+                            if(Input::get('password')!="**********"){
                                 $usuario->password =Hash::make(Input::get('password'));
                                 $usuario->username = Input::get('username');
                             }

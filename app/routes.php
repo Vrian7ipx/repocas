@@ -126,6 +126,8 @@ Route::group(array('before' => 'auth.basic'), function()
    //modulos para golden
     Route::get('/loginPOS','PosController@loginPOS');
     Route::get('cliente/{nit}','ClientController@cliente');
+
+    Route::get('version','PosController@version');
 });
 
 
