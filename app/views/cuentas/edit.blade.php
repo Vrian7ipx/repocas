@@ -41,7 +41,7 @@
 
     <br>
     <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ICE &nbsp;: </label>
-    <input  type="text" size = "3" name="ice" value="{{$cuenta->ice}}">
+    <input  type="text" size = "3" name="rate" value="{{$tax_rates->rate}}">
     <br>
     <legend>Campos Adicionales para Clientes</legend>
 
