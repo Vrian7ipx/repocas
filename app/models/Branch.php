@@ -943,33 +943,45 @@ class Branch extends EntityModel
 
                         //verificar los nuevos asignados
                         //aplicando algorimo de asignacion
+                        $type_branch = TypeDocumentBranch::where('branch_id',$this->id)->first();
+                        $master = MasterDocument::find(1);
 
-                        foreach (TypeDocumentBranch::where('branch_id',$this->id)->get() as $type_document_branch) {
-                            # code...
-                            $type_document_branch->delete();
-                        }
-
-                        foreach ($this->fv_type_documents_branch as $type_document_nuevos)
+                        if($this->type_third!=2)
                         {
-                            # code...
-                            //TODO: acabar esta parte de la consulta me falta la asignacion  XD ...... :()
-                            $existeAsignado = TypeDocumentBranch::withTrashed()->where('branch_id',$this->id)
-                                                                                ->where('type_document_id',$type_document_nuevos)->first();
-
-                            if($existeAsignado)
-                            {
-                                $existeAsignado->restore();
-                            }
-                            else
-                            {
-
-                                $tipo = new TypeDocumentBranch();
-                                $tipo->branch_id = $this->id;
-                                $tipo->type_document_id = $type_document_nuevos;
-                                $tipo->save();
-
-                            }
+                               $type_branch->template = $master->javascript_web;
                         }
+                        else
+                        {
+                            $type_branch->template = $master->javascript_pos;
+                        }
+                        $type_branch->save();
+
+                        // foreach (TypeDocumentBranch::where('branch_id',$this->id)->get() as $type_document_branch) {
+                        //     # code...
+                        //     $type_document_branch->delete();
+                        // }
+
+                        // foreach ($this->fv_type_documents_branch as $type_document_nuevos)
+                        // {
+                        //     # code...
+                        //     //TODO: acabar esta parte de la consulta me falta la asignacion  XD ...... :()
+                        //     $existeAsignado = TypeDocumentBranch::withTrashed()->where('branch_id',$this->id)
+                        //                                                         ->where('type_document_id',$type_document_nuevos)->first();
+
+                        //     if($existeAsignado)
+                        //     {
+                        //         $existeAsignado->restore();
+                        //     }
+                        //     else
+                        //     {
+
+                        //         $tipo = new TypeDocumentBranch();
+                        //         $tipo->branch_id = $this->id;
+                        //         $tipo->type_document_id = $type_document_nuevos;
+                        //         $tipo->save();
+
+                        //     }
+                        // }
 
 
                         $this->fv_error_message = "Registro Actualizado";

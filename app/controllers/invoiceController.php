@@ -1156,6 +1156,7 @@ class InvoiceController extends \BaseController {
             $invoice['is_uniper'] = $account->is_uniper;
             $invoice['uniper'] = $account->uniper;
             $document=  TypeDocument::where("id",$invoice->javascript)->first();
+
            // echo $invoice->javascript."<<<";
            // return 0;
             if($invoice->logo=="1")
@@ -1172,7 +1173,8 @@ class InvoiceController extends \BaseController {
             $matriz = Branch::where('account_id','=',$invoice->account_id)->where('number_branch','=','0')->first();
             $user = User::where('id',$invoice->user_id)->first();
 						$template = TypeDocumentBranch::where('branch_id', $invoice->branch_id)->select('template')->first();
-
+						//return $invoice->branch_id;
+			//echo $template->template;return ;
             $data = array(
                     'invoice' => $invoice,
                     'account'=> $account,
@@ -1589,8 +1591,8 @@ class InvoiceController extends \BaseController {
             return Response::json($mensaje);
 
     }
-    public function copia($publicId){
-              $invoice = Invoice::where('account_id','=',Auth::user()->account_id)->where('public_id','=',$publicId)->first(
+    public function copia($id){
+              $invoice = Invoice::where('id',$id)->first(
                 array(
                 'id',
                 'account_name',

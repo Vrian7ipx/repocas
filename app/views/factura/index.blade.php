@@ -20,7 +20,7 @@
           <thead>
               <tr>
                   <!--<td><input class="selectAll" type="checkbox"></td>-->
-                  <td><input placeholder="Código" id="numero" value="{{ $numero }}"></td>
+                  <td><input placeholder="Número" id="numero" value="{{ $numero }}"></td>
                   <td><input placeholder="Cliente" id="name" value="{{ $name }}"></input></td>
                   <td><input placeholder="Fecha" id="fecha" value="{{ $fecha }}"></input></td>
                   <td><input placeholder="Total" id="total" value="{{ $total }}"></input></td>
@@ -32,7 +32,7 @@
 			<thead>
               <tr>
 
-                  <th id="numero2">Código <button  style="text-decoration:none;color:#000;" id="dnumero"> <i class="glyphicon glyphicon-sort"></i></button></th>
+                  <th id="numero2">Número <button  style="text-decoration:none;color:#000;" id="dnumero"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th id="name2">Cliente<button  style="text-decoration:none;color:#000;" id="dname"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th id="fecha2">Fecha<button  style="text-decoration:none;color:#000;" id="dfecha"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th id="total2">Total<button  style="text-decoration:none;color:#000;" id="dtotal"> <i class="glyphicon glyphicon-sort"></i></button></th>

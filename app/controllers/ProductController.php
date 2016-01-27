@@ -77,10 +77,10 @@ class ProductController extends \BaseController {
 
                     $price = Price::createNew();
                     $prices->account_id = 1;
-                    if(Input::get('price-'.$type->id))
+                    //if(Input::get('price-'.$type->id))
                         $price->cost=Input::get('price-'.$type->id);
-                    else
-                        $price =$default_cost;
+                    //else
+                      //  $price =$default_cost;
                     $price->price_type_id = $type->id;
                     $price->product_id = $product->id;
                     $price->save();
@@ -271,10 +271,10 @@ class ProductController extends \BaseController {
                     $price = Price::where('product_id',$product->id)->where('price_type_id',$type->id)->first();
                     $prices->account_id = 1;                    
                     
-                    if(Input::get('price-'.$price->id))
+                    //if(Input::get('price-'.$price->id))
                         $price->cost=Input::get('price-'.$price->id);
-                    else
-                        $price =$default_cost;
+                   // else
+                     //   $price =$default_cost;
                     $price->price_type_id = $type->id;
                     $price->product_id = $product->id;
                     $price->save();
