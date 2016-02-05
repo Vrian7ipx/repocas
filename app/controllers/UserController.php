@@ -73,34 +73,33 @@ class UserController extends \BaseController {
                     //$usuario->branch_id = Input::get('branch');
                     $usuario->setPriceType(Input::get('price'));
                     $usuario->setGroupId(implode(",",Input::get('groups')));
-										$usuario->setBranch(Input::get('branch'));
-
+					$usuario->setBranch(Input::get('branch'));
 			// return var_dump($usuario);
 
 		if($usuario->Guardar())
-                {
-                    //redireccionar con el mensaje a la siguiente vista
+        {
+	        //redireccionar con el mensaje a la siguiente vista
 
-                    Session::flash('message',$usuario->getErrorMessage());
+	        Session::flash('message',$usuario->getErrorMessage());
 
 
-                    if(Input::has('branch'))
-                    {
-                            foreach (Input::get('branch') as $branch_id) {
-                                    # code...
-                                    // $cantidad = $cantidad +$sucursal;
-                                    $userbranch= UserBranch::createNew();
-                                    $userbranch->account_id = Auth::user()->account_id;
-                                    $userbranch->user_id = $usuario->id;
-                                    $userbranch->branch_id = $branch_id;
-                                    // $userbranch->branch_id = UserBranch::getPublicId();
-                                    $userbranch->save();
+	        if(Input::has('branch'))
+	        {
+	                foreach (Input::get('branch') as $branch_id) {
+	                        # code...
+	                        // $cantidad = $cantidad +$sucursal;
+	                        $userbranch= UserBranch::createNew();
+	                        $userbranch->account_id = Auth::user()->account_id;
+	                        $userbranch->user_id = $usuario->id;
+	                        $userbranch->branch_id = $branch_id;
+	                        // $userbranch->branch_id = UserBranch::getPublicId();
+	                        $userbranch->save();
 
-                            }
-                    }
-                    return Redirect::to('usuarios');
-                }
-			Session::flash('error',$usuario->getErrorMessage());
+	                }
+	        }
+	        return Redirect::to('usuarios');
+        }
+		Session::flash('error',$usuario->getErrorMessage());
 
 		return Redirect::to('usuarios/create');
 
@@ -202,18 +201,24 @@ class UserController extends \BaseController {
 
 			$usuario->first_name = trim(Input::get('first_name'));
 			$usuario->last_name = trim(Input::get('last_name'));
-                        $usuario->email=Input::get('email');
-                        $usuario->phone=Input::get('phone');
-                        if(Input::get('password') == Input::get('password_confirm')){
-                            if(Input::get('password')!="**********"){
-                                $usuario->password =Hash::make(Input::get('password'));
-                                $usuario->username = Input::get('username');
-                            }
-                        }
-                        else{
-                            Session::flash('error','Las contraseñas no coinciden');
-                            return Redirect::to('usuarios/'.$usuario->id.'/edit');
-                        }
+            $usuario->email=Input::get('email');
+            $usuario->phone=Input::get('phone');
+            $usuario->group_ids= implode(",",Input::get('groups'));
+            $usuario->setPriceType(Input::get('price'));
+            if(Input::get('admin')==1)
+                $usuario->is_admin = 1;
+            else
+                $usuario->is_admin = 0;
+            if(Input::get('password') == Input::get('password_confirm')){
+                if(Input::get('password')!="**********"){
+                    $usuario->password =Hash::make(Input::get('password'));
+                    $usuario->username = Input::get('username');
+                }
+            }
+            else{
+                Session::flash('error','Las contraseñas no coinciden');
+                return Redirect::to('usuarios/'.$usuario->id.'/edit');
+            }
 
 			$usuario->save();
 

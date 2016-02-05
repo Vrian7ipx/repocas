@@ -7,7 +7,7 @@ class Client extends EntityModel
 	public static $fieldNit = 'NIT';
 	public static $fieldAddress1 = 'Zona/Barrio';
 	public static $fieldAddress2 = 'DirecciÃ³n';
-	public static $fieldWorkPhone = 'TelÃ©fono';
+	public static $fieldWorkPhone = 'Teléfono';
 	public static $fieldPrivateNotes = 'Antecedentes';
 
         //NUEVAS VARIABLES
@@ -375,10 +375,10 @@ class Client extends EntityModel
 			$this->fv_nit = "NIT ".ERROR_NULL."<br>";
 			return;
 		}
-        if(!is_numeric($nit)){
+        /*if(!is_numeric($nit)){
             $this->fv_nit = "Introduzca un NIT con solo números";
             return;
-        }
+        }*/
 		$this->fv_nit=null;
 		$this->nit=$nit;
 	    return $this;

@@ -290,10 +290,10 @@ class ProductController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function  destroy($publicId)
+	public function  destroy($id)
 	{
 
-                $product = Product::scope($publicId)->firstOrFail();
+                $product = Product::where('id',$id)->first();
 		$product->delete();
 		$message = "Producto eliminado con éxito";
 		Session::flash('message', $message);

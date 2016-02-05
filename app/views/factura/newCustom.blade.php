@@ -67,8 +67,9 @@
       </div>
         <div class="col-md-4">
            <span class="">
-               <select id="client" name="client" onchange="addValuesClient(this)" class="form-control js-data-example-ajax">
-               </select>
+               <!-- <select id="client" name="client" onchange="addValuesClient(this)" class="form-control js-data-example-ajax">
+               </select> -->
+               <label><h3>{{$client->nit." - ".$client->name}}</h3></label>
             </span>
          </div>
 <!--         <div class="col-md-1">
@@ -93,10 +94,11 @@
       <div class="form-group col-md-6" id="contactos_client">
 {{-- seleccion de cliente --}}
         <br>
+        <input id="client" type="hidden" name="client" value="{{$client->id}}">
         <input id="mail" type="hidden" name="mail" >
-        <input id="nombre" type="hidden" name="nombre" >
-        <input id="nit" placeholder="NIT"  type="hidden" name="nit" >
-        <input id="razon"  placeholder="Razón Social" type="hidden" name="razon">
+        <input id="nombre" type="hidden" name="nombre" value="{{$client->name}}" >
+        <input id="nit" placeholder="NIT"  type="hidden" name="nit" value="{{$client->nit}}">
+        <input id="razon"  placeholder="Razón Social" type="hidden" name="razon" value="{{$client->business_name}}">
         <input id="total_send" type="hidden" name="total" >
         <input id="ice_send" type="hidden" name="importe_ice" >
         <input id="fiscal_send" type="hidden" name="importe_fiscal" >
@@ -254,7 +256,7 @@
           <div class="col-md-1"></div>
           <button  type="button" class="col-md-2 btn btn-success btn-large" data-toggle="modal" onclick="preview()">Pre-Visualizaci&oacute;n</button>
           <div class="col-md-1"></div>
-          <button  id="sub_boton" class="col-md-2 btn btn-large btn-default openbutton" disabled type="submit" onsubmit="return isValidDiscount()">Emitir Factura</button>
+          <button  id="sub_boton" class="col-md-2 btn btn-large btn-default openbutton" type="submit" onsubmit="return isValidDiscount()">Emitir Factura</button>
         <div class="col-md-1"></div>
 
         <a type="button"  class="col-md-2 btn btn-large btn-default" href="{{asset('factura')}}" role="button" >Cerrar</a>
@@ -615,12 +617,12 @@ $('#nota').val('');
 // function verr(){
 
 // }
-$("#client").change(function(){
+/*$("#client").change(function(){
   if($("#client").val()+"" == "null")
     $("#sub_boton").prop('disabled', false);
   else
     $("#sub_boton").prop('disabled', true);
-});
+});*/
 
 function sendMail()
 {
@@ -708,7 +710,7 @@ $(document).on('focus', '.select2', function() {
     $(this).siblings('select').select2('open');
 });
     /***buscado de clientes por ajax***/
-$("#client").select2({
+/*$("#client").select2({
   ajax: {
     Type: 'POST',
     url: "{{ URL::to('getclients') }}",
@@ -737,14 +739,12 @@ $("#client").select2({
   placeholder: "NIT o Nombre",
   allowClear: true,
   language: "es",
-});
+});*/
 
-$('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});
+/*$('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});
     // $("#client").change(function(){
     //   console.log("this is us");
     // });
-
-    /*****AGREGA VALORES RAZON Y NIT****/
     function addValuesClient(dato){
       $(".contact_add").hide();
     id_client_selected = $(dato).val();
@@ -761,7 +761,7 @@ $('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});
 
     $("#sub_boton").prop('disabled', false);
   //$("#sendcontacts").show();
-}
+}*/
   function emptyRows(){
     cont = 0;
     $( ".new_row" ).each(function( index ) {
@@ -773,7 +773,7 @@ $('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});
     return cont;
   }
 
-  function saveNewClient()
+/*  function saveNewClient()
   {
     user = $("#newuser").val();
     nit = $("#newnit").val();
@@ -791,9 +791,9 @@ $('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});
           {
             console.log(result);
           }
-      });
+      });*/
 
-    $("#client").select2({
+/*    $("#client").select2({
         ajax: {
           Type: 'POST',
           url: "{{ URL::to('getclients') }}",
@@ -831,7 +831,7 @@ $('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});
     //$("#client").val(nit).trigger("change");
 
 
-  }
+  }*/
 
 /*******************FECHAS Y DESCUENTOS*************************/
 ///$("#invoice_date").datepicker(/*"update", new Date()*/);
@@ -1073,7 +1073,7 @@ $(document).on("change",'.code',function(){
   id_products++;
   }
 });
-$("#sub_boton").mouseover(function(){
+/*$("#sub_boton").mouseover(function(){
   cli=$("#client").val();
   val = 1;
   if(cli==""){
@@ -1098,7 +1098,7 @@ $("#sub_boton").mouseover(function(){
   }
   else
     $("#sub_boton").prop('disabled', false);
-});
+});*/
 function completeItem(ind_act,item_send){
     products.forEach(function(prod){
     if(prod['notes'] == item_send)

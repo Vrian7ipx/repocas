@@ -74,11 +74,11 @@
 				<legend>Datos para Facturar</legend>
 				<p>				
 					<label>Razón Social *</label>
-					<input type="text" name="business_name" id="business_name" class="form-control" placeholder="Razón Social del Cliente" aria-describedby="sizing-addon2" title="Ingrese la Razón Social" pattern=".{3,}" value='{{$client->business_name}}' required>				  
+					<input type="text" name="business_name" id="business_name" class="form-control" placeholder="Razón Social del Cliente" aria-describedby="sizing-addon2" title="Ingrese la Razón Social"  value='{{$client->business_name}}' required>				  
 				</p>				
 				<p>				
 					<label >NIT/CI *</label>
-					<input type="text" name="nit" id="work_phone"class="form-control" placeholder="NIT o CI del Cliente" aria-describedby="sizing-addon2" title="Ingrese el NIT" pattern="([0-9]).{6,11}" value='{{$client->nit}}' required>				  
+					<input type="text" name="nit" id="work_phone"class="form-control" placeholder="NIT o CI del Cliente" aria-describedby="sizing-addon2" title="Ingrese el NIT"  value='{{$client->nit}}' required>				  
 				</p>		
 				<legend>Dirección</legend>
 				<p>
@@ -94,7 +94,7 @@
                                         <input type="text" name="other" id="other" value="{{$client->other}}"class="form-control" placeholder="otro" aria-describedby="sizing-addon2" >
  					<label>Dirección</label>
  					<input type="text" name="address2" value="{{$client->address2}}"class="form-control" id="address2" placeholder="Dirección del Cliente" aria-describedby="sizing-addon2" >
-                                        <label>Dirección</label>
+                                        <label>Ciudad</label>
                                         <select id="city" name="city"class="form-control select2">
                                             <option></option>
                                              <?php foreach($deptos as $depto){?>

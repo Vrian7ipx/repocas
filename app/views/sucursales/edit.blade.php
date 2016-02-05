@@ -14,7 +14,7 @@
 
   
   {{Former::framework('TwitterBootstrap3')}}
-  {{ Former::open('sucursales/'.$sucursal->public_id)->method('put')->rules(array( 
+  {{ Former::open('sucursales/'.$sucursal->id)->method('put')->rules(array( 
         'branch_name' => 'required',
       
   

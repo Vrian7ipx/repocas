@@ -21,11 +21,58 @@ class InvoiceController extends \BaseController {
 
 			$sucurasl = Branch::find(Session::get('branch_id'));
 
-			if($sucurasl->type_third!=2)
+			if($sucurasl->type_third==0 || $sucurasl->type_third==3)
 			{
 
 
 
+            $client = null;
+            $account = Account::findOrFail(Auth::user()->account_id);
+            $branch = Branch::where('id','=',Session::get('branch_id'))->first();
+            $today = date("Y-m-d");
+            $expire = $branch->deadline;
+            $today_time = strtotime($today);
+            $expire_time = strtotime($expire);
+            $tax = TaxRate::where('name','ICE')->first();
+            if ($expire_time < $today_time)
+            {
+                Session::flash('error','La fecha límite de emisión caducó, porfavor actualice su Dosificación');
+                return Redirect::to('sucursales/'.$branch->id.'/edit');
+            }
+            $last_invoice= Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->max('invoice_date');
+            $last_date=  strtotime($last_invoice);
+            $secs = $today_time - $last_date;// == <seconds between the two times>
+            $days = $secs / 86400;
+            $matriz = Branch::where('id',2)->first();
+            //getting the product within their datas
+            $products = Product::join('prices','products.id','=','prices.product_id')
+                                    ->where('prices.price_type_id',Auth::user()->price_type_id)
+                                    ->select(array('products.product_key','products.notes','prices.cost','products.qty','products.units','products.ice','products.cc'))
+                                    ->get();
+            $invoiceDesigns = TypeDocument::where('account_id',\Auth::user()->account_id)->orderBy('public_id', 'desc')->get();
+            $data = array(
+                            'account' => $account,
+                            'data' => Input::old('data'),
+                            'invoiceDesigns' => $invoiceDesigns,
+                            'last_invoice_date' => $days,
+                            'products' => $products,
+                            'tax'=>$tax->rate,
+                            'matriz' => $matriz,
+                            );
+                            $data = array_merge($data, self::getViewModel());
+                    return View::make('factura.new', $data);
+            }
+
+            Session::flash('message','La Dosificación es para un dispositivo POS razon por la cual no se puede facturar via web');
+            return Redirect::to('factura');
+
+	}
+
+	public function newCustom($id_cli)
+	{				
+			$sucurasl = Branch::find(Session::get('branch_id'));
+			if($sucurasl->type_third!=2)
+			{
             $client = null;
             $account = Account::findOrFail(Auth::user()->account_id);
             $branch = Branch::where('id','=',Session::get('branch_id'))->first();
@@ -49,6 +96,7 @@ class InvoiceController extends \BaseController {
                                     ->select(array('products.product_key','products.notes','prices.cost','products.qty','products.units','products.ice','products.cc'))
                                     ->get();
             $invoiceDesigns = TypeDocument::where('account_id',\Auth::user()->account_id)->orderBy('public_id', 'desc')->get();
+            $client = Client::where('id',$id_cli)->first();
             $data = array(
                             'account' => $account,
                             'data' => Input::old('data'),
@@ -56,16 +104,16 @@ class InvoiceController extends \BaseController {
                             'last_invoice_date' => $days,
                             'products' => $products,
                             'tax'=>$tax->rate,
+                            'client' => $client
                             );
                             $data = array_merge($data, self::getViewModel());
-                    return View::make('factura.new', $data);
+                    return View::make('factura.newCustom', $data);
             }
 
             Session::flash('message','La Dosificación es para un dispositivo POS razon por la cual no se puede facturar via web');
             return Redirect::to('factura');
 
 	}
-
 
 	public function newNotaEntrega()
 	{
@@ -535,7 +583,8 @@ class InvoiceController extends \BaseController {
         	}
         	//else
         //		Session::flash('error',"No ingresó el mail del remitente");
-            return View::make('factura.index', array('invoices' => $invoices));
+            //return View::make('factura.index', array('invoices' => $invoices));
+            return Redirect::to('factura');
 	}
 
 	private function sendInvoiceToContact($id,$date,$nit,$mail_to){
@@ -554,7 +603,7 @@ class InvoiceController extends \BaseController {
 		foreach ($mail_to as $key => $m_to) {
 			global $ma_to;
 			$ma_to = $m_to;
-			Mail::send('emails.wellcome', array('link' => 'http://demo.emizor.com/clientefactura/'.$idnew,'cliente'=>$invoice->client_name,'nit'=>$invoice->client_nit,'monto'=>$invoice->importe_total,'numero_factura'=>$invoice->invoice_number), function($message)
+			Mail::send('emails.wellcome', array('link' => 'www.sigcfactu.com.bo/clientefactura/'.$idnew,'cliente'=>$invoice->client_name,'nit'=>$invoice->client_nit,'monto'=>$invoice->importe_total,'numero_factura'=>$invoice->invoice_number), function($message)
 			{
 				global $ma_to;
 	    		$message->to($ma_to, '')->subject('Factura');
@@ -1010,7 +1059,8 @@ class InvoiceController extends \BaseController {
                     $nota = [];
                 else
                     $nota = json_decode($invoice['note']);
-                $matriz = Branch::where('account_id','=',$invoice->account_id)->where('number_branch','=','0')->first();
+                //$matriz = Branch::where('account_id','=',$invoice->account_id)->where('number_branch','=','0')->first();
+                $matriz = Branch::where('id',2)->first();
                 //return $nota;
                 $user = User::where('id',$invoice->user_id)->first();
                // echo $user->username;
@@ -1033,7 +1083,8 @@ class InvoiceController extends \BaseController {
         {
                  return  Response::json(Input::all());
                 $account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
-                $matriz = Branch::where('account_id','=',Auth::user()->account_id)->where('number_branch','=',0)->first();
+                //$matriz = Branch::where('account_id','=',Auth::user()->account_id)->where('number_branch','=',0)->first();
+                $matriz = Branch::where('id',2)->first();
                 $branch = Branch::where('id','=',Session::get('branch_id'))->first();
                 $branchDocument = TypeDocumentBranch::where('branch_id','=',$branch->id)->first();
 		$type_document =TypeDocument::where('id','=',$branchDocument->type_document_id)->first();
@@ -1170,7 +1221,8 @@ class InvoiceController extends \BaseController {
                 $copia=Input::get('copia');
             else
                 $copia = 0;
-            $matriz = Branch::where('account_id','=',$invoice->account_id)->where('number_branch','=','0')->first();
+            //$matriz = Branch::where('account_id','=',$invoice->account_id)->where('number_branch','=','0')->first();
+            $matriz = Branch::where('id',2)->first();
             $user = User::where('id',$invoice->user_id)->first();
 						$template = TypeDocumentBranch::where('branch_id', $invoice->branch_id)->select('template')->first();
 						//return $invoice->branch_id;
@@ -1184,7 +1236,7 @@ class InvoiceController extends \BaseController {
                     'copia' => $copia,
                     'publicId' => $invoice->public_id,
                     'user'      => $user,
-										'template' => $template
+					'template' => $template
             );
             return View::make('factura.ver',$data);
 	}
@@ -1301,7 +1353,9 @@ class InvoiceController extends \BaseController {
                     'state',
                     'law',
                     'phone',
-                    'javascript')
+                    'javascript',
+                    'importe_ice',
+									  'debito_fiscal' )
                     );
 
 
@@ -1323,6 +1377,10 @@ class InvoiceController extends \BaseController {
             //print_r($contacts);
     //	return 0;
             $matriz = Branch::where('account_id','=',$invoice->account_id)->where('number_branch','=','0')->first();
+            $template = TypeDocumentBranch::where('branch_id', $invoice->branch_id)->select('template')->first();
+            $document=  TypeDocument::where("id",1)->first();
+            $invoice->logo = $document->logo;
+
             $data = array(
                     'invoice' => $invoice,
                     //'account'=> $account,
@@ -1331,6 +1389,7 @@ class InvoiceController extends \BaseController {
                     'matriz'    => $matriz,
                     'copia' => 0,//Input::get('copia'),
                     'publicId' => $invoice->public_id,
+                    'template' => $template
             );
             return View::make('factura.ver',$data);
         }
@@ -1338,7 +1397,8 @@ class InvoiceController extends \BaseController {
         {
         	// return  Response::json(Input::all());
                 $account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
-                $matriz = Branch::where('account_id','=',Auth::user()->account_id)->where('number_branch','=',0)->first();
+                //$matriz = Branch::where('number_branch','=',0)->first();
+                $matriz = Branch::where('id',2)->first();
                 $branch = Branch::where('id','=',Session::get('branch_id'))->first();
                 $type_document =TypeDocument::where('account_id',Auth::user()->account_id)->where('master_id',Input::get('invoice_type'))->orderBy('id','DESC')->first();
 
@@ -1357,6 +1417,7 @@ class InvoiceController extends \BaseController {
 			'terms'=>Input::get('terms'),
 			'importe_neto'=>Input::get('total'),
 			'importe_total'=>Input::get('subtotal'),
+			'discount'=>number_format(Input::get('subtotal')-Input::get('total'), 2, '.', ''),
 			'importe_ice'=>number_format(Input::get('importe_ice'), 2, '.', ''),
 			'debito_fiscal' => number_format(Input::get('importe_fiscal'), 2, '.', ''),			                        
 			'branch_name'=>$branch->name,

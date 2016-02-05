@@ -4,12 +4,21 @@
   Route::get('crear', 'IpxController@create');
   Route::post('crear', 'IpxController@store');
   Route::get('clientefactura/{ruta}',"invoiceController@verFacturaCliente");
+  Route::get('examenimpuestos','IpxController@test');
+  Route::post('examenimpuestos','IpxController@makeTest');
 
 
 
-  Route::get('/session', function()
+  Route::post('/session', function()
   {
 
+         $input = Input::all();
+      //return $input;
+         // $input = get_file_contents();
+      DB::table('pos_backups')->insert(
+        array('user_id' => Auth::user()->id, 'json' => json_encode($input),'created_at'=>date())
+    );
+      return Response::json($input); 
    // $documento = TypeDocument::where('account_id',Auth::user()->account_id)->first();
 
  //    $invoice_number = Branch::getInvoiceNumber();
@@ -23,6 +32,20 @@
  //    // return View::make('emails.wellcome');
  //    // return Response::json(TypeDocument::getDocumento()->logo);
  //     Session::flush();
+    //$pos = PosBackup::createNew();
+    
+
+    // DB::table('pos_backups')->insert(
+    //     array('user_id' => '1', 'json' => 'json data','created_at'=>date())
+    // );
+    // return 0;
+
+
+    // $pos = new PosBackup();
+    // $pos->user_id = 1;
+    // $pos->json ="json saved";
+    // $pos->save();
+    // return  0;
     return Session::get('branch_id');
 
 // facturacion.ipx
@@ -128,6 +151,7 @@ Route::group(array('before' => 'auth.basic'), function()
     Route::get('cliente/{nit}','ClientController@cliente');
 
     Route::get('version','PosController@version');
+    Route::get('test','PosController@test');
 });
 
 
@@ -162,6 +186,8 @@ Route::group(array('before' => 'auth'), function()
   Route::resource('factura','invoiceController');
 
   Route::get('verFactura/{id}','invoiceController@verFactura');
+  Route::get('factura/new/{id}','invoiceController@newCustom');
+
   Route::get('verFacturaFiscal/{id}','invoiceController@verFacturaFiscal');
   Route::get('factura2','invoiceController@factura2');
   Route::post('nuevanota/{id}','invoiceController@nuevanota');

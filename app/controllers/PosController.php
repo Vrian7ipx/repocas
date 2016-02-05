@@ -75,6 +75,8 @@ class PosController extends \BaseController {
 	{
 		//
 		//guardando facturas XD 
+		//$user = User::fin(-1)->firstOrFail();
+		//return $this->newSave();
 		return $this->saveOfflineInvoices();
 	}
 
@@ -173,11 +175,10 @@ class PosController extends \BaseController {
     		return Response::json($datos);	
     	
     }
-
-     public function saveOfflineInvoices(){
+    public function newSave(){
     	//return Response::json(0);
 
-    	$conectado=false;
+    	$conectado=true;
     	$resultado = 0;
     	//$this->saveBackUpToMirror();
     	//return 0;    	
@@ -187,6 +188,33 @@ class PosController extends \BaseController {
     	$respuesta = array();
     	// $input =  $this->setDataOffline();
     	$input = Input::all();
+    	//return $input;
+    	DB::table('pos_backups')->insert(
+        array('user_id' => Auth::user()->id, 'json' => json_encode($input),'created_at'=>date())
+    	);
+    	return $input;
+    }
+
+     public function saveOfflineInvoices(){
+    	//return Response::json(0);
+
+    	$conectado=true;
+    	$resultado = 0;
+    	//$this->saveBackUpToMirror();
+    	//return 0;    	
+
+    	//$input = Input::all();
+
+    	$respuesta = array();
+    	// $input =  $this->setDataOffline();
+    	$input = Input::all(); 
+    	//$input=iconv(mb_detect_encoding($input, mb_detect_order(), true), "UTF-8", $input);
+		//$utf8Str = iconv('ISO-8859-1', 'UTF-8', $input);
+    	//return $input;
+    	DB::table('pos_backups')->insert(
+        array('user_id' => Auth::user()->id, 'json' => json_encode($input),'created_at'=>date())
+    );
+    	//return $input;
     	// $ingresa = json_encode($ingresa);
     	// $input = json_decode($ingresa);
 
@@ -198,47 +226,59 @@ class PosController extends \BaseController {
     	$cantidad =  0;
 
     	if($conectado){
+
 	    	foreach ($input as $key => $factura) {    		
 				array_push($backup, $this->completeFields($factura));    		
 	    		array_push($respuesta, $factura['invoice_number']);  		
 	    		$cantidad++;
 	    	}
-	    	$input = $this->saveBackUpToMirror($backup);
-			$input = json_decode($input);
+	    	$input = $this->saveBackUpToMirror($backup);	    	
+	    	//return $input;
+
+			$input = json_decode($input);			
+			
 
 	    	foreach ($input as $key => $factura) {    				
-	    		$this->saveOfflineInvoice($factura);	    		    		
+	    		$this->saveOfflineInvoice($factura);
 	    	}
+	    	//return ;
     	}
     	else{
+
     		if(!$this->verificar($input))
     			$resultado=1;    		
     		else
-		    	foreach ($input as $key => $factura) {    				
+		    	foreach ($input as $key => $factura) {   
+		    		$factura['client_id']= $factura['client_id']/10; 				
 		    		$this->saveOfflineInvoice($factura);	    		    		
 		    	}
     	}
     	
 
     	$datos = array('resultado' => $resultado.'','respuesta'=>$cantidad.'');
+    	//hereBithc();
     	//print_r($datos);
 		return Response::json($datos);
     }
 
     private function saveOfflineInvoice($factura)
     {
-    	   
+    	   // return Response::json($factura);
 		$input = $factura;
+		//print_r($input->invoice_number);
+		//return ;
 		// $invoice_number = Auth::user()->account->getNextInvoiceNumber();
 		//$invoice_number = (int)Auth::user()->branch->getNextInvoiceNumber();
 
-		$numero =(int) $input['invoice_number'];
+		//$numero =(int) $input['invoice_number'];
+		$numero =(int) $input->invoice_number;
 
 
 		$user_branch= UserBranch::where('user_id',Auth::user()->id)->first();
 
   		$sucursal = Branch::find($user_branch->branch_id);
-        $sucursal->invoice_number_counter=  $input['invoice_number']+1;
+        //$sucursal->invoice_number_counter=  $input['invoice_number']+1;
+        $sucursal->invoice_number_counter=  $input->invoice_number+1;
         $sucursal->save();
 
 
@@ -252,7 +292,8 @@ class PosController extends \BaseController {
 		// 	return Response::json( array('resultado' => '1' ,'invoice_number'=>$invoice_number));
 
 		// }
-		$client_id = $input['client_id'];
+		//$client_id = $input['client_id'];
+		$client_id = $input->client_id;
 		// $client = DB::table('clients')->select('id','nit','name','public_id')->where('id',$input['client_id'])->first();
 
 		// $user_id = Auth::user()->getAuthIdentifier();
@@ -265,7 +306,8 @@ class PosController extends \BaseController {
 		//$branch = DB::table('branches')->select('num_auto','llave_dosi','fecha_limite','address1','address2','country_id','industry_id')->where('id','=',$user->branch_id)->first();	
     	// $branch = DB::table('branches')->select('number_autho','key_dosage','deadline','address1','address2','country_id','industry_id','law','activity_pri','activity_sec1','name')->where('id','=',$user->branch_id)->first();	
     	$branch = DB::table('branches')->where('id','=',$user_branch->branch_id)->first();	
-    	$items = $input['invoice_items'];
+    	//$items = $input['invoice_items'];
+    	$items = $input->invoice_items;
     	// echo "this is initializioinh";
     	// print_r($input->invoice_items); 
 		// return 0;
@@ -279,7 +321,8 @@ class PosController extends \BaseController {
     	foreach ($items as $item) 
     	{
     		# code...
-    		$product_id = $item['id'];
+    		//$product_id = $item['id'];
+    		$product_id = $item->id;
     		 
     		$pr = DB::table('products')
     							->join('prices',"product_id","=",'products.id')
@@ -292,11 +335,13 @@ class PosController extends \BaseController {
 
     		// $pr = DB::table('products')->select('cost')->where('id',$product_id)->first();
     		
-    		$qty = (int) $item['qty'];
+    		//$qty = (int) $item['qty'];
+    		$qty = (int) $item->qty;
     		$cost = $pr->cost/$pr->units;
     		$st = ($cost * $qty);
     		$subtotal = $subtotal + $st; 
-    		$bd= ($item['boni']*$cost) + $item['desc'];
+    		//$bd= ($item['boni']*$cost) + $item['desc'];
+    		$bd= ($item->boni*$cost) + $item->desc;
     		$bonidesc= $bonidesc +$bd;
     		$amount = $amount +$st-$bd;
 
@@ -306,7 +351,8 @@ class PosController extends \BaseController {
     			
     			//caluclo ice bruto 
     			$iceBruto = ($qty *($pr->cc/1000)*$ice->rate);
-    			$iceNeto = (((int)$item['boni']) *($pr->cc/1000)*$ice->rate);
+    			//$iceNeto = (((int)$item['boni']) *($pr->cc/1000)*$ice->rate);
+    			$iceNeto = (((int)$item->boni) *($pr->cc/1000)*$ice->rate);
     			$icetotal = $icetotal +($iceBruto-$iceNeto) ;
     			// $fiscal = $fiscal + ($amount - ($item['qty'] *($pr->cc/1000)*$ice->rate) );
     		}
@@ -322,13 +368,16 @@ class PosController extends \BaseController {
     	$balance= $amount;
     	/////////////////////////hasta qui esta bien al parecer hacer prueba de que fuciona el join de los productos XD
     	$invoice_dateCC = date("Ymd");
-    	$invoice_date = date("Y/m/d");
+    	//$invoice_date = date("Y/m/d");
+    	$invoice_date =date("Y-m-d", strtotime($input->fecha));
+    	// date("Y-m-d", strtotime($fecha))
     
 		$invoice_date_limitCC = date("Y/m/d", strtotime($branch->deadline));
 
 		// require_once(app_path().'/includes/control_code.php');	
 		// $cod_control = codigoControl($invoice_number, $input['nit'], $invoice_dateCC, $amount, $branch->number_autho, $branch->key_dosage);
-	     $cod_control = $input['cod_control'];
+	     //$cod_control = $input['cod_control'];
+	     $cod_control = $input->cod_control;
 	     $ice = DB::table('tax_rates')->select('rate')->where('name','=','ice')->first();
 	     //
 	     // creando invoice
@@ -372,8 +421,10 @@ class PosController extends \BaseController {
 	     $invoice->importe_ice =$icetotal;
 	     // $invoice->ice = $ice->rate;
 	     //cliente
-	     $invoice->client_nit=$input['nit'];
-	     $invoice->client_name =$input['name'];
+	     //$invoice->client_nit=$input['nit'];
+	     $invoice->client_nit=$input->nit;
+	     ///$invoice->client_name =$input['name'];
+	     $invoice->client_name =$input->name;
               $documents = TypeDocumentBranch::where('branch_id',$invoice->branch_id)->orderBy('id','ASC')->get();
             foreach ($documents as $document)
             {
@@ -388,8 +439,8 @@ class PosController extends \BaseController {
 	     
 	     $account = Auth::user()->account;	     
 	     	$invoice->save();
-				$fecha =$input['fecha'];
-			$f = date("Y-m-d", strtotime($fecha));
+				//$fecha =$input['fecha'];
+				
 	     	 // DB::table('invoices')
         //     ->where('id', $invoice->id)
         //     ->update(array('branch' => $branch->name,'invoice_date'=>$f));
@@ -404,7 +455,8 @@ class PosController extends \BaseController {
     		
     		
     		// $product = DB::table('products')->select('notes')->where('id',$product_id)->first();
-    		  $product_id = $item['id'];
+    		  //$product_id = $item['id'];
+    		$product_id = $item->id;
 	    		 
 	    		$product = DB::table('products')
 	    							->join('prices',"product_id","=",'products.id')
@@ -419,7 +471,8 @@ class PosController extends \BaseController {
 	    		
 	    		
 	    		$cost = $product->cost/$product->units;
-	    		$line_total= ((int)$item['qty'])*$cost;
+	    		//$line_total= ((int)$item['qty'])*$cost;
+	    		$line_total= ((int)$item->qty)*$cost;
 
     		
     		  $invoiceItem = InvoiceItem::createNew();
@@ -429,9 +482,12 @@ class PosController extends \BaseController {
 		      $invoiceItem->product_key = $product->product_key;
 		      $invoiceItem->notes = $product->notes;
 		      $invoiceItem->cost = $cost;
-		      $invoiceItem->boni = (int)$item['boni'];
+		      /*$invoiceItem->boni = (int)$item['boni'];
 		      $invoiceItem->discount =$item['desc'];
-		      $invoiceItem->qty = (int)$item['qty'];
+		      $invoiceItem->qty = (int)$item['qty'];*/
+		      $invoiceItem->boni = (int)$item->boni;
+		      $invoiceItem->discount =$item->desc;
+		      $invoiceItem->qty = (int)$item->qty;
 		      // $invoiceItem->line_total=$line_total;
 		      // $invoiceItem->tax_rate = 0;
 		      $invoiceItem->save();
@@ -451,10 +507,13 @@ class PosController extends \BaseController {
     	$invoice_items = array();
 
     	$datos = $factura;    	    	
-		$user_id = Auth::user()->getAuthIdentifier();
-		$user  = DB::table('users')->select('account_id','branch_id','price_type_id')->where('id',$user_id)->first();
+		$user_id = Auth::user()->id;
+		$user  = DB::table('users')->select('account_id','price_type_id')->where('id',$user_id)->first();
     	$ice = DB::table('tax_rates')->select('rate')->where('name','=','ICE')->first();
-    	$branch = DB::table('branches')->where('id','=',$user->branch_id)->first();	
+
+    	$user_branch= UserBranch::where('user_id',Auth::user()->id)->first();
+
+    	$branch = DB::table('branches')->where('id','=',$user_branch->branch_id)->first();	
         //$branch = DB::table('branches')->where('id','=',1)->first();	
 
     	foreach ($factura['invoice_items'] as $key => $item) {
@@ -493,15 +552,15 @@ class PosController extends \BaseController {
     	    'account_id'	=>	'1',
     	    'branch_id'	=>	$branch->id,
     	    'law'	=>	$branch->law,
-    	    'activity_pri'	=>	$branch->activity_pri,
-    	    'activity_sec1'	=>	$branch->activity_sec1,
+    	    'activity_pri'	=>	$branch->economic_activity,
+    	    'activity_sec1'	=>	$branch->aconomic_activity,
     	    'address1'	=>	$branch->address1,
     	    'address2'	=>	$branch->address2,
     	    'number_autho'	=>	$branch->number_autho,
-    	    'postal_code'	=>	$branch->postal_code,
+    	    'postal_code'	=>	$branch->sfc,
     	    'city'	=>	$branch->city,
     	    'state'	=>	$branch->state,
-    	    'country_id'	=>	$branch->country_id,
+    	    'country_id'	=>	$branch->id,
     	    'key_dosage'	=>	$branch->key_dosage,
     	    'branch'	=>	$branch->name,
     	    'invoice_items'	=> $invoice_items,
@@ -521,7 +580,7 @@ class PosController extends \BaseController {
 		$fields= array(
 			'ventas'=>urlencode(json_encode($backup)),			
 			'adicional'=>urlencode("nada")
-			);
+			);		
 		$fields_string="";
 		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
 		rtrim($fields_string, '&');
@@ -1339,7 +1398,13 @@ class PosController extends \BaseController {
     }
     public function version()
 	{
-		return Response::json(array('version'=> '3.5'));
+		return Response::json(array('version'=> '3.9'));
+	}
+	public function test()
+	{
+		$f = '04-12-2012';
+		$fecha =  date("Y-m-d", strtotime($f));
+		return Response::json($fecha);
 	}
 
 }

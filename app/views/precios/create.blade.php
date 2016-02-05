@@ -40,7 +40,7 @@
                 <hr>
                 <div class="col-md-4">
                     <?php foreach ($productos as $producto){?>
-                    <label>{{$producto->notes}}:</label>
+                    <label>{{$producto->product_key." - ".$producto->notes}}:</label>
                      <input type="number" name="price-{{$producto->id}}" class="form-control" step="any" aria-describedby="sizing-addon2" title="Ingrese el precio" required> 
                     <?php }?>
                 </div>

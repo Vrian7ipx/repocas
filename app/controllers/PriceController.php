@@ -43,7 +43,7 @@ class PriceController extends \BaseController {
         $prices = Price::where('price_type_id',$id)->get();
         $prices =  Price::join('products', 'products.id', '=', 'prices.product_id') 
                 ->where('price_type_id',$id)
-                ->select('prices.id', 'prices.cost', 'prices.price_type_id','prices.product_id', 'products.notes')->get();
+                ->select('prices.id', 'prices.cost', 'prices.price_type_id','prices.product_id', 'products.notes','products.product_key')->get();
         
         
         

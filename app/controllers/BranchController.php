@@ -138,7 +138,7 @@ class BranchController extends \BaseController {
 		//
 		if (Auth::user()->is_admin)
 		{
-			$branch = Branch::where('id',$public_id)->first();
+			$branch = Branch::find($public_id);
                         $data = [
                             'sucursal'=>$branch,
                             'documents'=>$this->getWorkingDocuments()
@@ -163,8 +163,8 @@ class BranchController extends \BaseController {
 		if (Auth::user()->is_admin)
 		{
 			// return Response::json(Input::all());
-			$branch = Branch::buscar($public_id);
-
+			$branch = Branch::find($public_id);
+			// return Response::json($branch);
 			//$branch->setType_documents(Input::get('tipo_documento'));
 
 

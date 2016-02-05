@@ -22,7 +22,11 @@
   <div class="box-header with-border">
     <h3 class="box-title">Nombre de Cliente: {{ $client->name }}</h3>
     <div class="box-tools pull-right">
-        <a id="print_canvas" class="btn btn-success  btn-sm btn-block"> Imprimir&nbsp;<span class="glyphicon glyphicon-print"></span></a>
+        
+        
+                <a href="{{ url('factura/new/'.$client->id) }}" class="btn btn-success btn-sm btn-block">Facturar &nbsp;<span class="
+glyphicon glyphicon-file">  </span></a>
+      
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
 
