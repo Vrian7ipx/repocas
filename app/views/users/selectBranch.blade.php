@@ -3,7 +3,14 @@
 @section('title') Asignación de Sucursal @stop
 
 @section('head')
-
+	<script src="{{ asset('vendor/AdminLTE2/plugins/select2/select2.full.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/AdminLTE2/plugins/select2/i18n/es.js')}}" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/AdminLTE2/plugins/select2/select2.css')}}">
+    <style type="text/css">
+    [class^='select2'] {
+        border-radius: 0px !important;               
+      } 
+      </style>
 @stop
 
 @section('body')
@@ -33,8 +40,9 @@
 			
 			     <p> {{Auth::user()->first_name}}, por favor selecciona una sucursal para facturar:</p>
 			     
-			     {{ Former::select('branch_id')->addOption('','')->label('')
-	                    ->fromQuery($sucursales, 'name', 'branch_id') }}
+				 <select id="branches" name="branch_id"class="form-control">                          
+                 </select>
+                 <p></p> 
 
 	              {{Former::large_primary_submit('Continuar')}}
 	              {{ Former::close() }}            
@@ -47,7 +55,15 @@
     	</div>
 
     </div>
-   
+   	<script type="text/javascript">
+   	 
+ 	 var sucursales = <?php echo json_encode($sucursales) ?>;
+ 	 console.log(sucursales);
+     $('#branches').select2({
+ 		 language: "es",
+        data: sucursales	
+     })
+   	</script>
     	
 <!--script type="text/javascript">
 

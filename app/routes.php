@@ -15,10 +15,18 @@
          $input = Input::all();
       //return $input;
          // $input = get_file_contents();
-      DB::table('pos_backups')->insert(
-        array('user_id' => Auth::user()->id, 'json' => json_encode($input),'created_at'=>date())
-    );
-      return Response::json($input); 
+    //   DB::table('pos_backups')->insert(
+    //     array('user_id' => Auth::user()->id, 'json' => json_encode($input),'created_at'=>date())
+    // );
+
+
+
+        $PosBackup = new Backup();
+        $PosBackup->user_id=1;
+        $PosBackup->json=json_encode($input);
+        $PosBackup->save();
+
+      return Response::json($PosBackup); 
    // $documento = TypeDocument::where('account_id',Auth::user()->account_id)->first();
 
  //    $invoice_number = Branch::getInvoiceNumber();
@@ -151,7 +159,9 @@ Route::group(array('before' => 'auth.basic'), function()
     Route::get('cliente/{nit}','ClientController@cliente');
 
     Route::get('version','PosController@version');
-    Route::get('test','PosController@test');
+    Route::post('test','PosController@test');
+
+    Route::post('backup','PosController@saveBackup');
 });
 
 

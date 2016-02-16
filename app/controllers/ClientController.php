@@ -316,7 +316,7 @@ class ClientController extends \BaseController {
 	 */
 	public function update($id)
 	{
-
+		// return Response::json(Input::all());
 
 		// return Response::json($contactos);
 		$client = Client::where('id',$id)->first();
@@ -355,9 +355,10 @@ class ClientController extends \BaseController {
                 }
                 //frecuency es handed with 0 and 1
                 $client->frecuency=$dias;
-
+         // return Response::json($client);
 		$resultado = $client->guardar();
-
+		$client->frecuency=$dias;
+		$client->save();
 		if(!$resultado){
 			$message = "Cliente actualizado con éxito";
 			$client->save();

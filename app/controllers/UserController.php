@@ -324,14 +324,20 @@ class UserController extends \BaseController {
 			$sucursales = array();
 			foreach ($branches as $branch) {
 				# code...
-				$sucursales[] = array('branch_id'=>$branch->id,'name'=>$branch->name);
+				$sucursales[] = array('id'=>$branch->id,'text'=>$branch->name);
 			}
 			return View::make('users.selectBranch')->with('sucursales',$sucursales);
 			// return Response::json($sucursales);
 		}
 		else
 		{
-			$sucursales = UserBranch::getSucursales(Auth::user()->id);
+			$branches = UserBranch::getSucursales(Auth::user()->id);
+			// return Response::json($branches);
+			$sucursales = array();
+			foreach ($branches as $branch) {
+				# code...
+				$sucursales[] = array('id'=>$branch->branch_id,'text'=>$branch->name);
+			}
 		}
 		// return Response::json($sucursales);
 

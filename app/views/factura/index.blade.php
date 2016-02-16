@@ -11,6 +11,7 @@
   <div class="box-header with-border">
      <h3 class="box-title"><a href="{{ url('factura/create') }}" class="btn btn-success" role="button">Nueva Factura&nbsp<span class="glyphicon glyphicon-plus-sign"></span></a></h3>
     <div class="box-tools pull-right">
+     
     </div><!-- /.box-tools -->
   </div><!-- /.box-header -->
 
@@ -140,27 +141,117 @@ $('#estado').keypress(function(event){
 $('#dnumero').click(function(){
   numero = $("#numero").val();
   var sw = '{{Session::get('sw')}}';
-  window.open('{{URL::to('facturaDown')}}'+'?numero='+numero, "_self");
+  console.log(sw);
+  if(sw==="DESC")
+  {
+    sw="ASC";
+  }
+  else if(sw==="ASC")
+  {
+    sw="DESC";
+  }
+  console.log(sw);
+  if(sw ==="DESC")
+  {
+      window.open('{{URL::to('factura')}}'+'?numero='+numero, "_self");
+  }
+  else if(sw==="ASC")
+  {
+      window.open('{{URL::to('facturaDown')}}'+'?numero='+numero, "_self");
+  }
+
 });
 $('#dname').click(function(){
   name = $("#name").val();
   var sw = '{{Session::get('sw')}}';
-  window.open('{{URL::to('facturaDown')}}'+'?name='+name, "_self");
+   console.log(sw);
+  if(sw==="DESC")
+  {
+    sw="ASC";
+  }
+  else if(sw==="ASC")
+  {
+    sw="DESC";
+  }
+  console.log(sw);
+  if(sw ==="DESC")
+  {
+    window.open('{{URL::to('factura')}}'+'?name='+name, "_self");
+  }
+  else if(sw==="ASC")
+  {
+    window.open('{{URL::to('facturaDown')}}'+'?name='+name, "_self");
+  }
 });
 $('#dfecha').click(function(){
   fecha = $("#fecha").val();
   var sw = '{{Session::get('sw')}}';
-  window.open('{{URL::to('facturaDown')}}'+'?fecha='+fecha, "_self");
+  console.log(sw);
+  if(sw==="DESC")
+  {
+    sw="ASC";
+  }
+  else if(sw==="ASC")
+  {
+    sw="DESC";
+  }
+  if(sw ==="DESC")
+  {
+     window.open('{{URL::to('factura')}}'+'?fecha='+fecha, "_self");
+  }
+  else if(sw==="ASC")
+  {
+     window.open('{{URL::to('facturaDown')}}'+'?fecha='+fecha, "_self");
+  }
+ 
 });
 $('#dtotal').click(function(){
   total = $("#total").val();
   var sw = '{{Session::get('sw')}}';
-  window.open('{{URL::to('facturaDown')}}'+'?total='+total, "_self");
+
+   console.log(sw);
+  if(sw==="DESC")
+  {
+    sw="ASC";
+  }
+  else if(sw==="ASC")
+  {
+    sw="DESC";
+  }
+  if(sw ==="DESC")
+  {
+     window.open('{{URL::to('factura')}}'+'?total='+total, "_self");
+  }
+  else if(sw==="ASC")
+  {
+     window.open('{{URL::to('facturaDown')}}'+'?total='+total, "_self");
+  }
+
+  
 });
 $('#destado').click(function(){
   estado = $("#estado").val();
   var sw = '{{Session::get('sw')}}';
-  window.open('{{URL::to('facturaDown')}}'+'?estado='+estado, "_self");
+
+   console.log(sw);
+  if(sw==="DESC")
+  {
+    sw="ASC";
+  }
+  else if(sw==="ASC")
+  {
+    sw="DESC";
+  }
+  if(sw ==="DESC")
+  {
+     window.open('{{URL::to('factura')}}'+'?estado='+estado, "_self");
+  }
+  else if(sw==="ASC")
+  {
+     window.open('{{URL::to('facturaDown')}}'+'?estado='+estado, "_self");
+  }
+
+  
 });
 
 

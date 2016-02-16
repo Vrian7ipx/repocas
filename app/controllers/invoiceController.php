@@ -2001,8 +2001,8 @@ class InvoiceController extends \BaseController {
             $stackAstray.="Revise el documento y vuelva a intentar.";
         return $stackAstray;
     }
-
-		public function index($name = null, $numero = null, $fecha = null, $total = null, $estado = null)
+    //index 
+	public function index($name = null, $numero = null, $fecha = null, $total = null, $estado = null)
 	{
 
 	 $name = Input::get('name');
@@ -2018,7 +2018,7 @@ class InvoiceController extends \BaseController {
 		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
-												->orderBy('invoices.created_at', 'DESC')
+												->orderBy('invoices.id', 'DESC')
 												->simplePaginate(15);
 		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
 	 }
@@ -2028,7 +2028,7 @@ class InvoiceController extends \BaseController {
  												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoices.invoice_number','like', $numero."%")
- 												->orderBy('invoices.invoice_number', 'DESC')
+ 												->orderBy('invoices.id', 'DESC')
  												->simplePaginate(15);
 
 		$data = [
@@ -2108,14 +2108,14 @@ class InvoiceController extends \BaseController {
 		$total = Input::get('total');
 		$estado = Input::get('estado');
 
-
-		if(Session::get('sw')=='DESC')
-		{
-			Session::put('sw','ASC');
-		}
-		else {
-			Session::put('sw','DESC');
-		}
+		Session::put('sw','ASC');
+		// if(Session::get('sw')=='DESC')
+		// {
+		// 	Session::put('sw','ASC');
+		// }
+		// else {
+		// 	Session::put('sw','DESC');
+		// }
 		$sw = Session::get('sw');
 
 		if(!$numero && !$name && !$fecha && !$total && !$estado)
@@ -2123,7 +2123,7 @@ class InvoiceController extends \BaseController {
  		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
  												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
- 												->orderBy('invoices.created_at', $sw)
+ 												->orderBy('invoices.id', $sw)
  												->simplePaginate(15);
  		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
  	 }
@@ -2133,7 +2133,7 @@ class InvoiceController extends \BaseController {
   												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
 													->where('invoices.branch_id',Session::get('branch_id'))
  											  	->where('invoices.invoice_number','like', $numero."%")
-  												->orderBy('invoices.invoice_number', $sw)
+  												->orderBy('invoices.id', $sw)
   												->simplePaginate(15);
 
  		$data = [
