@@ -149,7 +149,7 @@ Route::group(array('before' => 'auth.basic'), function()
    Route::get('cliente/{nit}','PosController@cliente');
    Route::post('guardarCliente','PosController@guardarCliente');
    Route::post('guardarFactura','PosController@guardarFactura');
-   Route::post('guardarFacturaG','PosController@guardarFacturaG');
+   
 
     Route::get('obtenerFactura/{public_id}','PosController@obtenerFactura');
 
@@ -246,7 +246,7 @@ Route::group(array('before' => 'auth'), function()
   //configuracion de la cuenta
 
   Route::get('libroVentas','AccountController@bookSales');
-  Route::post('generateBookSales','AccountController@export');
+  Route::post('generateBookSales','AccountController@export');  
 
 
   Route::get('clientesDown', 'ClientController@indexDown');

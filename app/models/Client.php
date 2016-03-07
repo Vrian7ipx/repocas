@@ -464,7 +464,7 @@ class Client extends EntityModel
 			return;
 		}
 		$this->fv_city=null;
-		$this->original=$city;
+		$this->city=$city;
 	    return $this;
 	}
 

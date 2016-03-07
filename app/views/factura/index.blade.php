@@ -1,6 +1,30 @@
 @extends('header')
 @section('title')Gestión de Facturas @stop
-  @section('head') @stop
+  @section('head')
+   <style type="text/css">
+
+    /* enable absolute positioning */
+    .inner-addon { 
+        position: relative; 
+    }
+
+    /* style icon */
+    .inner-addon .glyphicon {
+      position: absolute;
+      padding: 10px;
+      pointer-events: none;
+    }
+
+    /* align icon */
+    .left-addon .glyphicon  { left:  0px;}
+    .right-addon .glyphicon { right: 0px;}
+
+    /* add padding  */
+    .left-addon input  { padding-left:  30px; }
+    .right-addon input { padding-right: 30px; }
+  </style>
+
+   @stop
 @section('encabezado')  FACTURAS @stop
 @section('encabezado_descripcion') Gestión de Facturas  @stop
 @section('nivel') <li><a href="#"><i class="fa fa-files-o"></i> Facturas</a></li> @stop
@@ -21,11 +45,42 @@
           <thead>
               <tr>
                   <!--<td><input class="selectAll" type="checkbox"></td>-->
-                  <td><input placeholder="Número" id="numero" value="{{ $numero }}"></td>
-                  <td><input placeholder="Cliente" id="name" value="{{ $name }}"></input></td>
-                  <td><input placeholder="Fecha" id="fecha" value="{{ $fecha }}"></input></td>
-                  <td><input placeholder="Total" id="total" value="{{ $total }}"></input></td>
-                  <td><input placeholder="Estado" id="estado" value="{{ $estado }}"></input></td>
+                  <td class="col-xs-2">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text" placeholder="Número" id="numero" value="{{ $numero }}" class="form-control" />
+                    </div>
+                  </td>
+                  <td class="col-xs-2">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text" placeholder="Cliente" id="name" value="{{ $name }}" class="form-control"/>
+                    </div>
+                  </td>
+                  <td class="col-xs-2">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text"  placeholder="Fecha" id="fecha" value="{{ $fecha }}" class="form-control"/>
+                    </div>
+                  </td>
+                  <td class="col-xs-2">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text"  placeholder="Total" id="total" value="{{ $total }}" class="form-control"/>
+                    </div>
+                  </td>
+            
+                  <td class="col-xs-2">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text" placeholder="Estado" id="estado" value="{{ $estado }}" class="form-control" />
+                    </div>
+                  </td>
+                  <!-- <input class="form-control" placeholder="Número" id="numero" value="{{ $numero }}"></td> -->
+                  <!-- <td><input class="form-control" placeholder="Cliente" id="name" value="{{ $name }}"></input></td> -->
+                  <!-- <td><input class="form-control" placeholder="Fecha" id="fecha" value="{{ $fecha }}"></input></td> -->
+                  <!-- <td><input class="form-control" placeholder="Total" id="total" value="{{ $total }}"></input></td> -->
+                  <!-- <td><input class="form-control" placeholder="Estado" id="estado" value="{{ $estado }}"></input></td> -->
                   <td style = "display:none">Acción</td>
 
               </tr>
@@ -33,12 +88,21 @@
 			<thead>
               <tr>
 
-                  <th id="numero2">Número <button  style="text-decoration:none;color:#000;" id="dnumero"> <i class="glyphicon glyphicon-sort"></i></button></th>
+                    <th id="numero2">Número <button class ="btn btn-default btn-sm"id="dnumero"><i class="glyphicon glyphicon-sort"></i></button></th>
+                  <th id="name2">Cliente <button class ="btn btn-default btn-sm"id="dname"><i class="glyphicon glyphicon-sort"></i></button></th>
+                  <th id="fecha2">Fecha <button class ="btn btn-default btn-sm"id="dfecha"><i class="glyphicon glyphicon-sort"></i></button></th>
+                  <th id="total2">Total <button class ="btn btn-default btn-sm"id="dtotal"><i class="glyphicon glyphicon-sort"></i></button></th>
+                  <th id="estado2">Estado </th>
+                  <th >&nbsp;Acción</th>
+
+          <!--         <th id="numero2">Número <button  id="dnumero"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th id="name2">Cliente<button  style="text-decoration:none;color:#000;" id="dname"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th id="fecha2">Fecha<button  style="text-decoration:none;color:#000;" id="dfecha"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th id="total2">Total<button  style="text-decoration:none;color:#000;" id="dtotal"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th id="estado2">Estado<button  style="text-decoration:none;color:#000;" id="destado"> <i class="glyphicon glyphicon-sort"></i></button></th>
                   <th style = "display:block">&nbsp;Acción</th>
+ -->
+
 
               </tr>
           </thead>
@@ -49,7 +113,7 @@
 
                   <td>{{ $invoice->invoice_number }}</td>
                   <td ><a href="{{URL::to('clientes/'.Client::find($invoice->client_id)->id)}}">{{ $invoice->client_name }}</a></td>
-                  <td>{{ $invoice->created_at }}</td>
+                  <td>{{ $invoice->invoice_date }}</td>
                   <td>{{ $invoice->importe_total }}</td>
 
                   <td>{{ $invoice->name }}</td>

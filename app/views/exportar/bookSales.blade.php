@@ -33,8 +33,9 @@
           <input class="form-control pull-right" name="date" id="date" type="text">
           <div class="input-group-addon">          
             <i class="fa fa-calendar"></i>
-          </div>
+          </div>            
         </div><!-- /.input group -->
+        <input type="checkbox" name="complete" value="1"> Completo<br>
     </div><!-- /.form group -->
         <div class="col-md-2 center"></div>
         <div class="col-md-2 center">

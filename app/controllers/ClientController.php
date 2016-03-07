@@ -140,7 +140,7 @@ class ClientController extends \BaseController {
                     return json_encode(0);
                 }
 		if(!$resultado){
-			$message = "Cliente creado con éxito";
+			$message = "Cliente con Nit ".$client->nit."&nbsp; y Razón Social &nbsp;".$client->business_name." &nbsp; creado con éxito";
 			$client->save();
 		}
 		else
@@ -540,332 +540,368 @@ class ClientController extends \BaseController {
 
 		//add R
 
-		public function index($name = null, $numero = null, $nit = null, $create = null, $contact = null)
-  {
+		public function index($name = null, $numero = null, $nit = null, $group = null, $contact = null)
+	  {
 
-   $name = Input::get('name');
-   $numero = Input::get('numero');
-   $nit = Input::get('nit');
-   $create = Input::get('create');
-   $contact = Input::get('contact');
+	   $name = Input::get('name');
+	   $numero = Input::get('numero');
+	   $nit = Input::get('nit');
+	   $group = Input::get('group');
+	   $contact = Input::get('contact');
 
-  //  die("index");
+	  //  die("index");
 
-  Session::put('sw','DESC');
+	  Session::put('sw','DESC');
 
-   if(!$numero && !$name && !$nit && !$create && !$contact)
-   {
-    $clientes= Client::where('account_id', Auth::user()->account_id)
-    ->select('id', 'business_name', 'nit', 'created_at')->orderBy('id', 'DESC')->simplePaginate(30);
-
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')->where('client_id', $client->id)->first();
-
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
-		}
-    return View::make('clientes.index', array('clients' => $clientes,'sw'=>'ASC', 'contacts' => $contacts));
-   }
-   if ($numero) {
-
-     $clientes = Client::where('account_id', Auth::user()->account_id)
-    ->select('id', 'business_name', 'nit', 'created_at')
-    ->where('id', 'like', $numero."%")
-    ->orderBy('id', $sw)
-    ->simplePaginate(30);
-
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')
-			->where('client_id', $client->id)
-			->first();
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
-		}
-
-    $data = [
-      'clients' => $clientes,
-      'numero' => $numero,
-      'name' => $name,
-      'nit' => $nit,
-      'create' => $create
-    ];
-    return View::make('clientes.index', $data);
-  }
-
-   if ($name) {
-
-     $clientes = Client::where('account_id', Auth::user()->account_id)
-    ->select('id', 'business_name', 'nit', 'created_at')
-    ->where('business_name', 'like', $name."%")
-    ->orderBy('business_name', $sw)
-    ->simplePaginate(30);
-		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')
-			->where('client_id', $client->id)
-			->first();
-			$client->contacto_first_name = $contacts->first_name;
-			$client->contacto_last_name = $contacts->last_name;
-		}
-
-    $data = [
-      'clients' => $clientes,
-      'numero' => $numero,
-      'name' => $name,
-      'nit' => $nit,
-      'create' => $create
-    ];
-    return View::make('clientes.index', $data);
-    }
-
-    if ($nit) {
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('nit', 'like', $nit."%")
-		 ->orderBy('nit', $sw)
-		 ->simplePaginate(30);
-		 foreach ($clientes as $key => $client) {
-			 $contacts = Contact::where('account_id', Auth::user()->account_id)
-			 ->select('first_name', 'last_name')
-			 ->where('client_id', $client->id)
-			 ->first();
-			 $client->contacto_first_name = $contacts->first_name;
-			 $client->contacto_last_name = $contacts->last_name;
-		 }
-
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
-    }
-
-    if ($create) {
-
-			$clientes = Client::where('account_id', Auth::user()->account_id)
-		 ->select('id', 'business_name', 'nit', 'created_at')
-		 ->where('created_at', 'like', $create."%")
-		 ->orderBy('created_at', $sw)
-		 ->simplePaginate(30);
-				 foreach ($clientes as $key => $client) {
-					 $contacts = Contact::where('account_id', Auth::user()->account_id)
-					 ->select('first_name', 'last_name')
-					 ->where('client_id', $client->id)
-					 ->first();
-					 $client->contacto_first_name = $contacts->first_name;
-					 $client->contacto_last_name = $contacts->last_name;
-				 }
-
-		 $data = [
-			 'clients' => $clientes,
-			 'numero' => $numero,
-			 'name' => $name,
-			 'nit' => $nit,
-			 'create' => $create
-		 ];
-		 return View::make('clientes.index', $data);
-    }
-
-    if ($contact) {
-
-			$clientes= Client::join('contacts', 'clients.id', '=' , 'contacts.client_id')
-			->select('clients.id', 'clients.nit', 'clients.business_name', 'clients.created_at', 'contacts.first_name', 'contacts.last_name')
-			->where('contacts.first_name', 'like', $contact."%")
-			->orderBy('contacts.first_name', $sw)
-			->simplePaginate(30);
+	   if(!$numero && !$name && !$nit && !$group && !$contact)
+	   {
+	    $clientes= Client::where('account_id', Auth::user()->account_id)
+	    ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+			->orderBy('id', 'DESC')->simplePaginate(30);
 
 			foreach ($clientes as $key => $client) {
-				$client->contacto_first_name = $client->first_name;
-				$client->contacto_last_name = $client->last_name;
+				$contacts = Contact::where('account_id', Auth::user()->account_id)
+				->select('first_name', 'last_name')->where('client_id', $client->id)->first();
+
+				$client->contacto_first_name = $contacts->first_name;
+				$client->contacto_last_name = $contacts->last_name;
 			}
-			$data = [
-				'clients' => $clientes,
-				'numero' => $numero,
-				'name' => $name,
-				'nit' => $nit,
-				'create' => $create,
-				'contacts' => $contacts
-			];
-			return View::make('clientes.index', $data);
-    }
- }
+	    return View::make('clientes.index', array('clients' => $clientes,'sw'=>'ASC', 'contacts' => $contacts));
+	   }
+	   if ($numero) {
 
-   public function indexDown($name = null, $numero = null, $nit = null, $create = null, $contact = null)
-   {
+	     $clientes = Client::where('account_id', Auth::user()->account_id)
+	    ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+	    ->where('id', 'like', $numero."%")
+	    ->orderBy('id', $sw)
+	    ->simplePaginate(30);
+
+			foreach ($clientes as $key => $client) {
+				$contacts = Contact::where('account_id', Auth::user()->account_id)
+				->select('first_name', 'last_name')
+				->where('client_id', $client->id)
+				->first();
+				$client->contacto_first_name = $contacts->first_name;
+				$client->contacto_last_name = $contacts->last_name;
+			}
+
+	    $data = [
+	      'clients' => $clientes,
+	      'numero' => $numero,
+	      'name' => $name,
+	      'nit' => $nit,
+	      'create' => $create
+	    ];
+	    return View::make('clientes.index', $data);
+	  }
+
+	   if ($name) {
+
+	     $clientes = Client::where('account_id', Auth::user()->account_id)
+	    ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+	    ->where('business_name', 'like', $name."%")
+	    ->orderBy('business_name', $sw)
+	    ->simplePaginate(30);
+			foreach ($clientes as $key => $client) {
+				$contacts = Contact::where('account_id', Auth::user()->account_id)
+				->select('first_name', 'last_name')
+				->where('client_id', $client->id)
+				->first();
+				$client->contacto_first_name = $contacts->first_name;
+				$client->contacto_last_name = $contacts->last_name;
+			}
+
+	    $data = [
+	      'clients' => $clientes,
+	      'numero' => $numero,
+	      'name' => $name,
+	      'nit' => $nit,
+	      'create' => $create
+	    ];
+	    return View::make('clientes.index', $data);
+	    }
+
+	    if ($nit) {
+				$clientes = Client::where('account_id', Auth::user()->account_id)
+			 ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+			 ->where('nit', 'like', $nit."%")
+			 ->orderBy('nit', $sw)
+			 ->simplePaginate(30);
+			 foreach ($clientes as $key => $client) {
+				 $contacts = Contact::where('account_id', Auth::user()->account_id)
+				 ->select('first_name', 'last_name')
+				 ->where('client_id', $client->id)
+				 ->first();
+				 $client->contacto_first_name = $contacts->first_name;
+				 $client->contacto_last_name = $contacts->last_name;
+			 }
+
+			 $data = [
+				 'clients' => $clientes,
+				 'numero' => $numero,
+				 'name' => $name,
+				 'nit' => $nit,
+				 'create' => $create
+			 ];
+			 return View::make('clientes.index', $data);
+	    }
+
+	    // if ($group) {
+			//
+			//
+			// 	$clientes = Client::where('account_id', Auth::user()->account_id)
+			// 	->join('groups', 'clients.group_id', '=', 'groups.id')
+			//  ->select('clients.id', 'clients.business_name', 'clients.nit', 'clients.created_at', 'clients.group_id')
+			//  ->where('groups.name', 'like', $group."%")
+			//  ->orderBy('groups.name', $sw)
+			//  ->simplePaginate(30);
+			// 		 foreach ($clientes as $key => $client) {
+			// 			 $contacts = Contact::where('account_id', Auth::user()->account_id)
+			// 			 ->select('first_name', 'last_name')
+			// 			 ->where('client_id', $client->id)
+			// 			 ->first();
+			// 			 $client->contacto_first_name = $contacts->first_name;
+			// 			 $client->contacto_last_name = $contacts->last_name;
+			// 		 }
+			//
+			//  $data = [
+			// 	 'clients' => $clientes,
+			// 	 'numero' => $numero,
+			// 	 'name' => $name,
+			// 	 'nit' => $nit,
+			// 	 'create' => $create
+			//  ];
+			//  return View::make('clientes.index', $data);
+	    // }
+
+			if ($group){
+				$clientes = Client::join('groups', 'clients.group_id', '=', 'groups.id')
+										->select('clients.id', 'clients.nit', 'clients.business_name', 'clients.created_at','clients.group_id')
+										->where('groups.name', 'like', $group.'%')
+										->orderBy('groups.name', $sw)
+										->simplePaginate(30);
+										foreach ($clientes as $key => $client) {
+											$contacts = Contact::where('account_id', Auth::user()->account_id)
+											->select('first_name', 'last_name')
+											->where('client_id', $client->id)
+											->first();
+											$client->contacto_first_name = $contacts->first_name;
+											$client->contacto_last_name = $contacts->last_name;
+										}
+						$data = [
+							'clients' => $clientes,
+							'group' => $group
+						];
+					return View::make('clientes.index', $data);
+			}
+
+	    if ($contact) {
+
+				$clientes= Client::join('contacts', 'clients.id', '=' , 'contacts.client_id')
+				->select('clients.id', 'clients.nit', 'clients.business_name', 'clients.created_at', 'clients.group_id', 'contacts.first_name', 'contacts.last_name')
+				->where('contacts.first_name', 'like', $contact."%")
+				->orderBy('contacts.first_name', $sw)
+				->simplePaginate(30);
+
+				foreach ($clientes as $key => $client) {
+					$client->contacto_first_name = $client->first_name;
+					$client->contacto_last_name = $client->last_name;
+				}
+				$data = [
+					'clients' => $clientes,
+					'numero' => $numero,
+					'name' => $name,
+					'nit' => $nit,
+					'create' => $create,
+					'contact' => $contact
+				];
+				return View::make('clientes.index', $data);
+	    }
+	 }
+
+	   public function indexDown($name = null, $numero = null, $nit = null, $group = null, $contact = null)
+	   {
 
 
-		 $name = Input::get('name');
-     $numero = Input::get('numero');
-     $nit = Input::get('nit');
-     $create = Input::get('create');
-     $contact = Input::get('contact');
+			 $name = Input::get('name');
+	     $numero = Input::get('numero');
+	     $nit = Input::get('nit');
+	     $group = Input::get('group');
+	     $contact = Input::get('contact');
 
 
-    if(Session::get('sw')=='DESC')
-    {
-      Session::put('sw','ASC');
-    }
-    else {
-      Session::put('sw','DESC');
-    }
+	    if(Session::get('sw')=='DESC')
+	    {
+	      Session::put('sw','ASC');
+	    }
+	    else {
+	      Session::put('sw','DESC');
+	    }
 
-    $sw = Session::get('sw');
-    if($numero == "" && $name == "" && $nit == "" && $create == "" && $contact == "")
-    {
+	    $sw = Session::get('sw');
+	    if($numero == "" && $name == "" && $nit == "" && $group == "" && $contact == "")
+	    {
 
-		 $clientes= Client::where('account_id', Auth::user()->account_id)
-     ->select('id', 'business_name', 'nit', 'created_at')->orderBy('id', $sw)->simplePaginate(30);
+			 $clientes= Client::where('account_id', Auth::user()->account_id)
+	     ->select('id', 'business_name', 'nit', 'created_at', 'group_id')->orderBy('id', $sw)->simplePaginate(30);
+
+		 		foreach ($clientes as $key => $client) {
+		 			$contacts = Contact::where('account_id', Auth::user()->account_id)
+		 			->select('first_name', 'last_name')->where('client_id', $client->id)->first();
+
+		 			$client->contacto_first_name = $contacts->first_name;
+		 			$client->contacto_last_name = $contacts->last_name;
+	 			}
+	     return View::make('clientes.index', array('clients' => $clientes,'sw'=>'ASC', 'contacts' => $contacts));
+	    }
+
+			if ($numero) {
+	      $clientes = Client::where('account_id', Auth::user()->account_id)
+	     ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+	     ->where('id', 'like', $numero."%")
+	     ->orderBy('id', $sw)
+	     ->simplePaginate(30);
 
 	 		foreach ($clientes as $key => $client) {
 	 			$contacts = Contact::where('account_id', Auth::user()->account_id)
-	 			->select('first_name', 'last_name')->where('client_id', $client->id)->first();
-
+	 			->select('first_name', 'last_name')
+	 			->where('client_id', $client->id)
+	 			->first();
 	 			$client->contacto_first_name = $contacts->first_name;
 	 			$client->contacto_last_name = $contacts->last_name;
- 			}
-     return View::make('clientes.index', array('clients' => $clientes,'sw'=>'ASC', 'contacts' => $contacts));
-    }
+	 		}
 
-		if ($numero) {
-      $clientes = Client::where('account_id', Auth::user()->account_id)
-     ->select('id', 'business_name', 'nit', 'created_at')
-     ->where('id', 'like', $numero."%")
-     ->orderBy('id', $sw)
-     ->simplePaginate(30);
+	     $data = [
+	       'clients' => $clientes,
+	       'numero' => $numero,
+	       'name' => $name,
+	       'nit' => $nit,
+	       'create' => $create
+	     ];
+	     return View::make('clientes.index', $data);
+	   }
 
- 		foreach ($clientes as $key => $client) {
- 			$contacts = Contact::where('account_id', Auth::user()->account_id)
- 			->select('first_name', 'last_name')
- 			->where('client_id', $client->id)
- 			->first();
- 			$client->contacto_first_name = $contacts->first_name;
- 			$client->contacto_last_name = $contacts->last_name;
- 		}
+	    if ($name) {
 
-     $data = [
-       'clients' => $clientes,
-       'numero' => $numero,
-       'name' => $name,
-       'nit' => $nit,
-       'create' => $create
-     ];
-     return View::make('clientes.index', $data);
-   }
+	      $clientes = Client::where('account_id', Auth::user()->account_id)
+	     ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+	     ->where('business_name', 'like', $name."%")
+	     ->orderBy('business_name', $sw)
+	     ->simplePaginate(30);
 
-    if ($name) {
+			//  $clientes = Client::join('contacts', 'clients.id' ,'=', 'contacts.client_id')
+			//  ->where('business_name', 'like', $name."%")
+			//  ->select('clients.id', 'clients.business_name', 'clients.nit', 'clients.created_at', 'contacts.first_name', 'contacts.last_name')
+			//  ->orderBy('business_name', $sw)
+			//  ->simplePaginate(30);
+	 		foreach ($clientes as $key => $client) {
+				$contacts = Contact::where('account_id', Auth::user()->account_id)
+				->select('first_name', 'last_name')
+				->where('client_id', $client->id)
+				->first();
+	 			$client->contacto_first_name = $contacts->first_name;
+	 			$client->contacto_last_name = $contacts->last_name;
+	 		}
+	// return $clientes;
+	     $data = [
+	       'clients' => $clientes,
+	       'numero' => $numero,
+	       'name' => $name,
+	       'nit' => $nit,
+	       'create' => $create
+	     ];
+	     return View::make('clientes.index', $data);
+	     }
 
-      $clientes = Client::where('account_id', Auth::user()->account_id)
-     ->select('id', 'business_name', 'nit', 'created_at')
-     ->where('business_name', 'like', $name."%")
-     ->orderBy('business_name', $sw)
-     ->simplePaginate(30);
+	     if ($nit) {
+	 			$clientes = Client::where('account_id', Auth::user()->account_id)
+	 		 ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+	 		 ->where('nit', 'like', $nit."%")
+	 		 ->orderBy('nit', $sw)
+	 		 ->simplePaginate(30);
+	 		 foreach ($clientes as $key => $client) {
+	 			 $contacts = Contact::where('account_id', Auth::user()->account_id)
+	 			 ->select('first_name', 'last_name')
+	 			 ->where('client_id', $client->id)
+	 			 ->first();
+	 			 $client->contacto_first_name = $contacts->first_name;
+	 			 $client->contacto_last_name = $contacts->last_name;
+	 		 }
 
-		//  $clientes = Client::join('contacts', 'clients.id' ,'=', 'contacts.client_id')
-		//  ->where('business_name', 'like', $name."%")
-		//  ->select('clients.id', 'clients.business_name', 'clients.nit', 'clients.created_at', 'contacts.first_name', 'contacts.last_name')
-		//  ->orderBy('business_name', $sw)
-		//  ->simplePaginate(30);
- 		foreach ($clientes as $key => $client) {
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name')
-			->where('client_id', $client->id)
-			->first();
- 			$client->contacto_first_name = $contacts->first_name;
- 			$client->contacto_last_name = $contacts->last_name;
- 		}
-// return $clientes;
-     $data = [
-       'clients' => $clientes,
-       'numero' => $numero,
-       'name' => $name,
-       'nit' => $nit,
-       'create' => $create
-     ];
-     return View::make('clientes.index', $data);
-     }
+	 		 $data = [
+	 			 'clients' => $clientes,
+	 			 'numero' => $numero,
+	 			 'name' => $name,
+	 			 'nit' => $nit,
+	 			 'create' => $create
+	 		 ];
+	 		 return View::make('clientes.index', $data);
+	     }
 
-     if ($nit) {
- 			$clientes = Client::where('account_id', Auth::user()->account_id)
- 		 ->select('id', 'business_name', 'nit', 'created_at')
- 		 ->where('nit', 'like', $nit."%")
- 		 ->orderBy('nit', $sw)
- 		 ->simplePaginate(30);
- 		 foreach ($clientes as $key => $client) {
- 			 $contacts = Contact::where('account_id', Auth::user()->account_id)
- 			 ->select('first_name', 'last_name')
- 			 ->where('client_id', $client->id)
- 			 ->first();
- 			 $client->contacto_first_name = $contacts->first_name;
- 			 $client->contacto_last_name = $contacts->last_name;
- 		 }
+	    //  if ($create) {
+			 //
+	 	// 		$clientes = Client::where('account_id', Auth::user()->account_id)
+	 	// 	 ->select('id', 'business_name', 'nit', 'created_at', 'group_id')
+	 	// 	 ->where('created_at', 'like', $create."%")
+	 	// 	 ->orderBy('created_at', $sw)
+	 	// 	 ->simplePaginate(30);
+	 	// 			 foreach ($clientes as $key => $client) {
+	 	// 				 $contacts = Contact::where('account_id', Auth::user()->account_id)
+	 	// 				 ->select('first_name', 'last_name')
+	 	// 				 ->where('client_id', $client->id)
+	 	// 				 ->first();
+	 	// 				 $client->contacto_first_name = $contacts->first_name;
+	 	// 				 $client->contacto_last_name = $contacts->last_name;
+	 	// 			 }
+			 //
+	 	// 	 $data = [
+	 	// 		 'clients' => $clientes,
+	 	// 		 'numero' => $numero,
+	 	// 		 'name' => $name,
+	 	// 		 'nit' => $nit,
+	 	// 		 'create' => $create
+	 	// 	 ];
+	 	// 	 return View::make('clientes.index', $data);
+	    //  }
 
- 		 $data = [
- 			 'clients' => $clientes,
- 			 'numero' => $numero,
- 			 'name' => $name,
- 			 'nit' => $nit,
- 			 'create' => $create
- 		 ];
- 		 return View::make('clientes.index', $data);
-     }
+			if ($group){
+				$clientes = Client::join('groups', 'clients.group_id', '=', 'groups.id')
+										->select('clients.id', 'clients.nit', 'clients.business_name', 'clients.created_at','clients.group_id')
+										->where('groups.name', 'like', $group.'%')
+										->orderBy('groups.name', $sw)
+										->simplePaginate(30);
+										foreach ($clientes as $key => $client) {
+											$contacts = Contact::where('account_id', Auth::user()->account_id)
+											->select('first_name', 'last_name')
+											->where('client_id', $client->id)
+											->first();
+											$client->contacto_first_name = $contacts->first_name;
+											$client->contacto_last_name = $contacts->last_name;
+										}
+						$data = [
+							'clients' => $clientes,
+							'group' => $group
+						];
+					return View::make('clientes.index', $data);
+			}
 
-     if ($create) {
+			if ($contact) {
 
- 			$clientes = Client::where('account_id', Auth::user()->account_id)
- 		 ->select('id', 'business_name', 'nit', 'created_at')
- 		 ->where('created_at', 'like', $create."%")
- 		 ->orderBy('created_at', $sw)
- 		 ->simplePaginate(30);
- 				 foreach ($clientes as $key => $client) {
- 					 $contacts = Contact::where('account_id', Auth::user()->account_id)
- 					 ->select('first_name', 'last_name')
- 					 ->where('client_id', $client->id)
- 					 ->first();
- 					 $client->contacto_first_name = $contacts->first_name;
- 					 $client->contacto_last_name = $contacts->last_name;
- 				 }
+				$clientes= Client::join('contacts', 'clients.id', '=' , 'contacts.client_id')
+				->select('clients.id', 'clients.nit', 'clients.business_name', 'clients.created_at', 'clients.group_id', 'contacts.first_name', 'contacts.last_name')
+				->where('contacts.first_name', 'like', $contact."%")
+				->orderBy('contacts.first_name', $sw)
+				->simplePaginate(30);
 
- 		 $data = [
- 			 'clients' => $clientes,
- 			 'numero' => $numero,
- 			 'name' => $name,
- 			 'nit' => $nit,
- 			 'create' => $create
- 		 ];
- 		 return View::make('clientes.index', $data);
-     }
-
-     if ($contact) {
-			 return $contacts;
-			$contacts = Contact::where('account_id', Auth::user()->account_id)
-			->select('first_name', 'last_name', 'client_id')
-			->where('first_name', $contact)
-			->get();
-
- 			foreach ($contacts as $key => $contact) {
-				$clientes = Client::where('account_id', Auth::user()->account_id)
-	 		 ->select('id', 'business_name', 'nit', 'created_at')
-	 		 ->where('created_at', 'like', $contact->client_id)
-			 ->first();
-
-
- 				$contact->contacto_first_name = $client->first_name;
- 				$contact->contacto_last_name = $client->last_name;
- 			}
- 			$data = [
- 				'clients' => $clientes,
- 				'numero' => $numero,
- 				'name' => $name,
- 				'nit' => $nit,
- 				'create' => $create,
- 				'contacts' => $contacts
- 			];
- 			return View::make('clientes.index', $data);
-     }
-	 }
+				foreach ($clientes as $key => $client) {
+					$client->contacto_first_name = $client->first_name;
+					$client->contacto_last_name = $client->last_name;
+				}
+				$data = [
+					'clients' => $clientes,
+					'contact' => $contact
+				];
+				return View::make('clientes.index', $data);
+	    }
+	  }
 }

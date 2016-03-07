@@ -69,7 +69,7 @@ class InvoiceController extends \BaseController {
 	}
 
 	public function newCustom($id_cli)
-	{				
+	{
 			$sucurasl = Branch::find(Session::get('branch_id'));
 			if($sucurasl->type_third!=2)
 			{
@@ -1406,7 +1406,7 @@ class InvoiceController extends \BaseController {
                     $js=$type_document->javascript_web;
                 else
                     $js=$type_document->javascript_pos;
-                $client = Client::where('id',Input::get('client'))->first();                
+                $client = Client::where('id',Input::get('client'))->first();
                 $invoice =(object) [
 			'id'=>'0',
 			'account_name'=>$account->name,
@@ -1419,7 +1419,7 @@ class InvoiceController extends \BaseController {
 			'importe_total'=>Input::get('subtotal'),
 			'discount'=>number_format(Input::get('subtotal')-Input::get('total'), 2, '.', ''),
 			'importe_ice'=>number_format(Input::get('importe_ice'), 2, '.', ''),
-			'debito_fiscal' => number_format(Input::get('importe_fiscal'), 2, '.', ''),			                        
+			'debito_fiscal' => number_format(Input::get('importe_fiscal'), 2, '.', ''),
 			'branch_name'=>$branch->name,
 			'city'=>$branch->city,
 			'client_id'=>Input::get('client'),
@@ -1462,7 +1462,7 @@ class InvoiceController extends \BaseController {
                                 'product_key'=>$producto["'product_key'"],
                                 'notes'=>$product->notes,
                                 'cost'=>$producto["'cost'"],
-                                'qty'=>$producto["'qty'"]+$product->units*$producto["'pack'"],   
+                                'qty'=>$producto["'qty'"]+$product->units*$producto["'pack'"],
                             ];
                             array_push($products, $prod);
 		      	}
@@ -2001,7 +2001,7 @@ class InvoiceController extends \BaseController {
             $stackAstray.="Revise el documento y vuelva a intentar.";
         return $stackAstray;
     }
-    //index 
+    //index
 	public function index($name = null, $numero = null, $fecha = null, $total = null, $estado = null)
 	{
 
@@ -2016,20 +2016,20 @@ class InvoiceController extends \BaseController {
 	 if(!$numero && !$name && !$fecha && !$total && !$estado)
 	 {
 		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
-												->orderBy('invoices.id', 'DESC')
-												->simplePaginate(15);
+												->orderBy(DB::raw('convert(invoices.invoice_number,unsigned integer)'), 'DESC')
+												->simplePaginate(50);
 		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
 	 }
 	 if ($numero) {
 
 		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoices.invoice_number','like', $numero."%")
- 												->orderBy('invoices.id', 'DESC')
- 												->simplePaginate(15);
+ 												->orderBy(DB::raw('convert(invoices.invoice_number,unsigned integer)'), 'DESC')
+ 												->simplePaginate(50);
 
 		$data = [
 			'invoices' => $invoices,
@@ -2041,11 +2041,11 @@ class InvoiceController extends \BaseController {
 	 if ($name) {
 
 		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 											 ->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 											 ->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 											 ->where('invoices.branch_id',Session::get('branch_id'))
  											 ->where('invoices.client_name','like', $name."%")
  											 ->orderBy('invoices.client_name', 'DESC')
- 											 ->simplePaginate(15);
+ 											 ->simplePaginate(50);
 
 		 	 $data = [
 		 		 'invoices' => $invoices,
@@ -2056,11 +2056,11 @@ class InvoiceController extends \BaseController {
 
 		if ($fecha) {
 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
-												->where('invoices.created_at','like', $fecha."%")
-												->orderBy('invoices.created_at', 'DESC')
-												->simplePaginate(15);
+												->where('invoices.invoice_date','like', $fecha."%")
+												->orderBy('invoices.invoice_date', 'DESC')
+												->simplePaginate(50);
 
 				$data = [
 					'invoices' => $invoices,
@@ -2071,11 +2071,12 @@ class InvoiceController extends \BaseController {
 
 		if ($total) {
 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoices.importe_total','like', $total."%")
-												->orderBy('invoices.importe_total', 'DESC')
-												->simplePaginate(15);
+												->orderBy(DB::raw('convert(invoices.importe_total,unsigned integer)'), 'DESC')
+												
+												->simplePaginate(50);
 
 				$data = [
 					'invoices' => $invoices,
@@ -2086,11 +2087,11 @@ class InvoiceController extends \BaseController {
 
 		if ($estado) {
 			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
 												->where('invoice_statuses.name','like', $estado."%")
 												->orderBy('invoice_statuses.name', 'DESC')
-												->simplePaginate(15);
+												->simplePaginate(50);
 				$data = [
 					'invoices' => $invoices,
 					'estado' => $estado
@@ -2121,20 +2122,21 @@ class InvoiceController extends \BaseController {
 		if(!$numero && !$name && !$fecha && !$total && !$estado)
  	 {
  		$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
- 												->orderBy('invoices.id', $sw)
- 												->simplePaginate(15);
+ 												
+ 												->orderBy(DB::raw('convert(invoices.invoice_number,unsigned integer)'), $sw)
+ 												->simplePaginate(50);
  		return View::make('factura.index', array('invoices' => $invoices, 'sw'=>'ASC'));
  	 }
  	 if ($numero) {
 
  		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-  												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+  												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 													->where('invoices.branch_id',Session::get('branch_id'))
  											  	->where('invoices.invoice_number','like', $numero."%")
-  												->orderBy('invoices.id', $sw)
-  												->simplePaginate(15);
+  												->orderBy(DB::raw('convert(invoices.invoice_number,unsigned integer)'), $sw)
+  												->simplePaginate(50);
 
  		$data = [
  			'invoices' => $invoices,
@@ -2146,11 +2148,11 @@ class InvoiceController extends \BaseController {
  	 if ($name) {
 
  		 $invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
-  											 ->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+  											 ->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												 ->where('invoices.branch_id',Session::get('branch_id'))
   											 ->where('invoices.client_name','like', $name."%")
   											 ->orderBy('invoices.client_name', $sw)
-  											 ->simplePaginate(15);
+  											 ->simplePaginate(50);
 
  		 	 $data = [
  		 		 'invoices' => $invoices,
@@ -2161,11 +2163,11 @@ class InvoiceController extends \BaseController {
 
  		if ($fecha) {
  			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
- 												->where('invoices.created_at','like', $fecha."%")
- 												->orderBy('invoices.created_at', $sw)
- 												->simplePaginate(15);
+ 												->where('invoices.invoice_date','like', $fecha."%")
+ 												->orderBy('invoices.invoice_date', $sw)
+ 												->simplePaginate(50);
 
  				$data = [
  					'invoices' => $invoices,
@@ -2176,11 +2178,12 @@ class InvoiceController extends \BaseController {
 
  		if ($total) {
  			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
  												->where('invoices.importe_total','like', $total."%")
- 												->orderBy('invoices.importe_total', $sw)
- 												->simplePaginate(15);
+ 												->orderBy(DB::raw('convert(invoices.importe_total,unsigned integer)'), $sw)
+ 												
+ 												->simplePaginate(50);
 
  				$data = [
  					'invoices' => $invoices,
@@ -2191,11 +2194,11 @@ class InvoiceController extends \BaseController {
 
  		if ($estado) {
  			$invoices= Invoice::join('invoice_statuses', 'invoices.invoice_status_id', '=', 'invoice_statuses.id')
- 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.created_at', 'invoices.importe_total', 'invoice_statuses.name')
+ 												->select('invoices.client_id','invoices.invoice_number','invoices.id', 'invoices.client_name', 'invoices.invoice_date', 'invoices.importe_total', 'invoice_statuses.name')
 												->where('invoices.branch_id',Session::get('branch_id'))
  												->where('invoice_statuses.name','like', $estado."%")
  												->orderBy('invoice_statuses.name', $sw)
- 												->simplePaginate(15);
+ 												->simplePaginate(50);
  				$data = [
  					'invoices' => $invoices,
  					'estado' => $estado

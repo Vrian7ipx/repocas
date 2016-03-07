@@ -87,7 +87,7 @@
 
        @yield('head')
   </head>
-  <body class="hold-transition skin-blue-light sidebar-mini" >
+  <body class="hold-transition skin-blue-light fixed sidebar-mini" >
    <!-- <script async="" src="//www.google-analytics.com/analytics.js"></script>-->
 
 

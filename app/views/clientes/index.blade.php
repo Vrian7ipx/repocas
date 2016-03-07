@@ -26,17 +26,17 @@
                       <td><input placeholder="NIT/CI" id="nit" value="{{ $nit }}"></input></td>
                       <td><input placeholder="Razon Social" id="name" value="{{ $name }}"></input></td>
                       <td><input placeholder="Contacto" id="contact" value="{{ $contact }}"></input></td>
-                      <td><input placeholder="Fecha de Creación" id="create" value="{{ $create }}"></input></td>
-                      <td  style="display:none">Accion</td>
+                      <td><input placeholder="Agrupación" id="group" value="{{ $group }}"></input></td>
+                      <td  style="display:none">Acción</td>
                   </tr>
                 </thead>
                 <thead>
                           <tr>
-                              <th id="numero2">Código <button  style="text-decoration:none;color:#000;" id="dnumero"> <i class="glyphicon glyphicon-sort"></i></button></th>
-                              <th id="nit2">NIT/CI <button  style="text-decoration:none;color:#000;" id="dnit"><i class="glyphicon glyphicon-sort"></i></button></th>
-                              <th id="name2">Razón Social <button style="text-decoration:none;color:#000;" id="dname"><i class="glyphicon glyphicon-sort"></i></button></th>
-                              <th id="contacto2">Contacto <button  style="text-decoration:none;color:#000;" id="dcontact"><i class="glyphicon glyphicon-sort"></i></button></th>
-                              <th id="creacion2">Fecha de Creación <button  style="text-decoration:none;color:#000;" id="dcreate"><i class="glyphicon glyphicon-sort"></i></button></th>
+                              <th>Código <button  style="text-decoration:none;color:#000;" id="dnumero"> <i class="glyphicon glyphicon-sort"></i></button></th>
+                              <th>NIT/CI <button  style="text-decoration:none;color:#000;" id="dnit"><i class="glyphicon glyphicon-sort"></i></button></th>
+                              <th>Razón Social <button style="text-decoration:none;color:#000;" id="dname"><i class="glyphicon glyphicon-sort"></i></button></th>
+                              <th>Contacto <button  style="text-decoration:none;color:#000;" id="dcontact"><i class="glyphicon glyphicon-sort"></i></button></th>
+                              <th>Agrupación <button  style="text-decoration:none;color:#000;" id="dgroup"><i class="glyphicon glyphicon-sort"></i></button></th>
                               <th style = "display:block">&nbsp;&nbsp;&nbsp;&nbsp;Acción</th>
                           </tr>
                   </thead>
@@ -48,7 +48,8 @@
                         <td><a href="{{URL::to('clientes/'.$client->id)}}">{{ $client->nit}}</a></td>
                         <td><a href="{{URL::to('clientes/'.$client->id)}}">{{ $client->business_name }}</a></td>
                         <td>{{ $client->contacto_first_name }} {{ $client->contacto_last_name}}</td>
-                        <td>{{ $client->created_at }}
+                        <!-- <td>{{ $client->group_id }}</td> -->
+                        <td>{{ Group::find($client->group_id)->name }}</td>
                         <td>
                           <a class="btn btn-primary btn-xs" data-task="view" href="{{ URL::to("clientes/".$client->id) }}"  style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-eye-open"></i></a>
                           <a class="btn btn-warning btn-xs" href="{{ URL::to("clientes/".$client->id.'/edit') }}" style="text-decoration:none;color:white;"><i class="glyphicon glyphicon-edit"></i></a>
@@ -78,13 +79,13 @@
               @if($name != "")
               <center><div class="pagination"> {{ $clients->appends(array('name' => $name))->links(); }} </div></center>
               @endif
-              @if($create != "")
-              <center><div class="pagination"> {{ $clients->appends(array('create' => $create))->links(); }} </div></center>
+              @if($group != "")
+              <center><div class="pagination"> {{ $clients->appends(array('group' => $group))->links(); }} </div></center>
               @endif
               @if($contact != "")
               <center><div class="pagination"> {{ $clients->appends(array('contact' => $contact))->links(); }} </div></center>
               @endif
-              @if($numero == "" && $name == "" && $nit == "" && $create == "" && $contact == "")
+              @if($numero == "" && $name == "" && $nit == "" && $group == "" && $contact == "")
               <center><div class="pagination"> {{ $clients->links(); }} </div></center>
               @endif
               </div>
@@ -126,11 +127,11 @@ $('#dnit').click(function(){
   window.open('{{URL::to('clientesDown')}}'+'?nit=' +nit, "_self");
 });
 
-$('#dcreate').click(function(){
-  create = $("#create").val();
+$('#dgroup').click(function(){
+  grupo = $("#group").val();
   var sw = '{{Session::get('sw')}}';
   console.log('variable sw '+sw);
-  window.open('{{URL::to('clientesDown')}}'+'?create=' +create, "_self");
+  window.open('{{URL::to('clientesDown')}}'+'?group=' +grupo, "_self");
 });
 
 $('#dcontact').click(function(){
@@ -170,11 +171,11 @@ $('#nit').keypress(function(event){
     }
 });
 
-$('#create').keypress(function(event){
+$('#group').keypress(function(event){
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if(keycode == '13'){
-        create = $("#create").val();
-        window.open('{{URL::to('clientes')}}'+'?create=' +create, "_self");
+        grupo = $("#group").val();
+        window.open('{{URL::to('clientes')}}'+'?group=' +grupo, "_self");
     }
 });
 

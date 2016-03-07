@@ -2,7 +2,7 @@
 @section('title')Nueva Zona @stop
   @section('head') @stop
 @section('encabezado')  ZONA @stop
-@section('encabezado_descripcion') Nuevo Zona  @stop
+@section('encabezado_descripcion') Nueva Zona  @stop
         <li class="active"> Nuevo </li> @stop
 
 @section('content')
@@ -32,7 +32,7 @@
                        <label>Código *</label><br>
                        <input type="text" name="code" class="form-control" placeholder="Código" aria-describedby="sizing-addon2"  pattern=".{1,}" required>
                         <label>Nombre *</label><br>
-                        <input type="text" name="name" class="form-control" placeholder="Nombre del Grupo" aria-describedby="sizing-addon2"  pattern=".{1,}" required>
+                        <input type="text" name="name" class="form-control" placeholder="Nombre de la Zona" aria-describedby="sizing-addon2"  pattern=".{1,}" required>
             </div>
 
         </div>

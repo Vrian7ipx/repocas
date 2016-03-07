@@ -36,7 +36,12 @@ class ZoneController extends \BaseController {
 
   public function update($id){
     $zone = Zone::find($id);
-    $zone->setCode(trim(Input::get('code')));
+    if (Input::get('code') == $zone->reg_code){
+      $zone->reg_code = Input::get('code');
+    }
+    else{
+        $zone->setCode(trim(Input::get('code')));
+    }
     $zone->setName(trim(Input::get('name')));
 
     $resultado = $zone->guardar();
@@ -48,7 +53,9 @@ class ZoneController extends \BaseController {
     else{
       $url = 'zonas/edit';
       Session::flash('error', $resultado);
-      return Redirect::to($url)->withInput();
+      //return Redirect::to($url)->withInput();
+      return Redirect::to('zonas/'.$id.'/edit');
+
     }
   }
 
