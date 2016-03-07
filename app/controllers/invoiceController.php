@@ -1394,7 +1394,7 @@ class InvoiceController extends \BaseController {
             return View::make('factura.ver',$data);
         }
         public function factura2()
-        {
+        {	
         	// return  Response::json(Input::all());
                 $account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
                 //$matriz = Branch::where('number_branch','=',0)->first();
@@ -1462,23 +1462,24 @@ class InvoiceController extends \BaseController {
                                 'product_key'=>$producto["'product_key'"],
                                 'notes'=>$product->notes,
                                 'cost'=>$producto["'cost'"],
-                                'qty'=>$producto["'qty'"]+$product->units*$producto["'pack'"],
+                                'qty'=>$producto["'qty'"]/$product->units+$producto["'pack'"],
                             ];
                             array_push($products, $prod);
 		      	}
                   }
                // $invoice = Input::all();
-							 $template = TypeDocumentBranch::where('branch_id', $invoice->branch_id)->select('template')->first();
+		$template = TypeDocumentBranch::where('branch_id', $invoice->branch_id)->select('template')->first();
+		//print_r($template->template);
 
-                //return 0;
+		//return 0;
 		$data = array(
 			'invoice' => $invoice,
 			'account'=> $account,
 			'products' => $products,
-                        'copia'     =>0,
-                        'matriz'   => $matriz,
-                        'user'  => $user,
-												'template' => $template
+            'copia'     =>0,
+            'matriz'   => $matriz,
+            'user'  => $user,
+			'template' => $template
 		);
 //                if(Input::get('printer_type')==0)
 //                    return View::make('factura.ver2',$data);

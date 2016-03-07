@@ -910,7 +910,8 @@ function calculateAllTotal(){
     prod = findProduct($("#code"+ind).val());   
     valor = $("#"+this.id).val();
     //costo = $("#cost"+ind).val();
-    costo = prod['cost']/prod['units'];
+    //costo = prod['cost']/prod['units'];
+    costo = prod['cost'];
     boni = $("#bonus"+ind).val();
     disc = $("#disc"+ind).val();
     pack = $("#pack"+ind).val();
@@ -936,6 +937,7 @@ function calculateAllTotal(){
     sum = parseFloat(subto)+sum;
     //parseFloat(subto)
     
+    //cantidad=parseFloat(canti)/pack+parseFloat(prod['units'])-boni;
     cantidad=parseFloat(canti)+pack*parseFloat(prod['units'])-boni;
     
     var ice_value = {{$tax}};  
@@ -1046,7 +1048,7 @@ $(document).on("change",'.code',function(){
     {
       //$("#notes"+ind_act).val(prod['product_key']).trigger("change");
       $("#notes"+ind_act).val(prod['notes']);
-      costo =parseFloat(prod['cost']+"")/parseFloat(prod['units']+"");
+      costo =parseFloat(prod['cost']+"");///parseFloat(prod['units']+"");
       $("#cost"+ind_act).val(costo.toFixed(2)).prop('disabled', false);        
       $("#qty"+ind_act).val(0).prop('disabled', false);
       $("#pack"+ind_act).val(0).prop('disabled', false);

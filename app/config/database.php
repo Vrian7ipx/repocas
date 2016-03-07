@@ -56,9 +56,9 @@ return array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
 
-      'database'  => 'cascada',
-      'username'  => 'cascada-user',
-      'password'  => 'cascada-user-pass',
+      		'database'  => 'cascadadb',
+      		'username'  => 'root',
+      		'password'  => '',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
