@@ -13,7 +13,22 @@ class InvoiceController extends \BaseController {
   //           $invoices = Invoice::where('account_id',Auth::user()->account_id)->where('branch_id',Session::get('branch_id'))->orderBy('public_id', 'DESC')->get();
 	//     return View::make('factura.index', array('invoices' => $invoices));
 	// }
+	public function fuckingControlCode($id){
+		$invoices = Invoice::where('branch_id',$id)->get();
+		//$invoices = Invoice::get();
+		$num = 0;
+		foreach ($invoices as $key => $inv) {
+			$fechaEmision =date("Ymd",strtotime($inv->invoice_date));
+			$codigoControl = Utils::getControlCode($inv->invoice_number,$inv->client_nit,$fechaEmision,$inv->importe_total,$inv->number_autho,$inv->key_dosage);			
+			if($inv->control_code!=$codigoControl)
+			{
+				echo $num.": ".$inv->client_nit." - ".$codigoControl." - ".$inv->control_code."<br>";
+				$num++;
+			}
+		}		
 
+		return "Hello".$id;
+	}
 
 
 	public function create()
@@ -306,73 +321,71 @@ class InvoiceController extends \BaseController {
 	 */
 	public function store()
 	{
-
 		$sucurasl = Branch::find(Session::get('branch_id'));
-
-			if($sucurasl->type_third!=2)
+		if($sucurasl->type_third!=2)
+		{
+			if(sizeof(Input::get('productos'))>1)
 			{
-
-
-				if(sizeof(Input::get('productos'))>1)
+				if(Input::has('client'))
 				{
-					if(Input::has('client'))
-					{
-		                        $account = Account::where('id', Auth::user()->account_id)->first();
-					$branch = Branch::find(Session::get('branch_id'));
-					$tax = TaxRate::where("name",'ICE')->first();
-					$invoice = Invoice::createNew();
-					$invoice->setBranch(Session::get('branch_id'));
-					$invoice->setTerms(trim(Input::get('terms')));
-					$invoice->setPublicNotes(trim(Input::get('public_notes')));
-					$invoice->setInvoiceDate(trim(Input::get('invoice_date')));
-					$invoice->setClient(trim(Input::get('client')));
-					$invoice->setEconomicActivity($branch->economic_activity);
-					$dateparser = explode("/",Input::get('due_date'));
-		                        if(Input::get('due_date')){
-		                            $date = $dateparser[2].'-'.$dateparser[1].'-'.$dateparser[0];
-		                            $invoice->setDueDate($date);
-		                        }
-					$invoice->setDiscount(trim(Input::get('discount')));
-					$invoice->setClientName(trim(Input::get('razon')));
-					$invoice->setClientNit(trim(Input::get('nit')));
-					$invoice->setUser(Auth::user()->id);
-					$dateparser = explode("/",Input::get('invoice_date'));
-		                        $date = $dateparser[2].'-'.$dateparser[1].'-'.$dateparser[0];
-					$invoice->setInvoiceDate($date);
-					$invoice->importe_neto = trim(Input::get('total'));
-					$invoice->importe_total=trim(Input::get('subtotal'));
-		                        if(Input::get('nota')){
-		                        $nota = array();
-		                        $nota[0] = [
-		                            'date' => date('d-m-Y H:i:s'),
-		                            'note' => '<b>'.Auth::user()->first_name." ".Auth::user()->last_name."</b>: ".trim(Input::get('nota'))
-		                        ];
-		                        $invoice->note = json_encode($nota);
-		                        }
-					//ACCOUTN AND BRANCK
-					$invoice->balance =trim(Input::get('total'));
-		                        $invoice->setAccountName($account->name);
-					$invoice->setAccountNit($account->nit);
-					$invoice->setBranchName($branch->name);
-					$invoice->setAddress1($branch->address1);
-					$invoice->setAddress2($branch->address2);
-					$invoice->setPhone($branch->work_phone);
-					$invoice->setCity($branch->city);
-					$invoice->setState($branch->state);
-					$invoice->setNumberAutho($branch->number_autho);
-					$invoice->setKeyDosage($branch->key_dosage);
-					$invoice->setTypeThird($branch->type_third);
-					$invoice->setDeadline($branch->deadline);
-					$invoice->setLaw($branch->law);
-					$type_document =TypeDocument::where('account_id',Auth::user()->account_id)->first();
+	                        $account = Account::where('id', Auth::user()->account_id)->first();
+				$branch = Branch::find(Session::get('branch_id'));
+				$tax = TaxRate::where("name",'ICE')->first();
+				$invoice = Invoice::createNew();
+				$invoice->setBranch(Session::get('branch_id'));
+				$invoice->setTerms(trim(Input::get('terms')));
+				$invoice->setPublicNotes(trim(Input::get('public_notes')));
+				$invoice->setInvoiceDate(trim(Input::get('invoice_date')));
+				$invoice->setClient(trim(Input::get('client')));
+				$invoice->setEconomicActivity($branch->economic_activity);
+				$dateparser = explode("/",Input::get('due_date'));
+                if(Input::get('due_date')){
+                    $date = $dateparser[2].'-'.$dateparser[1].'-'.$dateparser[0];
+                    $invoice->setDueDate($date);
+                }
+				$invoice->setDiscount(trim(Input::get('discount')));
+				$invoice->setClientName(trim(Input::get('razon')));
+				$invoice->setClientNit(trim(Input::get('nit')));
+				$invoice->setUser(Auth::user()->id);
+				$dateparser = explode("/",Input::get('invoice_date'));
+	            $date = $dateparser[2].'-'.$dateparser[1].'-'.$dateparser[0];
+				$invoice->setInvoiceDate($date);
+				$invoice->importe_neto = trim(Input::get('total'));
+				$invoice->importe_total=trim(Input::get('subtotal'));
+                if(Input::get('nota')){
+                $nota = array();
+                $nota[0] = [
+                    'date' => date('d-m-Y H:i:s'),
+                    'note' => '<b>'.Auth::user()->first_name." ".Auth::user()->last_name."</b>: ".trim(Input::get('nota'))
+                ];
+                $invoice->note = json_encode($nota);
+                }
+				//ACCOUTN AND BRANCK
+				$invoice->balance =trim(Input::get('total'));
+				$invoice->discount = Input::get('descuento_send');
+	                        $invoice->setAccountName($account->name);
+				$invoice->setAccountNit($account->nit);
+				$invoice->setBranchName($branch->name);
+				$invoice->setAddress1($branch->address1);
+				$invoice->setAddress2($branch->address2);
+				$invoice->setPhone($branch->work_phone);
+				$invoice->setCity($branch->city);
+				$invoice->setState($branch->state);
+				$invoice->setNumberAutho($branch->number_autho);
+				$invoice->setKeyDosage($branch->key_dosage);
+				$invoice->setTypeThird($branch->type_third);
+				$invoice->setDeadline($branch->deadline);
+				$invoice->setLaw($branch->law);
+				$type_document =TypeDocument::where('account_id',Auth::user()->account_id)->first();
 
-					 $numAuth = $invoice->number_autho;
-					 $numfactura = $invoice->invoice_number;
-					 $nit = $invoice->client_nit;
-					 $fechaEmision =date("Ymd",strtotime($invoice->invoice_date));
-					 $total = $invoice->importe_total;
-					 $llave = $branch->key_dosage;
-					 $codigoControl = Utils::getControlCode($numfactura,$nit,$fechaEmision,$total,$numAuth,$llave);
+				 $numAuth = $invoice->number_autho;
+				 $invoice->invoice_number = branch::getInvoiceNumber();
+				 $numfactura = $invoice->invoice_number;
+				 $nit = $invoice->client_nit;
+				 $fechaEmision =date("Ymd",strtotime($invoice->invoice_date));
+				 $total = $invoice->importe_neto;
+				 $llave = $branch->key_dosage;
+				 $codigoControl = Utils::getControlCode($numfactura,$nit,$fechaEmision,$total,$numAuth,$llave);
 
 		                        //calculates ICE
 
@@ -400,9 +413,9 @@ class InvoiceController extends \BaseController {
 					if($account->is_uniper)
 					{
 						$invoice->account_uniper = $account->uniper;
-					}
-		                        $invoice->invoice_number = branch::getInvoiceNumber();
+					}		                        
 					$invoice->save();
+					$invoice_items = [];
 					foreach (Input::get('productos') as $producto)
 		                        {
 		                            $prod = $producto;
@@ -417,11 +430,35 @@ class InvoiceController extends \BaseController {
 
 		                                $invoiceItem->setNotes($proo->notes);
 		                                $invoiceItem->setCost($producto["'cost'"]);
-		                                $invoiceItem->setQty($producto["'qty'"]+$proo->units*$producto["'pack'"]);
+		                                ///$invoiceItem->setQty($producto["'qty'"]/$proo->units+$producto["'pack'"]);
+		                                $invoiceItem->setQty($proo->units*$producto["'pack'"]);
 		                                $invoiceItem->packs=$producto["'pack'"];
 		                                $invoiceItem->discount=$producto["'disc'"];
-		                                $invoiceItem->boni=$producto["'bonus'"];
+		                                $invoiceItem->boni=$producto["'bonus'"];		                                
+		                                $invoiceItem->is_web=1;
+		                                $invoiceItem->price_type_id=Auth::user()->price_type_id;
+		                                $invoiceItem->subtotal=round($producto["'pack'"]*$producto["'cost'"],2);
+		                                //$invoiceItem->importe_neto=$producto["'pack'"]*$producto["'cost'"]-$producto["'bonus'"]*$producto["'cost'"]-$producto["'disc'"];
+		                                //$invoiceItem->importe_fiscal=
+		                                $invoiceItem->ice=(($proo->cc*$invoiceItem->getQty())/1000)*$tax->rate;
 		                                $invoiceItem->save();
+
+		                                $new_item = [
+							'boni'	=>	$producto["'bonus'"],
+							'desc'	=>	$producto["'disc'"],
+							'qty'	=>	$producto["'qty'"]/$proo->units+$producto["'pack'"],
+							'id' 	=>	$invoice->id,
+							'units'		=>	1,//$proo->units,
+							'cost'		=>	$producto["'cost'"],
+							'ice'		=>	$proo->ice,//$product->ice,
+							'cc'		=>	$proo->cc*$proo->units,
+							'product_key'	=>	$producto["'product_key'"],
+							'notes'		=>	$proo->notes,				
+							'packs'	=> $producto["'qty'"]+$proo->units*$producto["'pack'"],				
+							'is_web' => 1,
+						];
+
+						array_push($invoice_items, $new_item) ;
 
 		                            }
 		                        }
@@ -429,6 +466,43 @@ class InvoiceController extends \BaseController {
 		                $cliente = Client::find($invoice->client_id);
 		                $cliente->balance =$cliente->balance+$invoice->balance;
 		                $cliente->save();
+ 
+
+		                $new = [
+						    'fecha'	=>	$invoice->invoice_date,
+						    'name'	=>	$invoice->client_name,
+						    'cod_control'	=>	$invoice->control_code,
+						    'nit'	=>	$invoice->client_nit,
+						    'invoice_number'	=>	$invoice->invoice_number,
+						    'client_id'	=>	$invoice->client_id."1",
+						    'user_id'	=>	$invoice->user_id,
+						    'ice'	=>	$tax->rate,//$ice->i,
+						    'deadline'	=>	$branch->deadline,
+						    'account_id'	=>	'1',
+						    'branch_id'	=>	$branch->id,
+						    'law'	=>	$branch->law,
+						    'activity_pri'	=>	$branch->economic_activity,
+						    'activity_sec1'	=>	"-",
+						    'address1'	=>	$branch->address1,
+						    'address2'	=>	$branch->address2,
+						    'number_autho'	=>	$branch->number_autho,
+						    'postal_code'	=>	$branch->sfc,
+						    'city'	=>	$branch->city,
+						    'state'	=>	$branch->state,
+						    'country_id'	=>	$branch->id,
+						    'key_dosage'	=>	$branch->key_dosage,
+						    'branch'	=>	$branch->name,
+						    'invoice_items'	=> $invoice_items,
+					        'terceros'  =>  $branch->terceros,
+					        'discount'	=> $invoice->discount,
+						];
+/*
+						return $new;*/
+						$array = [];
+						array_push($array, $new);
+		                //$this->saveBackUpToMirror($array);
+		                //print_r($array);
+		                //return;
 		                $newInvoice=Invoice::where('id','=',$invoice->getId())->first();
 		                return Redirect::to("factura/".$newInvoice->id);
 		                }
@@ -440,7 +514,7 @@ class InvoiceController extends \BaseController {
 
 		 }
 
-            Session::flash('error','La Dosificaci�n es para un dispositivo POS razon por la cual no se puede facturar via web');
+            Session::flash('error','La Dosificación es para un dispositivo POS razon por la cual no se puede facturar via web');
             return Redirect::to('factura');
 
 	}
@@ -1394,7 +1468,7 @@ class InvoiceController extends \BaseController {
             return View::make('factura.ver',$data);
         }
         public function factura2()
-        {	
+        {
         	// return  Response::json(Input::all());
                 $account = DB::table('accounts')->where('id','=', Auth::user()->account_id)->first();
                 //$matriz = Branch::where('number_branch','=',0)->first();
@@ -1462,24 +1536,24 @@ class InvoiceController extends \BaseController {
                                 'product_key'=>$producto["'product_key'"],
                                 'notes'=>$product->notes,
                                 'cost'=>$producto["'cost'"],
-                                'qty'=>$producto["'qty'"]/$product->units+$producto["'pack'"],
+                                'qty'=>$producto["'qty'"]+$product->units*$producto["'pack'"],
+                                'packs'=>$producto["'qty'"]/$product->units+$producto["'pack'"],
                             ];
                             array_push($products, $prod);
 		      	}
                   }
                // $invoice = Input::all();
-		$template = TypeDocumentBranch::where('branch_id', $invoice->branch_id)->select('template')->first();
-		//print_r($template->template);
+							 $template = TypeDocumentBranch::where('branch_id', $invoice->branch_id)->select('template')->first();
 
-		//return 0;
+                //return 0;
 		$data = array(
 			'invoice' => $invoice,
 			'account'=> $account,
 			'products' => $products,
-            'copia'     =>0,
-            'matriz'   => $matriz,
-            'user'  => $user,
-			'template' => $template
+                        'copia'     =>0,
+                        'matriz'   => $matriz,
+                        'user'  => $user,
+												'template' => $template
 		);
 //                if(Input::get('printer_type')==0)
 //                    return View::make('factura.ver2',$data);
@@ -1912,7 +1986,7 @@ class InvoiceController extends \BaseController {
          $numfactura = $invoice->invoice_number;
          $nit = $invoice->client_nit;
          $fechaEmision =date("Ymd",strtotime($invoice->invoice_date));
-         $total = $invoice->importe_total;
+         $total = $invoice->importe_neto;
          $llave = $branch->key_dosage;
          $codigoControl = Utils::getControlCode($numfactura,$nit,$fechaEmision,$total,$numAuth,$llave);
         $invoice->setControlCode($codigoControl);
@@ -2002,6 +2076,45 @@ class InvoiceController extends \BaseController {
             $stackAstray.="Revise el documento y vuelva a intentar.";
         return $stackAstray;
     }
+
+	private function saveBackUpToMirror($backup)
+    {
+    	//echo "this is back up";return ;
+    	
+    	extract($_POST);
+        $username='firstuser';
+		$password='first_password';
+		$URL='45.55.184.233/public/api/v1/ventas';
+		//$URL='45.55.184.233/public/api/v1/saveoffline';
+		//echo json_encode($backup);
+		$fields= array(
+			'ventas'=>urlencode(json_encode($backup)),			
+			'adicional'=>urlencode("nada")
+			);		
+		//print_r($fields);
+		//return;
+		$fields_string="";
+		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+		rtrim($fields_string, '&');
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL,$URL);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30); //timeout after 30 seconds
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		curl_setopt($ch,CURLOPT_POST, count($fields));
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+		curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+		$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);   //get status code
+		$response = curl_exec($ch);
+		if(!$response){
+    		die('Error: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
+		}						
+		curl_close ($ch);
+		return $response;
+
+    }
+    
     //index
 	public function index($name = null, $numero = null, $fecha = null, $total = null, $estado = null)
 	{

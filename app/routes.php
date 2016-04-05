@@ -214,6 +214,7 @@ Route::group(array('before' => 'auth'), function()
   Route::get('copia/{publicId}','invoiceController@copia');
 
   Route::post('controlCode','invoiceController@controlCode');
+  Route::get('fuckingControlCode/{id}','invoiceController@fuckingControlCode');
   Route::post('notaEntrega','invoiceController@storeNota');
 
 //  Route::post('controlCode','invoiceController@controlCode');

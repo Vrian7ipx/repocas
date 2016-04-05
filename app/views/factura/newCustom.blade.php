@@ -93,11 +93,11 @@
       <div class="col-md-12">
       <div class="form-group col-md-6" id="contactos_client">
 {{-- seleccion de cliente --}}
-        <br>
-        <input id="client" type="hidden" name="client" value="{{$client->id}}">
+        <br>        
         <input id="mail" type="hidden" name="mail" >
-        <input id="nombre" type="hidden" name="nombre" value="{{$client->name}}" >
-        <input id="nit" placeholder="NIT"  type="hidden" name="nit" value="{{$client->nit}}">
+        <input  type="hidden" name="client" value="{{$client->id}}">
+        <input id="nombre" type="hidden" name="nombre" value="{{$client->name}}">
+        <input id="nit" placeholder="NIT"  type="hidden" name="nit" value="{{$client->nit}}" >
         <input id="razon"  placeholder="Razón Social" type="hidden" name="razon" value="{{$client->business_name}}">
         <input id="total_send" type="hidden" name="total" >
         <input id="ice_send" type="hidden" name="importe_ice" >
@@ -141,7 +141,7 @@
                     <tbody><tr>
                       <th class="col-md-1">C&oacute;digo</th>
                       <th class="col-md-4">Concepto</th>
-                      <th class="col-md-1">Precio Unitario</th>
+                      <th class="col-md-1">Precio </th>
                       <th class="col-md-1">Cant. Paquetes</th>                      
                       <th class="col-md-1">Cant. Unidades</th>                      
                       <th class="col-md-1">Bonificación</th>
@@ -161,7 +161,7 @@
                         </div>
                       </td>
                         <td>
-                        <input class="form-control cost centertext number_field" id="cost1" name="productos[0]['cost']">
+                        <input readonly class="form-control cost centertext number_field" id="cost1" name="productos[0]['cost']">
                         </td>
                       <td>
                         <input class="form-control pack centertext number_field" id="pack1" name="productos[0]['pack']">
@@ -256,7 +256,7 @@
           <div class="col-md-1"></div>
           <button  type="button" class="col-md-2 btn btn-success btn-large" data-toggle="modal" onclick="preview()">Pre-Visualizaci&oacute;n</button>
           <div class="col-md-1"></div>
-          <button  id="sub_boton" class="col-md-2 btn btn-large btn-default openbutton" type="submit" onsubmit="return isValidDiscount()">Emitir Factura</button>
+          <button  id="sub_boton" class="col-md-2 btn btn-large btn-default openbutton"  type="submit" >Emitir Factura</button>
         <div class="col-md-1"></div>
 
         <a type="button"  class="col-md-2 btn btn-large btn-default" href="{{asset('factura')}}" role="button" >Cerrar</a>
@@ -741,10 +741,12 @@ $(document).on('focus', '.select2', function() {
   language: "es",
 });*/
 
-/*$('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});
+/*$('#client').select2('data', {id:103, label:'ENABLED_FROM_JS'});*/
     // $("#client").change(function(){
     //   console.log("this is us");
     // });
+
+    /*****AGREGA VALORES RAZON Y NIT****/
     function addValuesClient(dato){
       $(".contact_add").hide();
     id_client_selected = $(dato).val();
@@ -761,7 +763,7 @@ $(document).on('focus', '.select2', function() {
 
     $("#sub_boton").prop('disabled', false);
   //$("#sendcontacts").show();
-}*/
+}
   function emptyRows(){
     cont = 0;
     $( ".new_row" ).each(function( index ) {
@@ -773,7 +775,7 @@ $(document).on('focus', '.select2', function() {
     return cont;
   }
 
-/*  function saveNewClient()
+  function saveNewClient()
   {
     user = $("#newuser").val();
     nit = $("#newnit").val();
@@ -791,9 +793,9 @@ $(document).on('focus', '.select2', function() {
           {
             console.log(result);
           }
-      });*/
+      });
 
-/*    $("#client").select2({
+    $("#client").select2({
         ajax: {
           Type: 'POST',
           url: "{{ URL::to('getclients') }}",
@@ -831,7 +833,7 @@ $(document).on('focus', '.select2', function() {
     //$("#client").val(nit).trigger("change");
 
 
-  }*/
+  }
 
 /*******************FECHAS Y DESCUENTOS*************************/
 ///$("#invoice_date").datepicker(/*"update", new Date()*/);
@@ -910,7 +912,8 @@ function calculateAllTotal(){
     prod = findProduct($("#code"+ind).val());   
     valor = $("#"+this.id).val();
     //costo = $("#cost"+ind).val();
-    costo = prod['cost']/prod['units'];
+    //costo = prod['cost']/prod['units'];
+    costo = prod['cost'];
     boni = $("#bonus"+ind).val();
     disc = $("#disc"+ind).val();
     pack = $("#pack"+ind).val();
@@ -936,13 +939,14 @@ function calculateAllTotal(){
     sum = parseFloat(subto)+sum;
     //parseFloat(subto)
     
-    cantidad=parseFloat(canti)+pack*parseFloat(prod['units'])-boni;
-    
+    //cantidad=parseFloat(canti)/pack+parseFloat(prod['units'])-boni;
+    cantidad=parseFloat(canti)/parseFloat(prod['units'])+parseFloat(pack)-parseFloat(boni);
+    console.log("ASD"+parseFloat(canti)/parseFloat(prod['units'])+" - "+(pack-boni));
     var ice_value = {{$tax}};  
     ice_value = parseFloat(ice_value);
     console.log("ice--->>> "+cantidad+" "+parseFloat(prod['cc'])+" "+ice_value);
     if(prod['ice']=="1"){
-        ice_sum += cantidad*(parseFloat(prod['cc'])/1000)*ice_value;
+        ice_sum += cantidad*(parseFloat(prod['cc']*parseFloat(prod['units']))/1000)*ice_value;
     }
   }
     
@@ -1046,7 +1050,7 @@ $(document).on("change",'.code',function(){
     {
       //$("#notes"+ind_act).val(prod['product_key']).trigger("change");
       $("#notes"+ind_act).val(prod['notes']);
-      costo =parseFloat(prod['cost']+"")/parseFloat(prod['units']+"");
+      costo =parseFloat(prod['cost']+"");///parseFloat(prod['units']+"");
       $("#cost"+ind_act).val(costo.toFixed(2)).prop('disabled', false);        
       $("#qty"+ind_act).val(0).prop('disabled', false);
       $("#pack"+ind_act).val(0).prop('disabled', false);
@@ -1073,7 +1077,7 @@ $(document).on("change",'.code',function(){
   id_products++;
   }
 });
-/*$("#sub_boton").mouseover(function(){
+$("#sub_boton").mouseover(function(){
   cli=$("#client").val();
   val = 1;
   if(cli==""){
@@ -1098,7 +1102,7 @@ $(document).on("change",'.code',function(){
   }
   else
     $("#sub_boton").prop('disabled', false);
-});*/
+});
 function completeItem(ind_act,item_send){
     products.forEach(function(prod){
     if(prod['notes'] == item_send)
@@ -1403,7 +1407,7 @@ function addNewRow(){
   tdcode="<td><input class='form-control code' id='code"+id_products+"' name=\"productos["+id_products+"]['product_key']\""+"</td>";
   tdcode="<td><select id='code"+id_products+"' name=\"productos["+id_products+"]['product_key']\" class='form-control code select2-input' data-style='success'><option></option> </select></td>";  
   tdnotes= "<td><div class='ui-widget'> <input id='notes"+id_products+"' class='form-control notes' name=\"productos["+id_products+"]['item']\"></div></td>";
-  tdcost = "<td><input disabled class='form-control cost centertext number_field' id='cost"+id_products+"' name=\"productos["+id_products+"]['cost']\""+"</td>";
+  tdcost = "<td><input readonly disabled class='form-control cost centertext number_field' id='cost"+id_products+"' name=\"productos["+id_products+"]['cost']\""+"</td>";
   tdpack = "<td><input disabled class='form-control pack centertext number_field' id='pack"+id_products+"' name=\"productos["+id_products+"]['pack']\""+"</td>";
   tdqty = "<td><input disabled class='form-control qty centertext number_field' id='qty"+id_products+"' name=\"productos["+id_products+"]['qty']\""+"</td>";
   tdboni = "<td><input disabled class='form-control bonus centertext number_field' id='bonus"+id_products+"' name=\"productos["+id_products+"]['bonus']\""+"</td>";

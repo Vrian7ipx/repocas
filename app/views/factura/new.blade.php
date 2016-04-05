@@ -101,6 +101,7 @@
         <input id="ice_send" type="hidden" name="importe_ice" >
         <input id="fiscal_send" type="hidden" name="importe_fiscal" >
         <input id="subtotal_send" type="hidden" name="subtotal" >
+        <input id="descuento_send" type="hidden" name="descuento_send" value="0">
 
     </div>
 
@@ -138,10 +139,10 @@
                   <table id="tableb"> <!--class="table table-bordered">-->
                     <tbody><tr>
                       <th class="col-md-1">C&oacute;digo</th>
-                      <th class="col-md-4">Concepto</th>
-                      <th class="col-md-1">Precio Unitario</th>
+                      <th class="col-md-5">Concepto</th>
+                      <th class="col-md-1">Precio </th>
                       <th class="col-md-1">Cant. Paquetes</th>                      
-                      <th class="col-md-1">Cant. Unidades</th>                      
+                      <!-- <th class="col-md-1" >Cant. Unidades</th>    -->                   
                       <th class="col-md-1">Bonificación</th>
                       <th class="col-md-1">Descuento</th>
                       <th class="col-md-1">Subtotal</th>                      
@@ -164,9 +165,9 @@
                       <td>
                         <input class="form-control pack centertext number_field" id="pack1" name="productos[0]['pack']">
                       </td>
-                      <td>
-                        <input class="form-control qty centertext number_field" id="qty1" name="productos[0]['qty']">
-                      </td>
+                      <!-- <td  type="hidden" >
+                        <input class="form-control qty centertext number_field" id="qty1"name="productos[0]['qty']">
+                      </td> -->
                       <td>
                         <input class="form-control bonus centertext number_field" id="bonus1" name="productos[0]['bonus']">
                       </td>
@@ -598,7 +599,7 @@ else{
 
 $('#killit1').css('cursor', 'pointer');
 $("#cost1").val('').prop('disabled', true);
-$("#qty1").val('').prop('disabled', true);
+//$("#qty1").val('').prop('disabled', true);
 $("#pack1").val('').prop('disabled', true);
 $("#bonus1").val('').prop('disabled', true);
 $("#disc1").val('').prop('disabled', true);
@@ -930,21 +931,15 @@ function calculateAllTotal(){
         disc= 0.00;
     disc = parseFloat(disc).toFixed(2); 
     sum_dis = costo*boni+parseFloat(disc);
-    descuentos=descuentos+parseFloat(sum_dis);
-    
-    canti = $("#qty"+ind).val();
+    descuentos=descuentos+parseFloat(sum_dis);    
+    canti = 0;
     subto = $("#subtotal"+ind).val();
-    sum = parseFloat(subto)+sum;
-    //parseFloat(subto)
-    
-    //cantidad=parseFloat(canti)/pack+parseFloat(prod['units'])-boni;
-    cantidad=parseFloat(canti)+pack*parseFloat(prod['units'])-boni;
-    
+    sum = parseFloat(subto)+sum;    
+    cantidad=parseFloat(canti)/parseFloat(prod['units'])+parseFloat(pack)-parseFloat(boni);    
     var ice_value = {{$tax}};  
-    ice_value = parseFloat(ice_value);
-    console.log("ice--->>> "+cantidad+" "+parseFloat(prod['cc'])+" "+ice_value);
+    ice_value = parseFloat(ice_value);    
     if(prod['ice']=="1"){
-        ice_sum += cantidad*(parseFloat(prod['cc'])/1000)*ice_value;
+        ice_sum += cantidad*(parseFloat(prod['cc']*parseFloat(prod['units']))/1000)*ice_value;
     }
   }
     
@@ -954,6 +949,7 @@ function calculateAllTotal(){
   sum = sum - descuentos;
   importe = sum-ice_sum;  
   $("#descuento_box").text(parseFloat(descuentos).toFixed(2));
+  $("#descuento_send").val(parseFloat(descuentos).toFixed(2));
   $("#ice_send").val(ice_sum);
   $("#fiscal_send").val(importe);
     
@@ -1050,7 +1046,7 @@ $(document).on("change",'.code',function(){
       $("#notes"+ind_act).val(prod['notes']);
       costo =parseFloat(prod['cost']+"");///parseFloat(prod['units']+"");
       $("#cost"+ind_act).val(costo.toFixed(2)).prop('disabled', false);        
-      $("#qty"+ind_act).val(0).prop('disabled', false);
+      //$("#qty"+ind_act).val(0).prop('disabled', false);
       $("#pack"+ind_act).val(0).prop('disabled', false);
       $("#disc"+ind_act).val(0.00).prop('disabled', false);
       $("#bonus"+ind_act).val(0).prop('disabled', false);
@@ -1107,7 +1103,7 @@ function completeItem(ind_act,item_send){
     {
       $("#code"+ind_act).val(prod['product_key']).trigger("change");
       $("#cost"+ind_act).val(prod['cost']).prop('disabled', false);
-      $("#qty"+ind_act).val(1).prop('disabled', false);      
+      //$("#qty"+ind_act).val(1).prop('disabled', false);      
       $("#subtotal"+ind_act).val(prod['cost']);
     }
   });
@@ -1129,7 +1125,7 @@ $(document).on("change",'.notes',function(){
     {
       $("#code"+ind_act).val(prod['product_key']).trigger("change");
       $("#cost"+ind_act).val(prod['cost']).prop('disabled', false);
-      $("#qty"+ind_act).val(1).prop('disabled', false);
+      //$("#qty"+ind_act).val(1).prop('disabled', false);
       $("#subtotal"+ind_act).val(prod['cost']);
     }
   });
@@ -1317,7 +1313,7 @@ function addNewProduct(newkey,newnotes,newcost)
 //    if(costo=='')
 //        costo=0;
 //    costo = parseFloat(costo).toFixed(2);
-    cantidad = $("#qty"+ind).val();
+    cantidad = 0;// $("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
 
@@ -1346,7 +1342,7 @@ function addNewProduct(newkey,newnotes,newcost)
     //costo = $("#cost"+ind).val();
     costo = prod['cost']/prod['units'];
     pack = $("#pack"+ind).val();
-    cantidad = $("#qty"+ind).val();
+    cantidad = 0;///$("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
     if(pack=='')
@@ -1371,7 +1367,7 @@ function addNewProduct(newkey,newnotes,newcost)
     if(costo=='')
         costo=0;
     costo = parseFloat(costo).toFixed(2);    
-    cantidad = $("#qty"+ind).val();
+    cantidad = 0;//$("#qty"+ind).val();
     if(cantidad=='')
         cantidad= 0;
     cantidad = parseFloat(cantidad).toFixed(2);
@@ -1407,13 +1403,13 @@ function addNewRow(){
   tdnotes= "<td><div class='ui-widget'> <input id='notes"+id_products+"' class='form-control notes' name=\"productos["+id_products+"]['item']\"></div></td>";
   tdcost = "<td><input disabled class='form-control cost centertext number_field' id='cost"+id_products+"' name=\"productos["+id_products+"]['cost']\""+"</td>";
   tdpack = "<td><input disabled class='form-control pack centertext number_field' id='pack"+id_products+"' name=\"productos["+id_products+"]['pack']\""+"</td>";
-  tdqty = "<td><input disabled class='form-control qty centertext number_field' id='qty"+id_products+"' name=\"productos["+id_products+"]['qty']\""+"</td>";
+ // tdqty = "<td><input disabled class='form-control qty centertext number_field' id='qty"+id_products+"' name=\"productos["+id_products+"]['qty']\""+"</td>";
   tdboni = "<td><input disabled class='form-control bonus centertext number_field' id='bonus"+id_products+"' name=\"productos["+id_products+"]['bonus']\""+"</td>";
   tddisc = "<td><input disabled class='form-control disc centertext number_field' id='disc"+id_products+"' name=\"productos["+id_products+"]['disc']\""+"</td>";  
   tdsubtotal = "<td><input disabled class='form-control derecha' value='0' id='subtotal"+id_products+"'></td>";
   tdkill= "<td><div for='inputError'><span class='killit' style='color:red' id='killit"+id_products+"'><i class='fa fa-minus-circle redlink'></i></span></div></td>";
   fintr="</tr>";
-  return tr+tdcode+tdnotes+tdcost+tdpack+tdqty+tdboni+tddisc+tdsubtotal+tdkill+fintr;
+  return tr+tdcode+tdnotes+tdcost+tdpack+tdboni+tddisc+tdsubtotal+tdkill+fintr;
 }
 
 $("form").submit(function() {
